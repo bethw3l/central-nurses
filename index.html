@@ -423,10 +423,14 @@ const API = 'https://script.google.com/macros/s/AKfycbwDMVvHuheElPOcaI1683Hxj1sh
 // ══════════════════════════════════════════
 async function apiGet(action, params={}){
   const url = API+'?action='+action+'&'+new URLSearchParams(params);
-  const r = await fetch(url); return r.json();
+  const r = await fetch(url, {redirect:'follow'}); 
+  return r.json();
 }
 async function apiPost(action, body={}){
-  const r = await fetch(API,{method:'POST',body:JSON.stringify({action,...body})}); return r.json();
+  // Apps Script requires form-encoded POST or URL params for CORS
+  const url = API+'?action='+action+'&'+new URLSearchParams(body);
+  const r = await fetch(url, {redirect:'follow'});
+  return r.json();
 }
 
 // ══════════════════════════════════════════
