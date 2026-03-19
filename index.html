@@ -5,395 +5,447 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Central Nurses LLC</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --navy: #0a1628;
-  --navy2: #112244;
-  --teal: #0e7490;
-  --teal2: #0891b2;
-  --gold: #d4a843;
-  --white: #ffffff;
-  --off: #f0f4f8;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --red: #dc2626;
-  --green: #16a34a;
-  --orange: #ea580c;
-  --card: #ffffff;
-  --shadow: 0 4px 24px rgba(10,22,40,0.10);
-  --radius: 14px;
+:root{
+  --ink:#0d1b2a;
+  --ink2:#1a2e45;
+  --sky:#0077b6;
+  --sky2:#00b4d8;
+  --gold:#c9a84c;
+  --cream:#f8f6f1;
+  --white:#ffffff;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --green:#15803d;--green-bg:#f0fdf4;
+  --orange:#c2410c;--orange-bg:#fff7ed;
+  --blue-bg:#eff6ff;
+  --shadow:0 2px 16px rgba(13,27,42,.08);
+  --shadow-lg:0 8px 40px rgba(13,27,42,.14);
+  --r:12px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--navy);min-height:100vh;}
-h1,h2,h3,h4{font-family:'Playfair Display',serif;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;}
 
-/* ======= TOAST ======= */
-#toast{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px;}
-.toast-msg{background:var(--navy);color:#fff;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.2);animation:slideIn .3s ease;max-width:320px;}
-.toast-msg.success{background:var(--green);}
-.toast-msg.error{background:var(--red);}
-@keyframes slideIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+/* TOAST */
+#toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:var(--shadow-lg);animation:tin .3s ease forwards;max-width:300px;line-height:1.4;}
+.toast.ok{background:var(--green);}
+.toast.err{background:var(--red);}
+@keyframes tin{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
-/* ======= PUBLIC NAV ======= */
-#public-site{display:block;}
-#app{display:none;}
-nav{background:var(--navy);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100;}
-.nav-logo{color:var(--gold);font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:.5px;}
-.nav-links{display:flex;gap:28px;align-items:center;}
-.nav-links a{color:rgba(255,255,255,.8);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
-.nav-links a:hover{color:var(--gold);}
-.nav-btn{background:var(--gold);color:var(--navy);padding:9px 22px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;border:none;transition:opacity .2s;}
-.nav-btn:hover{opacity:.88;}
+/* NAV */
+.pub-nav{background:var(--ink);height:66px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.nav-brand{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:22px;font-weight:700;letter-spacing:.3px;}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:#fff;}
+.nav-cta{background:var(--gold);color:var(--ink);border:none;padding:9px 24px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity .2s;}
+.nav-cta:hover{opacity:.85;}
 
-/* ======= HERO ======= */
-.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,#1a3a5c 100%);padding:100px 40px;text-align:center;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
-.hero-badge{display:inline-block;background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.4);color:var(--gold);padding:6px 18px;border-radius:50px;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
-.hero h1{font-size:clamp(36px,6vw,72px);color:#fff;line-height:1.1;margin-bottom:20px;}
-.hero h1 span{color:var(--gold);}
-.hero p{color:rgba(255,255,255,.7);font-size:18px;max-width:580px;margin:0 auto 40px;line-height:1.7;}
-.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-.btn{padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;cursor:pointer;border:none;transition:all .2s;}
-.btn-gold{background:var(--gold);color:var(--navy);}
-.btn-gold:hover{background:#c49a38;}
-.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4);}
-.btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.08);}
+/* HERO */
+.hero{background:var(--ink);padding:96px 48px 80px;position:relative;overflow:hidden;}
+.hero-grid{display:grid;grid-template-columns:1fr 420px;gap:60px;align-items:center;max-width:1100px;margin:0 auto;}
+.hero-eyebrow{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:18px;}
+.hero h1{font-size:clamp(40px,5.5vw,68px);color:#fff;line-height:1.08;margin-bottom:22px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero p{color:rgba(255,255,255,.6);font-size:16px;line-height:1.75;margin-bottom:36px;max-width:480px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn{padding:13px 30px;border-radius:9px;font-family:'Outfit',sans-serif;font-weight:600;font-size:14.5px;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-gold{background:var(--gold);color:var(--ink);}
+.btn-gold:hover{background:#b8943f;}
+.btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);}
+.btn-ghost:hover{border-color:#fff;}
+.hero-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:28px;backdrop-filter:blur(8px);}
+.hero-card h3{color:#fff;font-size:20px;margin-bottom:6px;}
+.hero-card p{color:rgba(255,255,255,.5);font-size:13px;margin-bottom:22px;}
+.hc-stat{display:flex;justify-content:space-between;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.hc-stat:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.hc-stat .label{color:rgba(255,255,255,.5);font-size:13px;}
+.hc-stat .val{color:var(--gold);font-weight:700;font-size:15px;}
 
-/* ======= SECTIONS ======= */
-section{padding:80px 40px;}
-.section-label{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
-.section-title{font-size:clamp(28px,4vw,42px);color:var(--navy);margin-bottom:16px;}
-.section-sub{color:var(--muted);font-size:16px;max-width:560px;line-height:1.7;}
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;margin-top:48px;}
-.card{background:var(--card);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.card-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--teal),var(--teal2));border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:24px;}
-.card h3{font-size:18px;margin-bottom:10px;color:var(--navy);}
-.card p{color:var(--muted);font-size:14px;line-height:1.7;}
+/* STATS BAR */
+.stats-bar{background:var(--gold);display:grid;grid-template-columns:repeat(4,1fr);padding:0;}
+.stat-item{padding:28px 24px;text-align:center;border-right:1px solid rgba(13,27,42,.15);}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:700;color:var(--ink);line-height:1;}
+.stat-lbl{font-size:12px;font-weight:600;color:rgba(13,27,42,.6);margin-top:4px;text-transform:uppercase;letter-spacing:.8px;}
 
-/* Stats bar */
-.stats-bar{background:var(--navy);padding:40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:24px;text-align:center;}
-.stat-item .num{font-family:'Playfair Display',serif;font-size:42px;color:var(--gold);font-weight:700;}
-.stat-item .lbl{color:rgba(255,255,255,.6);font-size:13px;margin-top:4px;}
+/* SECTIONS */
+section{padding:80px 48px;}
+.section-wrap{max-width:1100px;margin:0 auto;}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--sky);margin-bottom:12px;}
+.section-title{font-size:clamp(30px,4vw,46px);color:var(--ink);margin-bottom:16px;line-height:1.15;}
+.section-sub{color:var(--muted);font-size:15.5px;line-height:1.75;max-width:540px;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:24px;margin-top:48px;}
+.svc-card{background:var(--white);border-radius:var(--r);padding:30px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
+.svc-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.svc-icon{font-size:32px;margin-bottom:18px;}
+.svc-card h3{font-size:19px;margin-bottom:8px;}
+.svc-card p{color:var(--muted);font-size:14px;line-height:1.65;}
 
-/* Contact */
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px;}
-.contact-info h3{font-size:22px;margin-bottom:16px;}
-.contact-info p{color:var(--muted);line-height:1.8;margin-bottom:20px;}
-.contact-detail{display:flex;align-items:center;gap:12px;color:var(--muted);margin-bottom:12px;font-size:14px;}
-.contact-form input,.contact-form textarea,.contact-form select{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;background:#fff;color:var(--navy);margin-bottom:14px;outline:none;transition:border .2s;}
-.contact-form input:focus,.contact-form textarea:focus{border-color:var(--teal);}
-.contact-form textarea{height:120px;resize:vertical;}
+/* JOIN CTA */
+.cta-section{background:var(--ink2);padding:72px 48px;}
+.cta-inner{max-width:680px;margin:0 auto;text-align:center;}
+.cta-inner h2{font-size:clamp(30px,4vw,50px);color:#fff;margin-bottom:16px;}
+.cta-inner p{color:rgba(255,255,255,.6);font-size:16px;line-height:1.7;margin-bottom:36px;}
 
-/* Footer */
-footer{background:var(--navy);color:rgba(255,255,255,.6);padding:40px;text-align:center;font-size:13px;}
-footer .footer-logo{font-family:'Playfair Display',serif;color:var(--gold);font-size:20px;margin-bottom:12px;}
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:48px;}
+.ci-item{display:flex;align-items:center;gap:12px;margin-bottom:16px;color:var(--muted);font-size:15px;}
+.ci-icon{width:38px;height:38px;background:var(--blue-bg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+label{display:block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],select,textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none;transition:border .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--sky);}
+textarea{resize:vertical;min-height:110px;}
+.form-field{margin-bottom:16px;}
+.contact-form-submit{width:100%;padding:13px;background:var(--ink);color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px;cursor:pointer;transition:background .2s;}
+.contact-form-submit:hover{background:var(--sky);}
 
-/* ======= AUTH MODAL ======= */
-.modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,.7);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;}
-.modal-overlay.open{display:flex;}
-.modal{background:#fff;border-radius:18px;padding:40px;width:100%;max-width:440px;box-shadow:0 24px 64px rgba(0,0,0,.25);position:relative;}
-.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);}
-.modal h2{font-size:26px;margin-bottom:6px;}
-.modal p.sub{color:var(--muted);font-size:14px;margin-bottom:28px;}
-.form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--navy);}
-.form-group input,.form-group select{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;outline:none;transition:border .2s;}
-.form-group input:focus,.form-group select:focus{border-color:var(--teal);}
-.btn-full{width:100%;padding:13px;border-radius:9px;font-weight:600;font-size:15px;cursor:pointer;border:none;background:var(--navy);color:#fff;transition:background .2s;margin-top:6px;}
-.btn-full:hover{background:var(--teal);}
-.auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted);}
-.auth-switch a{color:var(--teal);cursor:pointer;font-weight:600;}
+/* FOOTER */
+footer{background:var(--ink);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;}
+.footer-brand{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:18px;font-weight:700;}
+.footer-copy{color:rgba(255,255,255,.35);font-size:13px;}
 
-/* ======= DASHBOARD ======= */
-#app{min-height:100vh;display:flex;flex-direction:column;}
-.app-header{background:var(--navy);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;}
-.app-header .logo{color:var(--gold);font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
-.app-header .user-info{display:flex;align-items:center;gap:16px;}
-.app-header .user-name{color:#fff;font-size:14px;font-weight:500;}
-.app-header .role-badge{background:var(--teal);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase;}
-.logout-btn{background:rgba(255,255,255,.1);color:#fff;border:none;padding:7px 16px;border-radius:7px;cursor:pointer;font-size:13px;transition:background .2s;}
-.logout-btn:hover{background:rgba(255,255,255,.2);}
+/* MODALS */
+.overlay{position:fixed;inset:0;background:rgba(13,27,42,.65);backdrop-filter:blur(3px);z-index:500;display:none;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:38px 36px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);position:relative;}
+.modal-x{position:absolute;top:14px;right:18px;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;}
+.modal h2{font-size:28px;margin-bottom:4px;}
+.modal .sub{color:var(--muted);font-size:13.5px;margin-bottom:26px;}
+.modal-btn{width:100%;padding:13px;background:var(--ink);color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.modal-btn:hover{background:var(--sky);}
+.modal-btn:disabled{opacity:.6;cursor:not-allowed;}
+.switch-txt{text-align:center;margin-top:16px;font-size:13px;color:var(--muted);}
+.switch-txt a{color:var(--sky);cursor:pointer;font-weight:600;}
 
-.dashboard-layout{display:flex;flex:1;min-height:calc(100vh - 62px);}
-.sidebar{width:220px;background:var(--navy2);padding:20px 0;flex-shrink:0;}
-.sidebar-item{display:flex;align-items:center;gap:12px;padding:12px 22px;cursor:pointer;color:rgba(255,255,255,.65);font-size:14px;font-weight:500;transition:all .2s;border-left:3px solid transparent;}
-.sidebar-item:hover{color:#fff;background:rgba(255,255,255,.05);}
-.sidebar-item.active{color:var(--gold);background:rgba(212,168,67,.1);border-left-color:var(--gold);}
-.sidebar-item .icon{font-size:18px;width:22px;text-align:center;}
+/* APP SHELL */
+#app{display:none;min-height:100vh;flex-direction:column;}
+.app-topbar{background:var(--ink);height:60px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:100;}
+.app-brand{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:20px;font-weight:700;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.user-pill{background:rgba(255,255,255,.08);border-radius:50px;padding:6px 14px 6px 8px;display:flex;align-items:center;gap:10px;}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--ink);flex-shrink:0;}
+.user-name{color:#fff;font-size:13.5px;font-weight:500;}
+.role-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:2px 8px;border-radius:50px;}
+.role-tag.manager{background:rgba(201,168,76,.25);color:var(--gold);}
+.role-tag.employee{background:rgba(0,119,182,.25);color:var(--sky2);}
+.signout-btn{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:none;padding:7px 16px;border-radius:7px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:background .2s;}
+.signout-btn:hover{background:rgba(255,255,255,.18);}
 
-.main-content{flex:1;padding:28px;overflow-y:auto;}
-.page{display:none;}
-.page.active{display:block;}
-.page-title{font-size:26px;margin-bottom:6px;}
-.page-sub{color:var(--muted);font-size:14px;margin-bottom:28px;}
+.app-body{display:flex;flex:1;min-height:0;}
+.sidebar{width:210px;background:var(--ink2);padding:18px 0;flex-shrink:0;display:flex;flex-direction:column;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;color:rgba(255,255,255,.55);font-size:13.5px;font-weight:500;transition:all .2s;border-left:3px solid transparent;user-select:none;}
+.nav-item:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.04);}
+.nav-item.active{color:#fff;background:rgba(0,119,182,.2);border-left-color:var(--sky2);}
+.nav-item .ni{font-size:17px;width:20px;text-align:center;flex-shrink:0;}
+.content{flex:1;padding:28px;overflow-y:auto;min-height:0;}
 
-/* Stats grid */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;margin-bottom:28px;}
-.stat-card{background:#fff;border-radius:12px;padding:22px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.stat-card .val{font-size:32px;font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);}
-.stat-card .lbl{font-size:12px;color:var(--muted);margin-top:4px;font-weight:500;}
-.stat-card .icon{font-size:28px;margin-bottom:10px;}
+/* PAGES */
+.pg{display:none;}
+.pg.active{display:block;}
+.pg-title{font-size:28px;color:var(--ink);margin-bottom:4px;}
+.pg-sub{color:var(--muted);font-size:14px;margin-bottom:26px;}
 
-/* Table */
-.table-wrap{background:#fff;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
-.table-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.table-header h3{font-size:16px;}
+/* STAT CARDS */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:16px;margin-bottom:24px;}
+.kpi{background:#fff;border-radius:var(--r);padding:22px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.kpi .k-icon{font-size:26px;margin-bottom:12px;}
+.kpi .k-val{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ink);line-height:1;}
+.kpi .k-lbl{font-size:12px;color:var(--muted);margin-top:5px;font-weight:500;}
+
+/* TABLE */
+.tbl-wrap{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
+.tbl-top{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.tbl-top h3{font-size:16px;font-family:'Outfit',sans-serif;font-weight:700;}
 table{width:100%;border-collapse:collapse;}
-th{background:var(--off);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:12px 18px;text-align:left;}
-td{padding:13px 18px;border-top:1px solid var(--border);font-size:14px;vertical-align:middle;}
-tr:hover td{background:rgba(14,116,144,.04);}
-.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;}
-.badge-green{background:#dcfce7;color:var(--green);}
-.badge-red{background:#fee2e2;color:var(--red);}
-.badge-orange{background:#ffedd5;color:var(--orange);}
-.badge-blue{background:#dbeafe;color:#1d4ed8;}
-.badge-gray{background:#f1f5f9;color:var(--muted);}
+th{background:#f8fafc;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:11px 16px;text-align:left;white-space:nowrap;}
+td{padding:13px 16px;border-top:1px solid var(--border);font-size:13.5px;vertical-align:middle;}
+tr:hover td{background:rgba(0,119,182,.025);}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+.b-green{background:var(--green-bg);color:var(--green);}
+.b-red{background:var(--red-bg);color:var(--red);}
+.b-orange{background:var(--orange-bg);color:var(--orange);}
+.b-blue{background:var(--blue-bg);color:var(--sky);}
+.b-gray{background:#f1f5f9;color:var(--muted);}
 
-/* Inputs */
-input[type=text],input[type=email],input[type=date],input[type=number],input[type=password],select,textarea{padding:9px 13px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;outline:none;background:#fff;transition:border .2s;}
-input:focus,select:focus,textarea:focus{border-color:var(--teal);}
-.search-input{padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;width:220px;outline:none;}
-.search-input:focus{border-color:var(--teal);}
-.action-btn{padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;}
-.btn-primary{background:var(--teal);color:#fff;}
-.btn-primary:hover{background:var(--teal2);}
-.btn-danger{background:#fee2e2;color:var(--red);}
-.btn-danger:hover{background:var(--red);color:#fff;}
-.btn-navy{background:var(--navy);color:#fff;}
-.btn-navy:hover{background:var(--teal);}
-.btn-gold2{background:var(--gold);color:var(--navy);}
-.btn-gold2:hover{background:#c49a38;}
-.btn-sm{padding:5px 12px;font-size:12px;}
+/* BUTTONS */
+.act-btn{padding:7px 14px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
+.ab-primary{background:var(--sky);color:#fff;}
+.ab-primary:hover{background:var(--sky2);}
+.ab-danger{background:var(--red-bg);color:var(--red);}
+.ab-danger:hover{background:var(--red);color:#fff;}
+.ab-dark{background:var(--ink);color:#fff;}
+.ab-dark:hover{background:var(--sky);}
+.ab-gold{background:var(--gold);color:var(--ink);}
+.ab-gold:hover{background:#b8943f;}
+.ab-sm{padding:5px 11px;font-size:12px;}
+.search-box{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;width:220px;transition:border .2s;}
+.search-box:focus{border-color:var(--sky);}
 
-/* Forms */
-.form-card{background:#fff;border-radius:12px;padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:22px;}
-.form-card h3{font-size:16px;margin-bottom:18px;}
-.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+/* FORM CARD */
+.form-card{background:#fff;border-radius:var(--r);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
+.form-card h3{font-size:16px;font-family:'Outfit',sans-serif;font-weight:700;margin-bottom:18px;}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;}
 .field{display:flex;flex-direction:column;gap:5px;}
-.field label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
-.field input,.field select,.field textarea{width:100%;}
+.field label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);}
+.field input,.field select{width:100%;}
 
-/* Scheduling grid */
-.sched-grid{background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);}
-.sched-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--border);}
-.sched-table{width:100%;border-collapse:collapse;}
-.sched-table th{background:var(--navy);color:rgba(255,255,255,.8);font-size:12px;font-weight:600;padding:12px 14px;text-align:center;}
-.sched-table td{border:1px solid var(--border);padding:8px;height:72px;vertical-align:top;cursor:pointer;transition:background .15s;font-size:12px;}
-.sched-table td:hover{background:rgba(14,116,144,.05);}
-.sched-table td:first-child{background:var(--off);font-weight:600;font-size:12px;color:var(--muted);width:110px;cursor:default;}
-.shift-chip{background:var(--teal);color:#fff;border-radius:5px;padding:3px 7px;margin-bottom:3px;font-size:11px;display:flex;justify-content:space-between;align-items:center;gap:4px;}
-.shift-chip .del-shift{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:13px;line-height:1;}
+/* CLOCK PAGE */
+.clock-hero{background:linear-gradient(135deg,var(--ink) 0%,var(--ink2) 100%);border-radius:18px;padding:44px;text-align:center;margin-bottom:22px;position:relative;overflow:hidden;}
+.clock-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 50%,rgba(0,119,182,.2) 0%,transparent 70%);}
+.clock-display{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:700;color:var(--gold);letter-spacing:3px;line-height:1;position:relative;}
+.clock-date-str{color:rgba(255,255,255,.5);font-size:14px;margin:8px 0 30px;position:relative;}
+.clock-status-txt{color:rgba(255,255,255,.55);font-size:13px;margin-top:14px;position:relative;}
+.clock-btn{position:relative;padding:15px 52px;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;cursor:pointer;border:none;transition:all .25s;letter-spacing:.3px;}
+.cb-in{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;box-shadow:0 4px 20px rgba(21,128,61,.4);}
+.cb-in:hover{box-shadow:0 6px 28px rgba(21,128,61,.6);transform:translateY(-1px);}
+.cb-out{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 20px rgba(220,38,38,.4);}
+.cb-out:hover{box-shadow:0 6px 28px rgba(220,38,38,.6);transform:translateY(-1px);}
+.clock-btn:disabled{opacity:.5;cursor:not-allowed;transform:none !important;}
 
-/* Clock */
-.clock-card{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:16px;padding:36px;color:#fff;text-align:center;margin-bottom:22px;}
-.clock-time{font-family:'Playfair Display',serif;font-size:64px;font-weight:700;color:var(--gold);letter-spacing:2px;}
-.clock-date{color:rgba(255,255,255,.6);font-size:14px;margin:6px 0 28px;}
-.clock-action-btn{padding:14px 44px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
-.btn-clockin{background:var(--green);color:#fff;}
-.btn-clockout{background:var(--red);color:#fff;}
+/* INVOICE PREVIEW */
+.inv-doc{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:36px;margin-top:20px;}
+.inv-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid var(--ink);}
+.inv-co h2{font-size:26px;color:var(--ink);}
+.inv-co p{color:var(--muted);font-size:13px;margin-top:4px;}
+.inv-meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;background:#f8fafc;border-radius:10px;padding:18px;margin-bottom:20px;border:1px solid var(--border);}
+.inv-meta-item .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
+.inv-meta-item .val{font-size:14px;font-weight:600;color:var(--ink);margin-top:3px;}
+.inv-totals{background:var(--ink);border-radius:10px;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+.inv-totals .t-item{text-align:center;}
+.inv-totals .t-lbl{color:rgba(255,255,255,.5);font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
+.inv-totals .t-val{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;margin-top:2px;}
+.inv-totals .t-val.big{font-size:32px;}
+.inv-actions{display:flex;gap:12px;margin-top:18px;}
 
-/* Invoice */
-.invoice-preview{background:#fff;border:1px solid var(--border);border-radius:12px;padding:32px;margin-top:20px;}
-.invoice-preview h2{font-size:28px;color:var(--navy);margin-bottom:4px;}
-.inv-meta{display:flex;justify-content:space-between;margin:20px 0;padding:16px;background:var(--off);border-radius:8px;font-size:13px;}
-.inv-total{background:var(--navy);color:#fff;padding:16px 24px;border-radius:8px;font-size:18px;font-weight:700;text-align:right;margin-top:12px;}
-
-/* Credentials */
-.cred-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;}
-.cred-card{background:#fff;border-radius:12px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden;}
-.cred-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
-.cred-card.green::before{background:var(--green);}
-.cred-card.orange::before{background:var(--orange);}
-.cred-card.red::before{background:var(--red);}
-.cred-name{font-weight:700;font-size:15px;margin-bottom:6px;}
-.cred-exp{font-size:12px;color:var(--muted);}
-.cred-days{font-size:22px;font-family:'Playfair Display',serif;font-weight:700;margin-top:10px;}
+/* CRED CARDS */
+.cred-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.cred-card{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden;}
+.cred-stripe{position:absolute;top:0;left:0;right:0;height:3px;}
+.cred-stripe.green{background:var(--green);}
+.cred-stripe.orange{background:var(--orange);}
+.cred-stripe.red{background:var(--red);}
+.cred-name{font-weight:700;font-size:14.5px;margin-bottom:5px;color:var(--ink);}
+.cred-who{font-size:12px;color:var(--muted);}
+.cred-exp{font-size:12px;color:var(--muted);margin-top:10px;}
+.cred-days{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;margin-top:6px;}
 .cred-days.green{color:var(--green);}
 .cred-days.orange{color:var(--orange);}
 .cred-days.red{color:var(--red);}
 
-/* Responsive */
-@media(max-width:768px){
-  nav,.hero{padding-left:20px;padding-right:20px;}
-  .contact-grid{grid-template-columns:1fr;}
-  .sidebar{width:60px;}
-  .sidebar-item span{display:none;}
-  .sidebar-item{padding:14px;justify-content:center;}
-  .sidebar-item .icon{width:auto;}
-  .main-content{padding:16px;}
+/* SCHED */
+.sched-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);}
+.sched-table{width:100%;border-collapse:collapse;}
+.sched-table th{background:var(--ink);color:rgba(255,255,255,.75);font-size:12px;font-weight:600;padding:11px 12px;text-align:center;}
+.sched-table td{border:1px solid var(--border);padding:6px;height:68px;vertical-align:top;cursor:pointer;font-size:12px;transition:background .15s;}
+.sched-table td:hover{background:#eff6ff;}
+.sched-table td.emp-col{background:#f8fafc;font-weight:600;font-size:12.5px;color:var(--muted);width:120px;cursor:default;vertical-align:middle;}
+.sched-table td.emp-col:hover{background:#f8fafc;}
+.shift-chip{background:var(--sky);color:#fff;border-radius:4px;padding:3px 7px;margin-bottom:3px;font-size:11px;display:flex;justify-content:space-between;align-items:center;gap:4px;}
+.shift-del{background:none;border:none;color:rgba(255,255,255,.65);cursor:pointer;font-size:14px;line-height:1;padding:0;}
+
+/* EMPTY */
+.empty{text-align:center;padding:44px 20px;color:var(--muted);}
+.empty-icon{font-size:44px;margin-bottom:12px;}
+.empty p{font-size:14.5px;}
+
+/* SPINNER */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .6s linear infinite;}
+@keyframes rot{to{transform:rotate(360deg);}}
+
+/* PRINT */
+@media print{
+  #app .sidebar,#app .app-topbar,.inv-actions,#toast-wrap{display:none!important;}
+  .inv-doc{box-shadow:none;border:none;padding:0;}
+  body{background:#fff;}
 }
 
-/* Loading spinner */
-.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:8px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
-.empty-state .empty-icon{font-size:48px;margin-bottom:12px;}
-.empty-state p{font-size:15px;}
+@media(max-width:700px){
+  .pub-nav{padding:0 20px;}
+  .hero{padding:60px 20px 52px;}
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-card{display:none;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  section{padding:52px 20px;}
+  .contact-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:8px;text-align:center;}
+  .sidebar{width:56px;}
+  .nav-item span{display:none;}
+  .content{padding:16px;}
+}
 </style>
 </head>
 <body>
 
-<div id="toast"></div>
+<div id="toast-wrap"></div>
 
-<!-- ===== PUBLIC SITE ===== -->
-<div id="public-site">
+<!-- ========== PUBLIC SITE ========== -->
+<div id="public">
 
-<nav>
-  <div class="nav-logo">Central Nurses LLC</div>
+<nav class="pub-nav">
+  <div class="nav-brand">Central Nurses LLC</div>
   <div class="nav-links">
-    <a href="#about">About</a>
     <a href="#services">Services</a>
-    <a href="#join">Join Our Team</a>
+    <a href="#join">Join Us</a>
     <a href="#contact">Contact</a>
-    <button class="nav-btn" onclick="openModal('login')">Staff Login</button>
+    <button class="nav-cta" onclick="showOverlay('o-login')">Staff Portal</button>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="hero-badge">Wichita, Kansas</div>
-  <h1>Quality Healthcare<br/><span>Staffing Solutions</span></h1>
-  <p>Central Nurses LLC connects skilled healthcare professionals with top medical facilities across the region. Reliable, compassionate, certified.</p>
-  <div class="hero-btns">
-    <button class="btn btn-gold" onclick="openModal('register')">Join Our Team</button>
-    <button class="btn btn-outline" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">Wichita, Kansas</div>
+      <h1>Healthcare Staffing<br/>You Can <em>Trust</em></h1>
+      <p>Central Nurses LLC places certified nursing professionals in hospitals, clinics, and care facilities across the region — reliably, quickly, and with care.</p>
+      <div class="hero-btns">
+        <button class="btn btn-gold" onclick="showOverlay('o-register')">Join Our Team</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>Staff at a Glance</h3>
+      <p>Real-time agency overview</p>
+      <div class="hc-stat"><span class="label">Active Nurses</span><span class="val" id="hero-staff">—</span></div>
+      <div class="hc-stat"><span class="label">Clocked In Now</span><span class="val" id="hero-clocked">—</span></div>
+      <div class="hc-stat"><span class="label">Shifts This Week</span><span class="val" id="hero-shifts">—</span></div>
+      <div class="hc-stat"><span class="label">Partner Facilities</span><span class="val">50+</span></div>
+    </div>
   </div>
 </div>
 
 <div class="stats-bar">
-  <div class="stat-item"><div class="num">200+</div><div class="lbl">Qualified Nurses</div></div>
-  <div class="stat-item"><div class="num">50+</div><div class="lbl">Partner Facilities</div></div>
-  <div class="stat-item"><div class="num">24/7</div><div class="lbl">Support Available</div></div>
-  <div class="stat-item"><div class="num">10+</div><div class="lbl">Years Experience</div></div>
+  <div class="stat-item"><div class="stat-num">200+</div><div class="stat-lbl">Qualified Nurses</div></div>
+  <div class="stat-item"><div class="stat-num">50+</div><div class="stat-lbl">Partner Facilities</div></div>
+  <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-lbl">Support Available</div></div>
+  <div class="stat-item"><div class="stat-num">10+</div><div class="stat-lbl">Years Experience</div></div>
 </div>
 
-<section id="about">
-  <div style="max-width:960px;margin:0 auto;">
-    <div class="section-label">Who We Are</div>
-    <div class="section-title">Trusted Healthcare<br/>Staffing Partner</div>
-    <div class="section-sub">Central Nurses LLC is a licensed healthcare staffing agency based in Wichita, Kansas. We specialize in placing certified nursing professionals in hospitals, clinics, and long-term care facilities.</div>
-    <div class="grid-3">
-      <div class="card"><div class="card-icon">🏥</div><h3>Hospital Staffing</h3><p>Experienced RNs, LPNs, and CNAs ready to fill critical roles at a moment's notice.</p></div>
-      <div class="card"><div class="card-icon">✅</div><h3>Credential Verified</h3><p>Every nurse is fully credentialed, background-checked, and up to date on certifications.</p></div>
-      <div class="card"><div class="card-icon">⚡</div><h3>Rapid Placement</h3><p>Same-day and next-day placement available for urgent staffing needs.</p></div>
+<section id="services">
+  <div class="section-wrap">
+    <div class="eyebrow">What We Offer</div>
+    <div class="section-title">Our Staffing Services</div>
+    <div class="grid3">
+      <div class="svc-card"><div class="svc-icon">👩‍⚕️</div><h3>Registered Nurses</h3><p>Board-certified RNs for med-surg, ICU, ER, and specialty departments ready for immediate placement.</p></div>
+      <div class="svc-card"><div class="svc-icon">💊</div><h3>LPN / LVN</h3><p>Licensed practical nurses for long-term care, rehab centers, and outpatient facilities.</p></div>
+      <div class="svc-card"><div class="svc-icon">🩺</div><h3>CNA Services</h3><p>Certified nursing assistants providing daily patient care and support across all care settings.</p></div>
+      <div class="svc-card"><div class="svc-icon">🔄</div><h3>Per Diem</h3><p>Flexible per diem coverage to fill call-outs and short-notice staffing gaps — same day available.</p></div>
+      <div class="svc-card"><div class="svc-icon">✈️</div><h3>Travel Nursing</h3><p>Contract travel nurses for 8–26 week assignments throughout the region.</p></div>
+      <div class="svc-card"><div class="svc-icon">🏠</div><h3>Home Health</h3><p>Skilled in-home nursing care including wound care, medication management, and patient monitoring.</p></div>
     </div>
   </div>
 </section>
 
-<section id="services" style="background:#fff;">
-  <div style="max-width:960px;margin:0 auto;">
-    <div class="section-label">What We Offer</div>
-    <div class="section-title">Our Services</div>
-    <div class="grid-3">
-      <div class="card"><div class="card-icon">👩‍⚕️</div><h3>Registered Nurses</h3><p>Board-certified RNs for med-surg, ICU, ER, and specialty care departments.</p></div>
-      <div class="card"><div class="card-icon">💊</div><h3>LPN / LVN</h3><p>Licensed practical nurses for long-term care, rehab, and outpatient facilities.</p></div>
-      <div class="card"><div class="card-icon">🩺</div><h3>CNA Services</h3><p>Certified nursing assistants for daily patient care and support services.</p></div>
-      <div class="card"><div class="card-icon">🔄</div><h3>Per Diem Staffing</h3><p>Flexible per diem nurses available to cover call-outs and short-notice gaps.</p></div>
-      <div class="card"><div class="card-icon">📋</div><h3>Travel Nursing</h3><p>Contract travel nurses for 8–26 week assignments across the region.</p></div>
-      <div class="card"><div class="card-icon">🏠</div><h3>Home Health</h3><p>Skilled nurses for in-home patient care, wound care, and medication management.</p></div>
-    </div>
+<div class="cta-section" id="join">
+  <div class="cta-inner">
+    <div class="eyebrow" style="color:var(--sky2);">Careers</div>
+    <h2>Ready to Join<br/>Central Nurses?</h2>
+    <p>Take control of your schedule, earn competitive pay, and work with a team that values you. Creating an account takes under two minutes.</p>
+    <button class="btn btn-gold" onclick="showOverlay('o-register')">Create Your Free Account →</button>
   </div>
-</section>
-
-<section id="join">
-  <div style="max-width:960px;margin:0 auto;text-align:center;">
-    <div class="section-label">Careers</div>
-    <div class="section-title">Join Our Team</div>
-    <p style="color:var(--muted);font-size:16px;max-width:560px;margin:0 auto 32px;line-height:1.7;">Ready to take control of your nursing career? Central Nurses LLC offers competitive pay, flexible scheduling, and a supportive team environment.</p>
-    <button class="btn btn-gold" onclick="openModal('register')">Apply Now — It's Free</button>
-  </div>
-</section>
+</div>
 
 <section id="contact" style="background:#fff;">
-  <div style="max-width:960px;margin:0 auto;">
-    <div class="section-label">Get In Touch</div>
+  <div class="section-wrap">
+    <div class="eyebrow">Get In Touch</div>
     <div class="section-title">Contact Us</div>
     <div class="contact-grid">
-      <div class="contact-info">
-        <p>Have a staffing need or want to join our team? Reach out to us and we'll respond within one business day.</p>
-        <div class="contact-detail">📍 Wichita, Kansas</div>
-        <div class="contact-detail">📧 kipkoechbethwel721@gmail.com</div>
-        <div class="contact-detail">🕒 Mon–Fri: 8am–6pm CST</div>
+      <div>
+        <p style="color:var(--muted);font-size:15px;line-height:1.75;margin-bottom:24px;">Have a staffing need or want to learn more? Reach out and we'll respond within one business day.</p>
+        <div class="ci-item"><div class="ci-icon">📍</div>Wichita, Kansas</div>
+        <div class="ci-item"><div class="ci-icon">📧</div>kipkoechbethwel721@gmail.com</div>
+        <div class="ci-item"><div class="ci-icon">🕒</div>Mon–Fri: 8:00 AM – 6:00 PM CST</div>
       </div>
-      <div class="contact-form">
-        <input type="text" id="c-name" placeholder="Your Name"/>
-        <input type="email" id="c-email" placeholder="Email Address"/>
-        <select id="c-subject">
-          <option value="">Select a subject</option>
-          <option>I need nurses for my facility</option>
-          <option>I want to join as a nurse</option>
-          <option>General inquiry</option>
-        </select>
-        <textarea id="c-msg" placeholder="Your message..."></textarea>
-        <button class="btn btn-gold" onclick="sendContact()" style="width:100%">Send Message</button>
+      <div>
+        <div class="form-field"><label>Your Name</label><input type="text" id="c-name" placeholder="Jane Doe"/></div>
+        <div class="form-field"><label>Email</label><input type="email" id="c-email" placeholder="you@example.com"/></div>
+        <div class="form-field"><label>Subject</label>
+          <select id="c-subj"><option value="">Select...</option><option>I need staffing for my facility</option><option>I want to join as a nurse</option><option>General inquiry</option></select>
+        </div>
+        <div class="form-field"><label>Message</label><textarea id="c-msg" placeholder="Your message..."></textarea></div>
+        <button class="contact-form-submit" onclick="sendContact()">Send Message</button>
       </div>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="footer-logo">Central Nurses LLC</div>
-  <p>© 2025 Central Nurses LLC · Wichita, Kansas · All Rights Reserved</p>
+  <div class="footer-brand">Central Nurses LLC</div>
+  <div class="footer-copy">© 2025 Central Nurses LLC · Wichita, Kansas · All rights reserved</div>
 </footer>
 
-</div><!-- end public-site -->
+</div><!-- /public -->
 
-<!-- ===== AUTH MODALS ===== -->
-<div class="modal-overlay" id="modal-login">
+<!-- ========== AUTH OVERLAYS ========== -->
+
+<!-- LOGIN -->
+<div class="overlay" id="o-login">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('login')">×</button>
+    <button class="modal-x" onclick="hideOverlay('o-login')">×</button>
     <h2>Welcome Back</h2>
     <p class="sub">Sign in to your Central Nurses account</p>
-    <div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="your@email.com"/></div>
-    <div class="form-group"><label>Password</label><input type="password" id="l-pass" placeholder="Your password"/></div>
-    <button class="btn-full" id="login-btn" onclick="doLogin()">Sign In</button>
-    <div class="auth-switch">Don't have an account? <a onclick="switchModal('login','register')">Register</a></div>
-    <div class="auth-switch" style="margin-top:8px;"><a onclick="switchModal('login','forgot')">Forgot password?</a></div>
+    <div class="form-field"><label>Email</label><input type="email" id="l-email" placeholder="you@email.com"/></div>
+    <div class="form-field"><label>Password</label><input type="password" id="l-pass" placeholder="Your password"/></div>
+    <button class="modal-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="switch-txt">No account? <a onclick="switchOverlay('o-login','o-register')">Register</a> · <a onclick="switchOverlay('o-login','o-forgot')">Forgot password</a></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-register">
+<!-- REGISTER — staff only, no role choice -->
+<div class="overlay" id="o-register">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('register')">×</button>
+    <button class="modal-x" onclick="hideOverlay('o-register')">×</button>
     <h2>Create Account</h2>
-    <p class="sub">Join Central Nurses LLC today</p>
-    <div class="form-group"><label>Full Name</label><input type="text" id="r-name" placeholder="Jane Doe"/></div>
-    <div class="form-group"><label>Email</label><input type="email" id="r-email" placeholder="your@email.com"/></div>
-    <div class="form-group"><label>Password</label><input type="password" id="r-pass" placeholder="Min 6 characters"/></div>
-    <div class="form-group"><label>Role</label>
-      <select id="r-role">
-        <option value="employee">Staff / Nurse</option>
-        <option value="manager">Manager / Admin</option>
-      </select>
-    </div>
-    <div class="form-group"><label>Phone (optional)</label><input type="text" id="r-phone" placeholder="(316) 555-0000"/></div>
-    <button class="btn-full" id="reg-btn" onclick="doRegister()">Create Account</button>
-    <div class="auth-switch">Already have an account? <a onclick="switchModal('register','login')">Sign In</a></div>
+    <p class="sub">Join Central Nurses LLC as a staff member</p>
+    <div class="form-field"><label>Full Name</label><input type="text" id="r-name" placeholder="Jane Doe"/></div>
+    <div class="form-field"><label>Email</label><input type="email" id="r-email" placeholder="you@email.com"/></div>
+    <div class="form-field"><label>Password</label><input type="password" id="r-pass" placeholder="Minimum 6 characters"/></div>
+    <div class="form-field"><label>Phone (optional)</label><input type="text" id="r-phone" placeholder="(316) 555-0000"/></div>
+    <button class="modal-btn" id="reg-btn" onclick="doRegister()">Create Staff Account</button>
+    <div class="switch-txt">Already have an account? <a onclick="switchOverlay('o-register','o-login')">Sign in</a></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-forgot">
+<!-- FORGOT -->
+<div class="overlay" id="o-forgot">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('forgot')">×</button>
+    <button class="modal-x" onclick="hideOverlay('o-forgot')">×</button>
     <h2>Reset Password</h2>
-    <p class="sub">We'll send a reset link to your email</p>
-    <div class="form-group"><label>Email</label><input type="email" id="f-email" placeholder="your@email.com"/></div>
-    <button class="btn-full" onclick="doForgot()">Send Reset Link</button>
-    <div class="auth-switch"><a onclick="switchModal('forgot','login')">← Back to Login</a></div>
+    <p class="sub">We'll email you a reset link</p>
+    <div class="form-field"><label>Email</label><input type="email" id="f-email" placeholder="you@email.com"/></div>
+    <button class="modal-btn" onclick="doForgot()">Send Reset Link</button>
+    <div class="switch-txt"><a onclick="switchOverlay('o-forgot','o-login')">← Back to login</a></div>
   </div>
 </div>
 
-<!-- Shift Assignment Modal -->
-<div class="modal-overlay" id="modal-shift">
+<!-- ADD EMPLOYEE (manager) -->
+<div class="overlay" id="o-add-emp">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('shift')">×</button>
+    <button class="modal-x" onclick="hideOverlay('o-add-emp')">×</button>
+    <h2>Add Staff Member</h2>
+    <p class="sub">Add an existing staff member's profile</p>
+    <div class="form-field"><label>Full Name</label><input type="text" id="ae-name"/></div>
+    <div class="form-field"><label>Email</label><input type="email" id="ae-email"/></div>
+    <div class="form-field"><label>Phone</label><input type="text" id="ae-phone"/></div>
+    <div class="form-field"><label>Position</label><input type="text" id="ae-pos" placeholder="RN, LPN, CNA..."/></div>
+    <div class="form-field"><label>Hourly Rate ($)</label><input type="number" id="ae-rate" value="25" min="1"/></div>
+    <button class="modal-btn" onclick="addEmployee()">Add Employee</button>
+  </div>
+</div>
+
+<!-- ASSIGN SHIFT -->
+<div class="overlay" id="o-shift">
+  <div class="modal">
+    <button class="modal-x" onclick="hideOverlay('o-shift')">×</button>
     <h2>Assign Shift</h2>
-    <p class="sub" id="shift-label"></p>
-    <div class="form-group"><label>Employee</label>
-      <select id="shift-emp"></select>
-    </div>
-    <div class="form-group"><label>Shift Time</label>
-      <select id="shift-time">
+    <p class="sub" id="shift-ctx-label"></p>
+    <div class="form-field"><label>Employee</label><select id="shift-emp-sel"></select></div>
+    <div class="form-field"><label>Shift Time</label>
+      <select id="shift-time-sel">
         <option>7:00 AM – 3:00 PM</option>
         <option>3:00 PM – 11:00 PM</option>
         <option>11:00 PM – 7:00 AM</option>
@@ -401,366 +453,489 @@ input:focus,select:focus,textarea:focus{border-color:var(--teal);}
         <option>12:00 PM – 8:00 PM</option>
       </select>
     </div>
-    <div class="form-group"><label>Notes</label><input type="text" id="shift-notes" placeholder="e.g. ICU coverage"/></div>
-    <button class="btn-full" onclick="saveShift()">Assign Shift</button>
+    <div class="form-field"><label>Notes</label><input type="text" id="shift-notes-inp" placeholder="e.g. ICU unit"/></div>
+    <button class="modal-btn" onclick="saveShift()">Assign Shift</button>
   </div>
 </div>
 
-<!-- Add Employee Modal -->
-<div class="modal-overlay" id="modal-add-emp">
+<!-- ADD CREDENTIAL -->
+<div class="overlay" id="o-cred">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('add-emp')">×</button>
-    <h2>Add Employee</h2>
-    <p class="sub">Invite a new staff member</p>
-    <div class="form-group"><label>Full Name</label><input type="text" id="ae-name"/></div>
-    <div class="form-group"><label>Email</label><input type="email" id="ae-email"/></div>
-    <div class="form-group"><label>Phone</label><input type="text" id="ae-phone"/></div>
-    <div class="form-group"><label>Position</label><input type="text" id="ae-pos" placeholder="RN, LPN, CNA..."/></div>
-    <div class="form-group"><label>Hourly Rate ($)</label><input type="number" id="ae-rate" value="25"/></div>
-    <button class="btn-full" onclick="addEmployee()">Add Employee</button>
-  </div>
-</div>
-
-<!-- Add Credential Modal -->
-<div class="modal-overlay" id="modal-add-cred">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('add-cred')">×</button>
+    <button class="modal-x" onclick="hideOverlay('o-cred')">×</button>
     <h2>Add Credential</h2>
-    <div class="form-group"><label>Employee</label><select id="cred-emp"></select></div>
-    <div class="form-group"><label>Credential Name</label><input type="text" id="cred-name" placeholder="BLS, RN License..."/></div>
-    <div class="form-group"><label>Issue Date</label><input type="date" id="cred-issued"/></div>
-    <div class="form-group"><label>Expiry Date</label><input type="date" id="cred-expiry"/></div>
-    <button class="btn-full" onclick="saveCred()">Save Credential</button>
+    <div class="form-field"><label>Employee</label><select id="cred-emp-sel"></select></div>
+    <div class="form-field"><label>Credential Name</label><input type="text" id="cred-name-inp" placeholder="BLS, RN License, ACLS..."/></div>
+    <div class="form-field"><label>Issue Date</label><input type="date" id="cred-issued-inp"/></div>
+    <div class="form-field"><label>Expiry Date</label><input type="date" id="cred-expiry-inp"/></div>
+    <button class="modal-btn" onclick="saveCred()">Save Credential</button>
   </div>
 </div>
 
-<!-- ===== DASHBOARD APP ===== -->
+<!-- ========== DASHBOARD APP ========== -->
 <div id="app">
-  <div class="app-header">
-    <div class="logo">Central Nurses LLC</div>
-    <div class="user-info">
-      <span class="user-name" id="header-name"></span>
-      <span class="role-badge" id="header-role"></span>
-      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+  <div class="app-topbar">
+    <div class="app-brand">Central Nurses LLC</div>
+    <div class="topbar-right">
+      <div class="user-pill">
+        <div class="user-avatar" id="ua"></div>
+        <div>
+          <div class="user-name" id="uname"></div>
+          <div class="role-tag" id="urole"></div>
+        </div>
+      </div>
+      <button class="signout-btn" onclick="doSignOut()">Sign Out</button>
     </div>
   </div>
-  <div class="dashboard-layout">
+  <div class="app-body">
     <div class="sidebar" id="sidebar"></div>
-    <div class="main-content" id="main-content"></div>
+    <div class="content" id="content"></div>
   </div>
 </div>
 
 <script>
-// ===== SUPABASE INIT =====
+// ============================================================
+// SUPABASE
+// ============================================================
 const { createClient } = supabase;
-const sb = createClient(
+const db = createClient(
   'https://giqxizpvspcazghwcubr.supabase.co',
   'sb_publishable_c17RxaTOGAjGBaEEiP8Wvg_5q_R7gZf'
 );
 
-let currentUser = null;
-let currentProfile = null;
-let shiftContext = null;
-let clockInterval = null;
+let ME = null;       // auth user
+let PROFILE = null;  // profiles row
+let _emps = [];      // cached employees list
+let _clockInterval = null;
+let _shiftCtx = null;
 
-// ===== TOAST =====
-function toast(msg, type='info'){
-  const t = document.getElementById('toast');
-  const el = document.createElement('div');
-  el.className = 'toast-msg ' + type;
-  el.textContent = msg;
-  t.appendChild(el);
-  setTimeout(()=>el.remove(), 3800);
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg, type=''){
+  const w = document.getElementById('toast-wrap');
+  const d = document.createElement('div');
+  d.className = 'toast ' + type;
+  d.textContent = msg;
+  w.appendChild(d);
+  setTimeout(()=>d.remove(), 3600);
 }
 
-// ===== MODAL =====
-function openModal(id){ document.getElementById('modal-'+id).classList.add('open'); }
-function closeModal(id){ document.getElementById('modal-'+id).classList.remove('open'); }
-function switchModal(from,to){ closeModal(from); openModal(to); }
+// ============================================================
+// OVERLAY HELPERS
+// ============================================================
+function showOverlay(id){ document.getElementById(id).classList.add('open'); }
+function hideOverlay(id){ document.getElementById(id).classList.remove('open'); }
+function switchOverlay(from,to){ hideOverlay(from); showOverlay(to); }
 
-// ===== AUTH =====
+// ============================================================
+// AUTH
+// ============================================================
 async function doLogin(){
   const email = document.getElementById('l-email').value.trim();
-  const pass = document.getElementById('l-pass').value;
-  if(!email||!pass){ toast('Please fill all fields','error'); return; }
+  const pass  = document.getElementById('l-pass').value;
+  if(!email||!pass){ toast('Fill in both fields','err'); return; }
   const btn = document.getElementById('login-btn');
-  btn.innerHTML = '<span class="spinner"></span>Signing in...';
-  btn.disabled = true;
-  const {data,error} = await sb.auth.signInWithPassword({email, password:pass});
+  btn.innerHTML = '<span class="spin"></span> Signing in…'; btn.disabled = true;
+  const {data,error} = await db.auth.signInWithPassword({email, password:pass});
   btn.innerHTML = 'Sign In'; btn.disabled = false;
-  if(error){ toast(error.message,'error'); return; }
-  closeModal('login');
-  await loadDashboard(data.user);
+  if(error){ toast(error.message,'err'); return; }
+  hideOverlay('o-login');
+  await bootDashboard(data.user);
 }
 
 async function doRegister(){
-  const name = document.getElementById('r-name').value.trim();
+  const name  = document.getElementById('r-name').value.trim();
   const email = document.getElementById('r-email').value.trim();
-  const pass = document.getElementById('r-pass').value;
-  const role = document.getElementById('r-role').value;
+  const pass  = document.getElementById('r-pass').value;
   const phone = document.getElementById('r-phone').value.trim();
-  if(!name||!email||!pass){ toast('Please fill all required fields','error'); return; }
+  if(!name||!email||!pass){ toast('Name, email and password are required','err'); return; }
+  if(pass.length < 6){ toast('Password must be at least 6 characters','err'); return; }
   const btn = document.getElementById('reg-btn');
-  btn.innerHTML = '<span class="spinner"></span>Creating account...';
-  btn.disabled = true;
-  const {data,error} = await sb.auth.signUp({
-    email, password:pass,
-    options:{ data:{ full_name:name, role, phone } }
+  btn.innerHTML = '<span class="spin"></span> Creating account…'; btn.disabled = true;
+  const {data,error} = await db.auth.signUp({
+    email, password: pass,
+    options:{ data:{ full_name:name, role:'employee', phone } }
   });
-  btn.innerHTML = 'Create Account'; btn.disabled = false;
-  if(error){ toast(error.message,'error'); return; }
-  // Upsert profile manually in case trigger isn't set up
+  btn.innerHTML = 'Create Staff Account'; btn.disabled = false;
+  if(error){ toast(error.message,'err'); return; }
+  // Ensure profile row exists
   if(data.user){
-    await sb.from('profiles').upsert({
-      id: data.user.id, full_name:name, email, role, phone, status:'active'
-    });
+    await db.from('profiles').upsert({
+      id: data.user.id,
+      full_name: name,
+      email,
+      phone: phone||null,
+      role: 'employee',
+      status: 'active'
+    }, {onConflict:'id'});
   }
-  toast('Account created! Signing you in...','success');
-  closeModal('register');
-  if(data.user) await loadDashboard(data.user);
+  toast('Account created! Welcome to Central Nurses.','ok');
+  hideOverlay('o-register');
+  if(data.user) await bootDashboard(data.user);
 }
 
 async function doForgot(){
   const email = document.getElementById('f-email').value.trim();
-  if(!email){ toast('Enter your email','error'); return; }
-  const {error} = await sb.auth.resetPasswordForEmail(email);
-  if(error){ toast(error.message,'error'); return; }
-  toast('Reset link sent! Check your email.','success');
-  closeModal('forgot');
+  if(!email){ toast('Enter your email','err'); return; }
+  const {error} = await db.auth.resetPasswordForEmail(email, {redirectTo: window.location.href});
+  if(error){ toast(error.message,'err'); return; }
+  toast('Password reset email sent!','ok');
+  hideOverlay('o-forgot');
 }
 
-async function doLogout(){
-  await sb.auth.signOut();
-  currentUser = null; currentProfile = null;
+async function doSignOut(){
+  await db.auth.signOut();
+  ME = null; PROFILE = null;
+  if(_clockInterval) clearInterval(_clockInterval);
   document.getElementById('app').style.display = 'none';
-  document.getElementById('public-site').style.display = 'block';
-  toast('Signed out successfully');
+  document.getElementById('public').style.display = 'block';
+  toast('Signed out');
 }
 
-// ===== LOAD DASHBOARD =====
-async function loadDashboard(user){
-  currentUser = user;
-  const {data:profile} = await sb.from('profiles').select('*').eq('id',user.id).single();
+// ============================================================
+// BOOT DASHBOARD
+// ============================================================
+async function bootDashboard(user){
+  ME = user;
+  // Fetch profile
+  let {data:profile} = await db.from('profiles').select('*').eq('id', user.id).single();
   if(!profile){
-    // Profile might not exist yet — create it
     const meta = user.user_metadata || {};
-    const newProfile = { id:user.id, full_name: meta.full_name||user.email, email:user.email, role: meta.role||'employee', status:'active' };
-    await sb.from('profiles').insert(newProfile);
-    currentProfile = newProfile;
-  } else {
-    currentProfile = profile;
+    const fresh = { id:user.id, full_name:meta.full_name||user.email, email:user.email, role: meta.role||'employee', status:'active' };
+    await db.from('profiles').insert(fresh);
+    profile = fresh;
   }
-  document.getElementById('header-name').textContent = currentProfile.full_name || user.email;
-  document.getElementById('header-role').textContent = currentProfile.role === 'manager' ? 'Manager' : 'Staff';
-  document.getElementById('public-site').style.display = 'none';
+  PROFILE = profile;
+
+  // Header
+  const initials = (profile.full_name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('ua').textContent = initials;
+  document.getElementById('uname').textContent = profile.full_name || user.email;
+  const rTag = document.getElementById('urole');
+  rTag.textContent = profile.role === 'manager' ? 'Manager' : 'Staff';
+  rTag.className = 'role-tag ' + (profile.role === 'manager' ? 'manager' : 'employee');
+
+  document.getElementById('public').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
-  if(currentProfile.role === 'manager') renderManagerDashboard();
-  else renderEmployeeDashboard();
+
+  if(profile.role === 'manager') buildManagerDash();
+  else buildEmployeeDash();
 }
 
-// ===== MANAGER DASHBOARD =====
-const managerPages = [
-  {id:'overview', icon:'📊', label:'Overview'},
-  {id:'employees', icon:'👥', label:'Employees'},
-  {id:'scheduling', icon:'📅', label:'Scheduling'},
+// ============================================================
+// MANAGER DASHBOARD
+// ============================================================
+const MGR_NAV = [
+  {id:'overview',   icon:'📊', label:'Overview'},
+  {id:'employees',  icon:'👥', label:'Employees'},
   {id:'timesheets', icon:'⏱️', label:'Timesheets'},
-  {id:'invoices', icon:'🧾', label:'Invoices'},
-  {id:'credentials', icon:'📋', label:'Credentials'},
-  {id:'notifications', icon:'🔔', label:'Notifications'},
+  {id:'invoices',   icon:'🧾', label:'Invoices'},
+  {id:'scheduling', icon:'📅', label:'Scheduling'},
+  {id:'credentials',icon:'📋', label:'Credentials'},
 ];
 
-function renderManagerDashboard(){
+function buildManagerDash(){
   const sidebar = document.getElementById('sidebar');
-  sidebar.innerHTML = managerPages.map(p=>`
-    <div class="sidebar-item" id="sb-${p.id}" onclick="showManagerPage('${p.id}')">
-      <span class="icon">${p.icon}</span><span>${p.label}</span>
+  sidebar.innerHTML = MGR_NAV.map(n=>`
+    <div class="nav-item" id="ni-${n.id}" onclick="mgrPage('${n.id}')">
+      <span class="ni">${n.icon}</span><span>${n.label}</span>
     </div>`).join('');
-  const main = document.getElementById('main-content');
-  main.innerHTML = managerPages.map(p=>`<div class="page" id="page-${p.id}"></div>`).join('');
-  showManagerPage('overview');
+  document.getElementById('content').innerHTML = MGR_NAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
+  mgrPage('overview');
 }
 
-function showManagerPage(id){
-  document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
-  document.getElementById('sb-'+id)?.classList.add('active');
-  document.getElementById('page-'+id)?.classList.add('active');
-  const loaders = {
-    overview: loadOverview,
-    employees: loadEmployees,
-    scheduling: loadScheduling,
-    timesheets: loadTimesheets,
-    invoices: loadInvoices,
-    credentials: loadCredentials,
-    notifications: loadNotifications
-  };
-  if(loaders[id]) loaders[id]();
+function mgrPage(id){
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.pg').forEach(e=>e.classList.remove('active'));
+  document.getElementById('ni-'+id)?.classList.add('active');
+  document.getElementById('pg-'+id)?.classList.add('active');
+  ({overview:mgrOverview, employees:mgrEmployees, timesheets:mgrTimesheets, invoices:mgrInvoices, scheduling:mgrScheduling, credentials:mgrCredentials})[id]?.();
 }
 
-// Overview
-async function loadOverview(){
-  const el = document.getElementById('page-overview');
-  el.innerHTML = '<div class="empty-state"><div class="spinner" style="border-color:var(--teal);border-top-color:var(--navy);width:32px;height:32px;"></div></div>';
-  const [{data:staff},{data:clocked},{data:expiring},{data:todayShifts}] = await Promise.all([
-    sb.from('profiles').select('id').eq('role','employee').eq('status','active'),
-    sb.from('time_logs').select('id').is('clock_out',null),
-    sb.from('credentials').select('id').lte('expiry_date', new Date(Date.now()+30*86400000).toISOString().split('T')[0]).gte('expiry_date', new Date().toISOString().split('T')[0]),
-    sb.from('shifts').select('id').eq('date', new Date().toISOString().split('T')[0])
+// --- Overview ---
+async function mgrOverview(){
+  const el = document.getElementById('pg-overview');
+  el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Loading…</p></div>';
+  const [s1,s2,s3,s4] = await Promise.all([
+    db.from('profiles').select('id',{count:'exact'}).eq('role','employee').eq('status','active'),
+    db.from('time_logs').select('id',{count:'exact'}).is('clock_out',null),
+    db.from('credentials').select('id',{count:'exact'}).lte('expiry_date', new Date(Date.now()+30*864e5).toISOString().split('T')[0]),
+    db.from('shifts').select('id',{count:'exact'}).eq('date', today()),
   ]);
   el.innerHTML = `
-    <h2 class="page-title">Dashboard Overview</h2>
-    <p class="page-sub">Welcome back, ${currentProfile.full_name}</p>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="icon">👥</div><div class="val">${staff?.length||0}</div><div class="lbl">Active Staff</div></div>
-      <div class="stat-card"><div class="icon">🟢</div><div class="val">${clocked?.length||0}</div><div class="lbl">Currently Clocked In</div></div>
-      <div class="stat-card"><div class="icon">⚠️</div><div class="val">${expiring?.length||0}</div><div class="lbl">Expiring Credentials</div></div>
-      <div class="stat-card"><div class="icon">📅</div><div class="val">${todayShifts?.length||0}</div><div class="lbl">Shifts Today</div></div>
+    <h2 class="pg-title">Overview</h2>
+    <p class="pg-sub">Welcome back, ${PROFILE.full_name}</p>
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-icon">👥</div><div class="k-val">${s1.count||0}</div><div class="k-lbl">Active Staff</div></div>
+      <div class="kpi"><div class="k-icon">🟢</div><div class="k-val">${s2.count||0}</div><div class="k-lbl">Clocked In Now</div></div>
+      <div class="kpi"><div class="k-icon">⚠️</div><div class="k-val">${s3.count||0}</div><div class="k-lbl">Expiring Creds (30d)</div></div>
+      <div class="kpi"><div class="k-icon">📅</div><div class="k-val">${s4.count||0}</div><div class="k-lbl">Shifts Today</div></div>
     </div>
-    <div class="table-wrap">
-      <div class="table-header"><h3>Recent Clock Activity</h3></div>
-      <div id="recent-activity"><div class="empty-state"><p>Loading...</p></div></div>
+    <div class="tbl-wrap">
+      <div class="tbl-top"><h3>Recent Clock Activity</h3></div>
+      <div id="ov-activity"></div>
     </div>`;
-  const {data:logs} = await sb.from('time_logs').select('*, profiles(full_name)').order('clock_in',{ascending:false}).limit(10);
-  const ra = document.getElementById('recent-activity');
-  if(!logs||!logs.length){ ra.innerHTML='<div class="empty-state"><p>No clock activity yet.</p></div>'; return; }
-  ra.innerHTML = `<table><thead><tr><th>Employee</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th></tr></thead><tbody>
+  const {data:logs} = await db.from('time_logs').select('*, profiles(full_name,hourly_rate)').order('clock_in',{ascending:false}).limit(12);
+  const ov = document.getElementById('ov-activity');
+  if(!logs?.length){ ov.innerHTML='<div class="empty"><p>No clock records yet.</p></div>'; return; }
+  ov.innerHTML = `<table><thead><tr><th>Employee</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th></tr></thead><tbody>
     ${logs.map(l=>{
-      const hrs = l.clock_out ? ((new Date(l.clock_out)-new Date(l.clock_in))/3600000).toFixed(2) : '—';
-      return `<tr><td>${l.profiles?.full_name||'—'}</td><td>${fmtDT(l.clock_in)}</td><td>${l.clock_out?fmtDT(l.clock_out):'Still clocked in'}</td><td>${hrs}</td><td>${l.clock_out?'<span class="badge badge-green">Completed</span>':'<span class="badge badge-orange">Active</span>'}</td></tr>`;
-    }).join('')}
-  </tbody></table>`;
+      const h = l.clock_out ? hrs(l.clock_in,l.clock_out) : '—';
+      return `<tr><td><strong>${l.profiles?.full_name||'—'}</strong></td><td>${fmtDT(l.clock_in)}</td><td>${l.clock_out?fmtDT(l.clock_out):'Still in'}</td><td>${h}</td><td>${l.clock_out?'<span class="badge b-green">Done</span>':'<span class="badge b-orange">Active</span>'}</td></tr>`;
+    }).join('')}</tbody></table>`;
 }
 
-// Employees
-async function loadEmployees(){
-  const el = document.getElementById('page-employees');
+// --- Employees ---
+async function mgrEmployees(){
+  const el = document.getElementById('pg-employees');
   el.innerHTML = `
-    <h2 class="page-title">Employees</h2>
-    <p class="page-sub">Manage your nursing staff</p>
-    <div class="table-wrap">
-      <div class="table-header">
+    <h2 class="pg-title">Employees</h2>
+    <p class="pg-sub">Manage your nursing staff</p>
+    <div class="tbl-wrap">
+      <div class="tbl-top">
         <h3>All Staff</h3>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <input class="search-input" id="emp-search" placeholder="Search name or email..." oninput="filterEmployees()"/>
-          <button class="action-btn btn-primary" onclick="openModal('add-emp')">+ Add Employee</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input class="search-box" id="emp-q" placeholder="Search…" oninput="empFilter()"/>
+          <button class="act-btn ab-primary" onclick="openAddEmp()">+ Add Staff</button>
         </div>
       </div>
-      <div id="emp-table-body"><div class="empty-state"><p>Loading...</p></div></div>
+      <div id="emp-rows"></div>
     </div>`;
-  await renderEmployeeTable();
+  await loadEmpRows();
 }
 
-let _employees = [];
-async function renderEmployeeTable(){
-  const {data} = await sb.from('profiles').select('*').eq('role','employee').order('full_name');
-  _employees = data||[];
-  renderEmpRows(_employees);
+async function loadEmpRows(){
+  const {data} = await db.from('profiles').select('*').eq('role','employee').order('full_name');
+  _emps = data||[];
+  renderEmpRows(_emps);
 }
-function filterEmployees(){
-  const q = document.getElementById('emp-search').value.toLowerCase();
-  renderEmpRows(_employees.filter(e=>(e.full_name+e.email).toLowerCase().includes(q)));
+
+function empFilter(){
+  const q = document.getElementById('emp-q').value.toLowerCase();
+  renderEmpRows(_emps.filter(e=>(e.full_name+e.email).toLowerCase().includes(q)));
 }
+
 function renderEmpRows(list){
-  const el = document.getElementById('emp-table-body');
-  if(!list.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">👤</div><p>No employees found.</p></div>'; return; }
-  el.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Position</th><th>Rate</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+  const el = document.getElementById('emp-rows');
+  if(!list.length){ el.innerHTML='<div class="empty"><div class="empty-icon">👤</div><p>No employees found.</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Position</th><th>Rate/hr</th><th>Status</th><th></th></tr></thead><tbody>
     ${list.map(e=>`<tr>
       <td><strong>${e.full_name}</strong></td>
       <td>${e.email||'—'}</td>
       <td>${e.phone||'—'}</td>
       <td>${e.position||'—'}</td>
-      <td>${e.hourly_rate?'$'+e.hourly_rate+'/hr':'—'}</td>
-      <td><span class="badge ${e.status==='active'?'badge-green':'badge-gray'}">${e.status||'active'}</span></td>
+      <td>${e.hourly_rate?'$'+e.hourly_rate:'—'}</td>
+      <td><span class="badge ${e.status==='active'?'b-green':'b-gray'}">${e.status||'active'}</span></td>
       <td style="display:flex;gap:6px;">
-        <button class="action-btn btn-sm ${e.status==='active'?'btn-danger':'btn-primary'}" onclick="toggleEmpStatus('${e.id}','${e.status||'active'}')">${e.status==='active'?'Deactivate':'Activate'}</button>
-        <button class="action-btn btn-sm btn-danger" onclick="removeEmployee('${e.id}','${e.full_name}')">Remove</button>
+        <button class="act-btn ab-sm ${e.status==='active'?'ab-danger':'ab-primary'}" onclick="toggleEmp('${e.id}','${e.status||'active'}')">${e.status==='active'?'Deactivate':'Activate'}</button>
+        <button class="act-btn ab-sm ab-dark" onclick="editRate('${e.id}','${e.full_name}',${e.hourly_rate||25})">Rate</button>
+        <button class="act-btn ab-sm ab-danger" onclick="removeEmp('${e.id}','${e.full_name}')">Remove</button>
       </td>
-    </tr>`).join('')}
-  </tbody></table>`;
+    </tr>`).join('')}</tbody></table>`;
+}
+
+function openAddEmp(){
+  ['ae-name','ae-email','ae-phone','ae-pos'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ae-rate').value='25';
+  showOverlay('o-add-emp');
 }
 
 async function addEmployee(){
-  const name = document.getElementById('ae-name').value.trim();
+  const name  = document.getElementById('ae-name').value.trim();
   const email = document.getElementById('ae-email').value.trim();
   const phone = document.getElementById('ae-phone').value.trim();
-  const pos = document.getElementById('ae-pos').value.trim();
-  const rate = document.getElementById('ae-rate').value;
-  if(!name||!email){ toast('Name and email required','error'); return; }
-  // Create auth user via admin is not available from client — insert profile directly for managers
-  // In production, use a Supabase Edge Function to invite users
-  const {error} = await sb.from('profiles').insert({full_name:name,email,phone,position:pos,hourly_rate:parseFloat(rate)||25,role:'employee',status:'active'});
-  if(error){ toast(error.message,'error'); return; }
-  toast(`${name} added successfully!`,'success');
-  closeModal('add-emp');
-  document.getElementById('ae-name').value=''; document.getElementById('ae-email').value='';
-  await renderEmployeeTable();
+  const pos   = document.getElementById('ae-pos').value.trim();
+  const rate  = parseFloat(document.getElementById('ae-rate').value)||25;
+  if(!name||!email){ toast('Name and email required','err'); return; }
+  const {error} = await db.from('profiles').insert({full_name:name,email,phone:phone||null,position:pos||null,hourly_rate:rate,role:'employee',status:'active'});
+  if(error){ toast(error.message,'err'); return; }
+  toast(`${name} added!`,'ok');
+  hideOverlay('o-add-emp');
+  await loadEmpRows();
 }
 
-async function toggleEmpStatus(id,current){
+function editRate(id, name, currentRate){
+  const r = prompt(`Set hourly rate for ${name} (current: $${currentRate}):`, currentRate);
+  if(r===null) return;
+  const rate = parseFloat(r);
+  if(isNaN(rate)||rate<1){ toast('Invalid rate','err'); return; }
+  db.from('profiles').update({hourly_rate:rate}).eq('id',id).then(()=>{ toast(`Rate updated to $${rate}/hr`,'ok'); loadEmpRows(); });
+}
+
+async function toggleEmp(id, current){
   const ns = current==='active'?'inactive':'active';
-  await sb.from('profiles').update({status:ns}).eq('id',id);
-  toast(`Status updated to ${ns}`,'success');
-  await renderEmployeeTable();
+  await db.from('profiles').update({status:ns}).eq('id',id);
+  toast(`Status set to ${ns}`,'ok');
+  await loadEmpRows();
 }
 
-async function removeEmployee(id,name){
-  if(!confirm(`Remove ${name}? This cannot be undone.`)) return;
-  await sb.from('profiles').delete().eq('id',id);
-  toast(`${name} removed`,'success');
-  await renderEmployeeTable();
+async function removeEmp(id, name){
+  if(!confirm(`Remove ${name}? This is permanent.`)) return;
+  await db.from('profiles').delete().eq('id',id);
+  toast(`${name} removed`);
+  await loadEmpRows();
 }
 
-// Scheduling
-let schedWeekOffset = 0;
-let _shifts = [];
-async function loadScheduling(){
-  const el = document.getElementById('page-scheduling');
+// --- Timesheets ---
+async function mgrTimesheets(){
+  const el = document.getElementById('pg-timesheets');
   el.innerHTML = `
-    <h2 class="page-title">Scheduling</h2>
-    <p class="page-sub">Click any cell to assign a shift</p>
-    <div class="sched-grid">
+    <h2 class="pg-title">Timesheets</h2>
+    <p class="pg-sub">All staff clock records</p>
+    <div class="tbl-wrap">
+      <div class="tbl-top">
+        <h3>Time Records</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <select id="ts-emp" onchange="tsLoad()"><option value="">All Employees</option></select>
+          <input type="date" id="ts-from" onchange="tsLoad()"/>
+          <input type="date" id="ts-to" onchange="tsLoad()"/>
+          <button class="act-btn ab-danger" onclick="clockOutAll()">Clock Out All</button>
+        </div>
+      </div>
+      <div id="ts-rows"></div>
+    </div>`;
+  const {data:emps} = await db.from('profiles').select('id,full_name').eq('role','employee').order('full_name');
+  const sel = document.getElementById('ts-emp');
+  (emps||[]).forEach(e=>sel.innerHTML+=`<option value="${e.id}">${e.full_name}</option>`);
+  await tsLoad();
+}
+
+async function tsLoad(){
+  const empId = document.getElementById('ts-emp')?.value;
+  const from  = document.getElementById('ts-from')?.value;
+  const to    = document.getElementById('ts-to')?.value;
+  let q = db.from('time_logs').select('*, profiles(full_name,hourly_rate)').order('clock_in',{ascending:false});
+  if(empId) q = q.eq('employee_id',empId);
+  if(from)  q = q.gte('clock_in',from);
+  if(to)    q = q.lte('clock_in',to+'T23:59:59');
+  const {data:logs} = await q;
+  const el = document.getElementById('ts-rows');
+  if(!logs?.length){ el.innerHTML='<div class="empty"><div class="empty-icon">⏱️</div><p>No records found.</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>Employee</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Pay</th><th>Status</th><th></th></tr></thead><tbody>
+    ${logs.map(l=>{
+      const h = l.clock_out ? hrs(l.clock_in,l.clock_out) : null;
+      const pay = h && l.profiles?.hourly_rate ? '$'+(parseFloat(h)*l.profiles.hourly_rate).toFixed(2) : '—';
+      return `<tr>
+        <td><strong>${l.profiles?.full_name||'—'}</strong></td>
+        <td>${fmtDT(l.clock_in)}</td>
+        <td>${l.clock_out?fmtDT(l.clock_out):'Active'}</td>
+        <td>${h?h+' hrs':'—'}</td>
+        <td>${pay}</td>
+        <td>${l.clock_out?'<span class="badge b-green">Done</span>':'<span class="badge b-orange">Active</span>'}</td>
+        <td style="display:flex;gap:6px;">
+          ${!l.clock_out?`<button class="act-btn ab-sm ab-primary" onclick="manualClockOut('${l.id}')">Clock Out</button>`:''}
+          <button class="act-btn ab-sm ab-danger" onclick="delLog('${l.id}')">Delete</button>
+        </td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+}
+
+async function manualClockOut(id){
+  await db.from('time_logs').update({clock_out:new Date().toISOString()}).eq('id',id);
+  toast('Clocked out','ok');
+  await tsLoad();
+}
+
+async function delLog(id){
+  if(!confirm('Delete this record?')) return;
+  await db.from('time_logs').delete().eq('id',id);
+  toast('Deleted');
+  await tsLoad();
+}
+
+async function clockOutAll(){
+  if(!confirm('Clock out ALL currently active employees?')) return;
+  await db.from('time_logs').update({clock_out:new Date().toISOString()}).is('clock_out',null);
+  toast('All clocked out','ok');
+  await tsLoad();
+}
+
+// --- Invoices (Manager) ---
+async function mgrInvoices(){
+  const el = document.getElementById('pg-invoices');
+  el.innerHTML = `
+    <h2 class="pg-title">Invoice Generator</h2>
+    <p class="pg-sub">Generate pay invoices based on actual clock records and hourly rate</p>
+    <div class="form-card">
+      <h3>Generate Invoice</h3>
+      <div class="form-row">
+        <div class="field"><label>Employee</label><select id="inv-emp-sel"></select></div>
+        <div class="field"><label>From Date</label><input type="date" id="inv-from"/></div>
+        <div class="field"><label>To Date</label><input type="date" id="inv-to"/></div>
+        <div class="field"><label>Override Rate ($/hr)</label><input type="number" id="inv-rate-override" placeholder="Leave blank = use employee rate" min="1"/></div>
+      </div>
+      <button class="act-btn ab-primary" style="margin-top:16px;" onclick="buildManagerInvoice()">Generate Invoice</button>
+    </div>
+    <div id="inv-preview-area"></div>
+    <div class="tbl-wrap" style="margin-top:20px;">
+      <div class="tbl-top"><h3>Saved Invoices</h3></div>
+      <div id="inv-saved-rows"></div>
+    </div>`;
+  const {data:emps} = await db.from('profiles').select('id,full_name,hourly_rate').eq('role','employee').order('full_name');
+  const sel = document.getElementById('inv-emp-sel');
+  (emps||[]).forEach(e=>sel.innerHTML+=`<option value="${e.id}" data-name="${e.full_name}" data-rate="${e.hourly_rate||25}">${e.full_name} ($${e.hourly_rate||25}/hr)</option>`);
+  // Default period = this week
+  const mon = weekStart();
+  document.getElementById('inv-from').value = mon;
+  document.getElementById('inv-to').value = today();
+  await loadSavedInvoices('inv-saved-rows');
+}
+
+async function buildManagerInvoice(){
+  const sel = document.getElementById('inv-emp-sel');
+  const opt = sel.options[sel.selectedIndex];
+  if(!opt){ toast('Select employee','err'); return; }
+  const empId   = sel.value;
+  const empName = opt.dataset.name;
+  const from    = document.getElementById('inv-from').value;
+  const to      = document.getElementById('inv-to').value;
+  const overR   = document.getElementById('inv-rate-override').value;
+  const rate    = overR ? parseFloat(overR) : (parseFloat(opt.dataset.rate)||25);
+  if(!from||!to){ toast('Select date range','err'); return; }
+  await renderInvoice('inv-preview-area', empId, empName, from, to, rate, true);
+}
+
+// --- Scheduling ---
+let _schedOffset = 0;
+async function mgrScheduling(){
+  const el = document.getElementById('pg-scheduling');
+  el.innerHTML = `
+    <h2 class="pg-title">Scheduling</h2>
+    <p class="pg-sub">Click any cell to assign a shift</p>
+    <div class="tbl-wrap">
       <div class="sched-nav">
-        <button class="action-btn btn-navy" onclick="schedWeekOffset--;renderSchedGrid()">← Prev Week</button>
-        <strong id="sched-week-label"></strong>
-        <button class="action-btn btn-navy" onclick="schedWeekOffset++;renderSchedGrid()">Next Week →</button>
+        <button class="act-btn ab-dark" onclick="_schedOffset--;drawSched()">← Prev</button>
+        <strong id="sched-range"></strong>
+        <button class="act-btn ab-dark" onclick="_schedOffset++;drawSched()">Next →</button>
       </div>
       <div id="sched-body"></div>
     </div>`;
-  const {data:emps} = await sb.from('profiles').select('id,full_name').eq('role','employee').eq('status','active');
-  _employees = emps||[];
-  await renderSchedGrid();
+  const {data:emps} = await db.from('profiles').select('id,full_name').eq('role','employee').eq('status','active').order('full_name');
+  _emps = emps||[];
+  await drawSched();
 }
 
-function getWeekDates(offset=0){
-  const now = new Date();
-  const day = now.getDay();
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - (day===0?6:day-1) + offset*7);
-  const days = [];
-  for(let i=0;i<7;i++){
-    const d = new Date(monday);
-    d.setDate(monday.getDate()+i);
-    days.push(d);
-  }
-  return days;
+function weekDates(offset=0){
+  const now = new Date(); const dow = now.getDay();
+  const mon = new Date(now); mon.setDate(now.getDate()-(dow===0?6:dow-1)+offset*7);
+  return Array.from({length:7},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d; });
 }
 
-async function renderSchedGrid(){
-  const days = getWeekDates(schedWeekOffset);
-  const startStr = days[0].toISOString().split('T')[0];
-  const endStr = days[6].toISOString().split('T')[0];
-  document.getElementById('sched-week-label').textContent = `${fmtDate(days[0])} – ${fmtDate(days[6])}`;
-  const {data:shifts} = await sb.from('shifts').select('*, profiles(full_name)').gte('date',startStr).lte('date',endStr);
-  _shifts = shifts||[];
-  const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  let html = `<table class="sched-table"><thead><tr><th>Employee</th>${days.map((d,i)=>`<th>${dayNames[i]}<br/><small>${d.getMonth()+1}/${d.getDate()}</small></th>`).join('')}</tr></thead><tbody>`;
-  _employees.forEach(emp=>{
-    html += `<tr><td>${emp.full_name}</td>`;
+async function drawSched(){
+  const days = weekDates(_schedOffset);
+  const s = days[0].toISOString().split('T')[0];
+  const e = days[6].toISOString().split('T')[0];
+  document.getElementById('sched-range').textContent = `${fmtDate(days[0])} – ${fmtDate(days[6])}`;
+  const {data:shifts} = await db.from('shifts').select('*,profiles(full_name)').gte('date',s).lte('date',e);
+  const dnames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  let html = `<table class="sched-table"><thead><tr><th>Employee</th>${days.map((d,i)=>`<th>${dnames[i]}<br/><small style="font-weight:400;">${d.getMonth()+1}/${d.getDate()}</small></th>`).join('')}</tr></thead><tbody>`;
+  (_emps.length ? _emps : [{id:'_none',full_name:'No active staff'}]).forEach(emp=>{
+    html += `<tr><td class="emp-col">${emp.full_name}</td>`;
     days.forEach(d=>{
       const ds = d.toISOString().split('T')[0];
-      const dayShifts = _shifts.filter(s=>s.employee_id===emp.id && s.date===ds);
+      const dayShifts = (shifts||[]).filter(s=>s.employee_id===emp.id&&s.date===ds);
       html += `<td onclick="openShiftModal('${emp.id}','${emp.full_name}','${ds}')">
-        ${dayShifts.map(s=>`<div class="shift-chip">${s.shift_time||'Shift'}<button class="del-shift" onclick="event.stopPropagation();deleteShift('${s.id}')">×</button></div>`).join('')}
+        ${dayShifts.map(s=>`<div class="shift-chip">${s.shift_time||'Shift'}<button class="shift-del" onclick="event.stopPropagation();delShift('${s.id}')">×</button></div>`).join('')}
       </td>`;
     });
     html += '</tr>';
@@ -770,546 +945,457 @@ async function renderSchedGrid(){
 }
 
 function openShiftModal(empId, empName, date){
-  shiftContext = {empId, date};
-  document.getElementById('shift-label').textContent = `${empName} — ${fmtDate(new Date(date+'T12:00:00'))}`;
-  const sel = document.getElementById('shift-emp');
-  sel.innerHTML = _employees.map(e=>`<option value="${e.id}" ${e.id===empId?'selected':''}>${e.full_name}</option>`).join('');
-  openModal('shift');
+  _shiftCtx = {empId, date};
+  document.getElementById('shift-ctx-label').textContent = `${empName} — ${fmtDate(new Date(date+'T12:00:00'))}`;
+  const sel = document.getElementById('shift-emp-sel');
+  sel.innerHTML = _emps.map(e=>`<option value="${e.id}" ${e.id===empId?'selected':''}>${e.full_name}</option>`).join('');
+  document.getElementById('shift-notes-inp').value='';
+  showOverlay('o-shift');
 }
 
 async function saveShift(){
-  const empId = document.getElementById('shift-emp').value;
-  const time = document.getElementById('shift-time').value;
-  const notes = document.getElementById('shift-notes').value;
-  const date = shiftContext.date;
-  const {error} = await sb.from('shifts').insert({employee_id:empId, date, shift_time:time, notes});
-  if(error){ toast(error.message,'error'); return; }
-  toast('Shift assigned!','success');
-  closeModal('shift');
-  document.getElementById('shift-notes').value='';
-  await renderSchedGrid();
+  const empId = document.getElementById('shift-emp-sel').value;
+  const time  = document.getElementById('shift-time-sel').value;
+  const notes = document.getElementById('shift-notes-inp').value;
+  const {error} = await db.from('shifts').insert({employee_id:empId, date:_shiftCtx.date, shift_time:time, notes:notes||null});
+  if(error){ toast(error.message,'err'); return; }
+  toast('Shift assigned!','ok');
+  hideOverlay('o-shift');
+  await drawSched();
 }
 
-async function deleteShift(id){
-  await sb.from('shifts').delete().eq('id',id);
-  toast('Shift removed','success');
-  await renderSchedGrid();
+async function delShift(id){
+  await db.from('shifts').delete().eq('id',id);
+  toast('Shift removed');
+  await drawSched();
 }
 
-// Timesheets
-async function loadTimesheets(){
-  const el = document.getElementById('page-timesheets');
+// --- Credentials ---
+async function mgrCredentials(){
+  const el = document.getElementById('pg-credentials');
   el.innerHTML = `
-    <h2 class="page-title">Timesheets</h2>
-    <p class="page-sub">All clock in/out records</p>
-    <div class="table-wrap">
-      <div class="table-header">
-        <h3>Time Records</h3>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <select id="ts-emp-filter" onchange="loadTimesheets_data()"><option value="">All Employees</option></select>
-          <input type="date" id="ts-from" onchange="loadTimesheets_data()"/>
-          <input type="date" id="ts-to" onchange="loadTimesheets_data()"/>
-          <button class="action-btn btn-danger" onclick="clockOutAll()">Clock Out All</button>
-        </div>
-      </div>
-      <div id="ts-body"><div class="empty-state"><p>Loading...</p></div></div>
-    </div>`;
-  const {data:emps} = await sb.from('profiles').select('id,full_name').eq('role','employee');
-  const sel = document.getElementById('ts-emp-filter');
-  (emps||[]).forEach(e=>sel.innerHTML+=`<option value="${e.id}">${e.full_name}</option>`);
-  await loadTimesheets_data();
-}
-
-async function loadTimesheets_data(){
-  const empId = document.getElementById('ts-emp-filter')?.value;
-  const from = document.getElementById('ts-from')?.value;
-  const to = document.getElementById('ts-to')?.value;
-  let q = sb.from('time_logs').select('*, profiles(full_name,hourly_rate)').order('clock_in',{ascending:false});
-  if(empId) q = q.eq('employee_id',empId);
-  if(from) q = q.gte('clock_in',from);
-  if(to) q = q.lte('clock_in',to+'T23:59:59');
-  const {data:logs} = await q;
-  const el = document.getElementById('ts-body');
-  if(!logs||!logs.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">⏱️</div><p>No records found.</p></div>'; return; }
-  el.innerHTML = `<table><thead><tr><th>Employee</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Pay</th><th>Status</th><th></th></tr></thead><tbody>
-    ${logs.map(l=>{
-      const hrs = l.clock_out?((new Date(l.clock_out)-new Date(l.clock_in))/3600000).toFixed(2):'—';
-      const pay = l.clock_out&&l.profiles?.hourly_rate?(parseFloat(hrs)*l.profiles.hourly_rate).toFixed(2):'—';
-      return `<tr><td>${l.profiles?.full_name||'—'}</td><td>${fmtDT(l.clock_in)}</td><td>${l.clock_out?fmtDT(l.clock_out):'Active'}</td><td>${hrs}</td><td>${pay!=='—'?'$'+pay:'—'}</td><td>${l.clock_out?'<span class="badge badge-green">Done</span>':'<span class="badge badge-orange">Active</span>'}</td><td><button class="action-btn btn-sm btn-danger" onclick="deleteLog('${l.id}')">Delete</button></td></tr>`;
-    }).join('')}</tbody></table>`;
-}
-
-async function deleteLog(id){
-  if(!confirm('Delete this record?')) return;
-  await sb.from('time_logs').delete().eq('id',id);
-  toast('Record deleted','success');
-  await loadTimesheets_data();
-}
-
-async function clockOutAll(){
-  if(!confirm('Clock out ALL active employees?')) return;
-  await sb.from('time_logs').update({clock_out:new Date().toISOString()}).is('clock_out',null);
-  toast('All employees clocked out','success');
-  await loadTimesheets_data();
-}
-
-// Invoices (Manager)
-async function loadInvoices(){
-  const el = document.getElementById('page-invoices');
-  el.innerHTML = `
-    <h2 class="page-title">Invoice Generator</h2>
-    <p class="page-sub">Generate pay invoices for staff</p>
-    <div class="form-card">
-      <h3>Generate Invoice</h3>
-      <div class="form-row">
-        <div class="field"><label>Employee</label><select id="inv-emp"></select></div>
-        <div class="field"><label>From Date</label><input type="date" id="inv-from"/></div>
-        <div class="field"><label>To Date</label><input type="date" id="inv-to"/></div>
-      </div>
-      <button class="action-btn btn-primary" style="margin-top:16px;" onclick="generateInvoice()">Generate Invoice</button>
+    <h2 class="pg-title">Credentials</h2>
+    <p class="pg-sub">Track staff certifications and license expirations</p>
+    <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+      <select id="cred-filter" onchange="renderCredGrid()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;">
+        <option value="">All Employees</option>
+      </select>
+      <button class="act-btn ab-primary" onclick="openCredModal()">+ Add Credential</button>
     </div>
-    <div id="inv-preview"></div>`;
-  const {data:emps} = await sb.from('profiles').select('id,full_name,hourly_rate').eq('role','employee');
-  const sel = document.getElementById('inv-emp');
-  (emps||[]).forEach(e=>sel.innerHTML+=`<option value="${e.id}" data-rate="${e.hourly_rate||25}" data-name="${e.full_name}">${e.full_name}</option>`);
-  // Set default dates (this week)
-  const now = new Date(); const mon = new Date(now);
-  mon.setDate(now.getDate()-now.getDay()+1);
-  document.getElementById('inv-from').value = mon.toISOString().split('T')[0];
-  document.getElementById('inv-to').value = now.toISOString().split('T')[0];
+    <div id="cred-area"></div>`;
+  const {data:emps} = await db.from('profiles').select('id,full_name').eq('role','employee').order('full_name');
+  _emps = emps||[];
+  const sel = document.getElementById('cred-filter');
+  _emps.forEach(e=>sel.innerHTML+=`<option value="${e.id}">${e.full_name}</option>`);
+  await renderCredGrid();
 }
 
-async function generateInvoice(){
-  const sel = document.getElementById('inv-emp');
-  const opt = sel.options[sel.selectedIndex];
-  const empId = sel.value;
-  const empName = opt.dataset.name;
-  const rate = parseFloat(opt.dataset.rate)||25;
-  const from = document.getElementById('inv-from').value;
-  const to = document.getElementById('inv-to').value;
-  if(!empId||!from||!to){ toast('Please fill all fields','error'); return; }
-  const {data:logs} = await sb.from('time_logs').select('*').eq('employee_id',empId).gte('clock_in',from).lte('clock_in',to+'T23:59:59').not('clock_out','is',null);
-  let totalHrs = 0;
-  (logs||[]).forEach(l=>{ totalHrs += (new Date(l.clock_out)-new Date(l.clock_in))/3600000; });
-  const totalPay = (totalHrs * rate).toFixed(2);
-  const invNum = 'CNL-'+Date.now().toString().slice(-6);
-  document.getElementById('inv-preview').innerHTML = `
-    <div class="invoice-preview" id="inv-doc">
-      <h2>INVOICE</h2>
-      <div style="color:var(--muted);font-size:13px;">Invoice #${invNum}</div>
-      <div class="inv-meta">
-        <div><strong>FROM:</strong><br/>Central Nurses LLC<br/>Wichita, Kansas</div>
-        <div><strong>TO:</strong><br/>${empName}</div>
-        <div><strong>PERIOD:</strong><br/>${from} to ${to}</div>
-        <div><strong>DATE:</strong><br/>${new Date().toLocaleDateString()}</div>
-      </div>
-      <table style="width:100%;border-collapse:collapse;font-size:14px;">
-        <thead><tr style="background:var(--off);"><th style="padding:10px;text-align:left;">Date</th><th style="padding:10px;text-align:left;">Clock In</th><th style="padding:10px;text-align:left;">Clock Out</th><th style="padding:10px;text-align:right;">Hours</th><th style="padding:10px;text-align:right;">Amount</th></tr></thead>
-        <tbody>${(logs||[]).map(l=>{const h=((new Date(l.clock_out)-new Date(l.clock_in))/3600000).toFixed(2);return`<tr><td style="padding:9px 10px;border-top:1px solid var(--border);">${l.clock_in.split('T')[0]}</td><td style="padding:9px 10px;border-top:1px solid var(--border);">${fmtDT(l.clock_in)}</td><td style="padding:9px 10px;border-top:1px solid var(--border);">${fmtDT(l.clock_out)}</td><td style="padding:9px 10px;border-top:1px solid var(--border);text-align:right;">${h}</td><td style="padding:9px 10px;border-top:1px solid var(--border);text-align:right;">$${(h*rate).toFixed(2)}</td></tr>`;}).join('')}</tbody>
-      </table>
-      <div class="inv-total">Total Hours: ${totalHrs.toFixed(2)} hrs &nbsp;|&nbsp; Rate: $${rate}/hr &nbsp;|&nbsp; <strong>TOTAL: $${totalPay}</strong></div>
-      <div style="margin-top:18px;display:flex;gap:12px;">
-        <button class="action-btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
-        <button class="action-btn btn-navy" onclick="saveInvoiceDB('${empId}','${empName}',${totalHrs.toFixed(2)},${totalPay},'${from}','${to}','${invNum}')">💾 Save to Records</button>
-      </div>
-    </div>`;
-}
-
-async function saveInvoiceDB(empId,empName,hrs,amount,from,to,invNum){
-  const {error} = await sb.from('invoices').insert({employee_id:empId,invoice_number:invNum,period_start:from,period_end:to,total_hours:hrs,total_amount:amount,status:'pending'});
-  if(error){ toast(error.message,'error'); return; }
-  toast(`Invoice ${invNum} saved!`,'success');
-}
-
-// Credentials (Manager)
-async function loadCredentials(){
-  const el = document.getElementById('page-credentials');
-  el.innerHTML = `
-    <h2 class="page-title">Credentials</h2>
-    <p class="page-sub">Track staff certifications and licenses</p>
-    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
-      <select id="cred-filter-emp" onchange="renderCredTable()"><option value="">All Employees</option></select>
-      <button class="action-btn btn-primary" onclick="openCredModal()">+ Add Credential</button>
-    </div>
-    <div id="cred-body"><div class="empty-state"><p>Loading...</p></div></div>`;
-  const {data:emps} = await sb.from('profiles').select('id,full_name').eq('role','employee');
-  _employees = emps||[];
-  const sel = document.getElementById('cred-filter-emp');
-  _employees.forEach(e=>sel.innerHTML+=`<option value="${e.id}">${e.full_name}</option>`);
-  await renderCredTable();
-}
-
-async function renderCredTable(){
-  const empId = document.getElementById('cred-filter-emp')?.value;
-  let q = sb.from('credentials').select('*, profiles(full_name)').order('expiry_date');
+async function renderCredGrid(){
+  const empId = document.getElementById('cred-filter')?.value;
+  let q = db.from('credentials').select('*, profiles(full_name)').order('expiry_date');
   if(empId) q = q.eq('employee_id',empId);
   const {data:creds} = await q;
-  const el = document.getElementById('cred-body');
-  if(!creds||!creds.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><p>No credentials found. Add one above.</p></div>'; return; }
-  const today = new Date(); today.setHours(0,0,0,0);
-  el.innerHTML = `<div class="cred-grid">${creds.map(c=>{
-    const exp = new Date(c.expiry_date); exp.setHours(0,0,0,0);
-    const days = Math.round((exp-today)/86400000);
-    const cls = days<0?'red':days<=30?'orange':'green';
-    const lbl = days<0?`Expired ${Math.abs(days)}d ago`:days===0?'Expires today':`${days} days left`;
-    return `<div class="cred-card ${cls}">
-      <div style="display:flex;justify-content:space-between;align-items:start;">
-        <div><div class="cred-name">${c.name}</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">${c.profiles?.full_name||'—'}</div></div>
-        <button class="action-btn btn-sm btn-danger" onclick="deleteCred('${c.id}')">×</button>
+  const area = document.getElementById('cred-area');
+  if(!creds?.length){ area.innerHTML='<div class="empty"><div class="empty-icon">📋</div><p>No credentials on file.</p></div>'; return; }
+  const now = new Date(); now.setHours(0,0,0,0);
+  area.innerHTML = `<div class="cred-grid">${creds.map(c=>{
+    const exp = new Date(c.expiry_date+'T00:00:00');
+    const d = Math.round((exp-now)/864e5);
+    const cls = d<0?'red':d<=30?'orange':'green';
+    const txt = d<0?`Expired ${Math.abs(d)}d ago`:d===0?'Expires today':`${d} days left`;
+    return `<div class="cred-card">
+      <div class="cred-stripe ${cls}"></div>
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-top:4px;">
+        <div><div class="cred-name">${c.name}</div><div class="cred-who">${c.profiles?.full_name||'—'}</div></div>
+        <button class="act-btn ab-sm ab-danger" onclick="delCred('${c.id}')">×</button>
       </div>
       <div class="cred-exp">Expires: ${c.expiry_date}</div>
-      <div class="cred-days ${cls}">${lbl}</div>
+      <div class="cred-days ${cls}">${txt}</div>
     </div>`;
   }).join('')}</div>`;
 }
 
-async function openCredModal(){
-  const sel = document.getElementById('cred-emp');
-  sel.innerHTML = _employees.map(e=>`<option value="${e.id}">${e.full_name}</option>`).join('');
-  openModal('add-cred');
+function openCredModal(){
+  const sel = document.getElementById('cred-emp-sel');
+  sel.innerHTML = _emps.map(e=>`<option value="${e.id}">${e.full_name}</option>`).join('');
+  ['cred-name-inp','cred-issued-inp','cred-expiry-inp'].forEach(id=>document.getElementById(id).value='');
+  showOverlay('o-cred');
 }
 
 async function saveCred(){
-  const empId = document.getElementById('cred-emp').value;
-  const name = document.getElementById('cred-name').value.trim();
-  const issued = document.getElementById('cred-issued').value;
-  const expiry = document.getElementById('cred-expiry').value;
-  if(!empId||!name||!expiry){ toast('Employee, name, and expiry required','error'); return; }
-  const {error} = await sb.from('credentials').insert({employee_id:empId,name,issued_date:issued||null,expiry_date:expiry});
-  if(error){ toast(error.message,'error'); return; }
-  toast('Credential saved!','success');
-  closeModal('add-cred');
-  document.getElementById('cred-name').value=''; document.getElementById('cred-issued').value=''; document.getElementById('cred-expiry').value='';
-  await renderCredTable();
+  const empId  = document.getElementById('cred-emp-sel').value;
+  const name   = document.getElementById('cred-name-inp').value.trim();
+  const issued = document.getElementById('cred-issued-inp').value;
+  const expiry = document.getElementById('cred-expiry-inp').value;
+  if(!name||!expiry){ toast('Credential name and expiry are required','err'); return; }
+  const {error} = await db.from('credentials').insert({employee_id:empId, name, issued_date:issued||null, expiry_date:expiry});
+  if(error){ toast(error.message,'err'); return; }
+  toast('Credential saved!','ok');
+  hideOverlay('o-cred');
+  await renderCredGrid();
 }
 
-async function deleteCred(id){
+async function delCred(id){
   if(!confirm('Delete this credential?')) return;
-  await sb.from('credentials').delete().eq('id',id);
-  toast('Credential removed','success');
-  await renderCredTable();
+  await db.from('credentials').delete().eq('id',id);
+  toast('Credential deleted');
+  await renderCredGrid();
 }
 
-// Notifications
-function loadNotifications(){
-  const el = document.getElementById('page-notifications');
-  el.innerHTML = `
-    <h2 class="page-title">Notifications</h2>
-    <p class="page-sub">Send messages to your staff</p>
-    <div class="form-card">
-      <h3>Compose Message</h3>
-      <div class="form-row">
-        <div class="field"><label>Subject</label><input type="text" id="notif-subject" placeholder="e.g. Schedule Update"/></div>
-      </div>
-      <div class="field" style="margin-top:14px;"><label>Message</label><textarea id="notif-body" style="width:100%;height:120px;margin-top:6px;" placeholder="Write your message..."></textarea></div>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="action-btn btn-primary" onclick="toast('Email integration requires SendGrid setup. See docs.','info')">📧 Send to All Staff</button>
-        <button class="action-btn btn-navy" onclick="fillExpiryTemplate()">⚠️ Expiry Alert Template</button>
-      </div>
-    </div>
-    <div class="table-wrap" style="margin-top:20px;">
-      <div class="table-header"><h3>Expiring Credentials (Next 30 Days)</h3></div>
-      <div id="notif-creds"><div class="empty-state"><p>Loading...</p></div></div>
-    </div>`;
-  loadNotifCreds();
-}
-
-async function loadNotifCreds(){
-  const today = new Date().toISOString().split('T')[0];
-  const future = new Date(Date.now()+30*86400000).toISOString().split('T')[0];
-  const {data} = await sb.from('credentials').select('*, profiles(full_name,email)').gte('expiry_date',today).lte('expiry_date',future).order('expiry_date');
-  const el = document.getElementById('notif-creds');
-  if(!data||!data.length){ el.innerHTML='<div class="empty-state"><p>No credentials expiring in next 30 days. ✅</p></div>'; return; }
-  el.innerHTML = `<table><thead><tr><th>Employee</th><th>Credential</th><th>Expires</th><th>Days Left</th></tr></thead><tbody>
-    ${data.map(c=>{const days=Math.round((new Date(c.expiry_date)-new Date())/(86400000));return`<tr><td>${c.profiles?.full_name||'—'}</td><td>${c.name}</td><td>${c.expiry_date}</td><td><span class="badge ${days<=7?'badge-red':days<=14?'badge-orange':'badge-blue'}">${days}d</span></td></tr>`;}).join('')}
-  </tbody></table>`;
-}
-
-function fillExpiryTemplate(){
-  document.getElementById('notif-subject').value = 'Action Required: Credential Expiring Soon';
-  document.getElementById('notif-body').value = 'Dear Team,\n\nThis is a reminder that one or more of your credentials are expiring within the next 30 days. Please renew them as soon as possible to remain eligible for scheduling.\n\nIf you have questions, please contact the manager.\n\nThank you,\nCentral Nurses LLC Management';
-}
-
-// ===== EMPLOYEE DASHBOARD =====
-const employeePages = [
-  {id:'clock', icon:'⏰', label:'Clock In/Out'},
-  {id:'schedule', icon:'📅', label:'My Schedule'},
-  {id:'hours', icon:'📊', label:'My Hours'},
-  {id:'myinvoices', icon:'🧾', label:'My Invoices'},
-  {id:'mycreds', icon:'📋', label:'My Credentials'},
+// ============================================================
+// EMPLOYEE DASHBOARD
+// ============================================================
+const EMP_NAV = [
+  {id:'clock',      icon:'⏰', label:'Clock In/Out'},
+  {id:'myhours',    icon:'📊', label:'My Hours'},
+  {id:'myinvoice',  icon:'🧾', label:'My Invoice'},
+  {id:'myschedule', icon:'📅', label:'My Schedule'},
+  {id:'mycreds',    icon:'📋', label:'My Credentials'},
 ];
 
-function renderEmployeeDashboard(){
-  const sidebar = document.getElementById('sidebar');
-  sidebar.innerHTML = employeePages.map(p=>`
-    <div class="sidebar-item" id="sb-${p.id}" onclick="showEmpPage('${p.id}')">
-      <span class="icon">${p.icon}</span><span>${p.label}</span>
+function buildEmployeeDash(){
+  document.getElementById('sidebar').innerHTML = EMP_NAV.map(n=>`
+    <div class="nav-item" id="ni-${n.id}" onclick="empPage('${n.id}')">
+      <span class="ni">${n.icon}</span><span>${n.label}</span>
     </div>`).join('');
-  const main = document.getElementById('main-content');
-  main.innerHTML = employeePages.map(p=>`<div class="page" id="page-${p.id}"></div>`).join('');
-  showEmpPage('clock');
+  document.getElementById('content').innerHTML = EMP_NAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
+  empPage('clock');
 }
 
-function showEmpPage(id){
-  document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
-  document.getElementById('sb-'+id)?.classList.add('active');
-  document.getElementById('page-'+id)?.classList.add('active');
-  const loaders = { clock:loadClockPage, schedule:loadMySchedule, hours:loadMyHours, myinvoices:loadMyInvoices, mycreds:loadMyCreds };
-  if(loaders[id]) loaders[id]();
+function empPage(id){
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.pg').forEach(e=>e.classList.remove('active'));
+  document.getElementById('ni-'+id)?.classList.add('active');
+  document.getElementById('pg-'+id)?.classList.add('active');
+  ({clock:empClock, myhours:empHours, myinvoice:empInvoice, myschedule:empSchedule, mycreds:empCreds})[id]?.();
 }
 
-// Clock
-let isClockedIn = false;
-let activeLogId = null;
-async function loadClockPage(){
-  const el = document.getElementById('page-clock');
+// --- Clock ---
+let _isClockedIn = false;
+let _activeLogId = null;
+
+async function empClock(){
+  const el = document.getElementById('pg-clock');
   el.innerHTML = `
-    <h2 class="page-title">Time Clock</h2>
-    <p class="page-sub">Track your work hours</p>
-    <div class="clock-card">
-      <div class="clock-time" id="live-clock"></div>
-      <div class="clock-date" id="live-date"></div>
-      <button class="clock-action-btn btn-clockin" id="clock-btn" onclick="toggleClock()">Loading...</button>
-      <div style="margin-top:16px;color:rgba(255,255,255,.5);font-size:13px;" id="clock-status"></div>
+    <h2 class="pg-title">Time Clock</h2>
+    <p class="pg-sub">Record your shift start and end</p>
+    <div class="clock-hero">
+      <div class="clock-display" id="clk-time"></div>
+      <div class="clock-date-str" id="clk-date"></div>
+      <button class="clock-btn cb-in" id="clk-btn" onclick="toggleClock()">Checking…</button>
+      <div class="clock-status-txt" id="clk-status"></div>
     </div>
-    <div class="table-wrap">
-      <div class="table-header"><h3>Today's Sessions</h3></div>
-      <div id="today-logs"></div>
+    <div class="tbl-wrap">
+      <div class="tbl-top"><h3>Today's Sessions</h3></div>
+      <div id="today-sessions"></div>
     </div>`;
-  startClockDisplay();
-  await checkClockStatus();
-  await loadTodayLogs();
-}
-
-function startClockDisplay(){
-  if(clockInterval) clearInterval(clockInterval);
-  const update = ()=>{
-    const now = new Date();
-    const cl = document.getElementById('live-clock');
-    const dl = document.getElementById('live-date');
-    if(cl) cl.textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    if(dl) dl.textContent = now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  if(_clockInterval) clearInterval(_clockInterval);
+  const tick = ()=>{
+    const n = new Date();
+    const ct = document.getElementById('clk-time');
+    const cd = document.getElementById('clk-date');
+    if(ct) ct.textContent = n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    if(cd) cd.textContent = n.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   };
-  update();
-  clockInterval = setInterval(update, 1000);
+  tick(); _clockInterval = setInterval(tick, 1000);
+  await refreshClockState();
+  await loadTodaySessions();
 }
 
-async function checkClockStatus(){
-  const {data} = await sb.from('time_logs').select('*').eq('employee_id',currentUser.id).is('clock_out',null).single();
-  isClockedIn = !!data;
-  activeLogId = data?.id||null;
-  const btn = document.getElementById('clock-btn');
-  const status = document.getElementById('clock-status');
+async function refreshClockState(){
+  const {data} = await db.from('time_logs').select('*').eq('employee_id',ME.id).is('clock_out',null).maybeSingle();
+  _isClockedIn = !!data; _activeLogId = data?.id||null;
+  const btn = document.getElementById('clk-btn');
+  const st  = document.getElementById('clk-status');
   if(!btn) return;
-  if(isClockedIn){
+  if(_isClockedIn){
     btn.textContent = 'Clock Out';
-    btn.className = 'clock-action-btn btn-clockout';
-    const since = new Date(data.clock_in);
-    status.textContent = `Clocked in since ${since.toLocaleTimeString()}`;
+    btn.className = 'clock-btn cb-out';
+    st.textContent = `Clocked in since ${new Date(data.clock_in).toLocaleTimeString()}`;
   } else {
     btn.textContent = 'Clock In';
-    btn.className = 'clock-action-btn btn-clockin';
-    status.textContent = 'You are currently not clocked in';
+    btn.className = 'clock-btn cb-in';
+    st.textContent = 'You are not currently clocked in';
   }
 }
 
 async function toggleClock(){
-  const btn = document.getElementById('clock-btn');
+  const btn = document.getElementById('clk-btn');
   btn.disabled = true;
-  if(!isClockedIn){
-    const {data,error} = await sb.from('time_logs').insert({employee_id:currentUser.id, clock_in:new Date().toISOString()}).select().single();
-    if(error){ toast(error.message,'error'); btn.disabled=false; return; }
-    activeLogId = data.id;
-    isClockedIn = true;
-    toast('Clocked in successfully! ✅','success');
+  if(!_isClockedIn){
+    const {data,error} = await db.from('time_logs').insert({employee_id:ME.id, clock_in:new Date().toISOString()}).select().single();
+    if(error){ toast(error.message,'err'); btn.disabled=false; return; }
+    _activeLogId = data.id; _isClockedIn = true;
+    toast('Clocked in! Have a great shift. ✅','ok');
   } else {
-    const {error} = await sb.from('time_logs').update({clock_out:new Date().toISOString()}).eq('id',activeLogId);
-    if(error){ toast(error.message,'error'); btn.disabled=false; return; }
-    isClockedIn = false; activeLogId = null;
-    toast('Clocked out successfully!','success');
+    const {error} = await db.from('time_logs').update({clock_out:new Date().toISOString()}).eq('id',_activeLogId);
+    if(error){ toast(error.message,'err'); btn.disabled=false; return; }
+    _isClockedIn = false; _activeLogId = null;
+    toast('Clocked out. See you next time!','ok');
   }
   btn.disabled = false;
-  await checkClockStatus();
-  await loadTodayLogs();
+  await refreshClockState();
+  await loadTodaySessions();
 }
 
-async function loadTodayLogs(){
-  const today = new Date().toISOString().split('T')[0];
-  const {data} = await sb.from('time_logs').select('*').eq('employee_id',currentUser.id).gte('clock_in',today).order('clock_in',{ascending:false});
-  const el = document.getElementById('today-logs');
-  if(!data||!data.length){ el.innerHTML='<div class="empty-state"><p>No sessions today yet.</p></div>'; return; }
-  let totalHrs = 0;
-  data.forEach(l=>{ if(l.clock_out) totalHrs += (new Date(l.clock_out)-new Date(l.clock_in))/3600000; });
+async function loadTodaySessions(){
+  const {data:logs} = await db.from('time_logs').select('*').eq('employee_id',ME.id).gte('clock_in',today()).order('clock_in',{ascending:false});
+  const el = document.getElementById('today-sessions');
+  if(!logs?.length){ el.innerHTML='<div class="empty"><p>No sessions recorded today.</p></div>'; return; }
+  let totalH = 0;
+  logs.forEach(l=>{ if(l.clock_out) totalH += hoursNum(l.clock_in,l.clock_out); });
   el.innerHTML = `<table><thead><tr><th>Clock In</th><th>Clock Out</th><th>Duration</th></tr></thead><tbody>
-    ${data.map(l=>{
-      const hrs = l.clock_out?((new Date(l.clock_out)-new Date(l.clock_in))/3600000).toFixed(2):'Active';
-      return `<tr><td>${fmtDT(l.clock_in)}</td><td>${l.clock_out?fmtDT(l.clock_out):'—'}</td><td>${hrs==='Active'?'<span class="badge badge-orange">Active</span>':hrs+' hrs'}</td></tr>`;
-    }).join('')}
-  </tbody></table>
-  <div style="padding:14px 18px;border-top:1px solid var(--border);font-weight:600;">Total today: ${totalHrs.toFixed(2)} hours</div>`;
+    ${logs.map(l=>{
+      const h = l.clock_out ? hrs(l.clock_in,l.clock_out)+' hrs' : '<span class="badge b-orange">Active</span>';
+      return `<tr><td>${fmtDT(l.clock_in)}</td><td>${l.clock_out?fmtDT(l.clock_out):'—'}</td><td>${h}</td></tr>`;
+    }).join('')}</tbody></table>
+  <div style="padding:13px 16px;border-top:1px solid var(--border);font-weight:600;font-size:14px;">Total today: <span style="color:var(--sky);">${totalH.toFixed(2)} hours</span></div>`;
 }
 
-// My Schedule
-async function loadMySchedule(){
-  const el = document.getElementById('page-schedule');
-  el.innerHTML = `<h2 class="page-title">My Schedule</h2><p class="page-sub">Your upcoming shifts</p><div id="my-sched-body"><div class="empty-state"><p>Loading...</p></div></div>`;
-  const today = new Date().toISOString().split('T')[0];
-  const {data:shifts} = await sb.from('shifts').select('*').eq('employee_id',currentUser.id).gte('date',today).order('date').limit(20);
-  const sb2 = document.getElementById('my-sched-body');
-  if(!shifts||!shifts.length){ sb2.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div><p>No upcoming shifts scheduled.</p></div>'; return; }
-  sb2.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Day</th><th>Shift Time</th><th>Notes</th></tr></thead><tbody>
-    ${shifts.map(s=>{const d=new Date(s.date+'T12:00:00');return`<tr><td>${s.date}</td><td>${d.toLocaleDateString('en-US',{weekday:'long'})}</td><td>${s.shift_time||'—'}</td><td>${s.notes||'—'}</td></tr>`;}).join('')}
-  </tbody></table></div>`;
-}
-
-// My Hours
-async function loadMyHours(){
-  const el = document.getElementById('page-hours');
-  el.innerHTML = `<h2 class="page-title">My Hours</h2><p class="page-sub">Your time records and earnings</p>
-    <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
-      <select id="hrs-period" onchange="loadMyHours_data()">
+// --- My Hours ---
+async function empHours(){
+  const el = document.getElementById('pg-myhours');
+  el.innerHTML = `
+    <h2 class="pg-title">My Hours</h2>
+    <p class="pg-sub">Your work records and earnings summary</p>
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+      <select id="hrs-period" onchange="empHoursLoad()" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;">
         <option value="week">This Week</option>
         <option value="month">This Month</option>
         <option value="all">All Time</option>
       </select>
     </div>
-    <div class="stats-grid" id="hrs-stats"></div>
-    <div class="table-wrap" style="margin-top:8px;"><div id="hrs-body"><div class="empty-state"><p>Loading...</p></div></div></div>`;
-  await loadMyHours_data();
+    <div class="kpi-row" id="hrs-kpis"></div>
+    <div class="tbl-wrap"><div id="hrs-rows"></div></div>`;
+  await empHoursLoad();
 }
 
-async function loadMyHours_data(){
+async function empHoursLoad(){
   const period = document.getElementById('hrs-period')?.value||'week';
-  const now = new Date();
   let from = null;
-  if(period==='week'){ const d=new Date(now); d.setDate(now.getDate()-now.getDay()+1); from=d.toISOString().split('T')[0]; }
-  else if(period==='month'){ from=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`; }
-  let q = sb.from('time_logs').select('*').eq('employee_id',currentUser.id).not('clock_out','is',null).order('clock_in',{ascending:false});
+  if(period==='week') from = weekStart();
+  else if(period==='month') from = new Date().toISOString().slice(0,7)+'-01';
+  let q = db.from('time_logs').select('*').eq('employee_id',ME.id).not('clock_out','is',null).order('clock_in',{ascending:false});
   if(from) q = q.gte('clock_in',from);
-  const {data:logs} = await q;
-  const {data:profile} = await sb.from('profiles').select('hourly_rate').eq('id',currentUser.id).single();
+  const [{data:logs},{data:profile}] = await Promise.all([q, db.from('profiles').select('hourly_rate').eq('id',ME.id).single()]);
   const rate = profile?.hourly_rate||25;
-  let totalHrs = 0;
-  (logs||[]).forEach(l=>totalHrs+=(new Date(l.clock_out)-new Date(l.clock_in))/3600000);
-  const totalPay = (totalHrs*rate).toFixed(2);
-  const st = document.getElementById('hrs-stats');
-  if(st) st.innerHTML = `
-    <div class="stat-card"><div class="icon">⏱️</div><div class="val">${totalHrs.toFixed(1)}</div><div class="lbl">Total Hours</div></div>
-    <div class="stat-card"><div class="icon">💵</div><div class="val">$${totalPay}</div><div class="lbl">Total Earnings</div></div>
-    <div class="stat-card"><div class="icon">📋</div><div class="val">${logs?.length||0}</div><div class="lbl">Sessions</div></div>
-    <div class="stat-card"><div class="icon">💰</div><div class="val">$${rate}</div><div class="lbl">Hourly Rate</div></div>`;
-  const hb = document.getElementById('hrs-body');
-  if(!logs||!logs.length){ hb.innerHTML='<div class="empty-state"><p>No records for this period.</p></div>'; return; }
-  hb.innerHTML = `<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
-    ${logs.map(l=>{const h=((new Date(l.clock_out)-new Date(l.clock_in))/3600000).toFixed(2);return`<tr><td>${l.clock_in.split('T')[0]}</td><td>${fmtDT(l.clock_in)}</td><td>${fmtDT(l.clock_out)}</td><td>${h} hrs</td><td>$${(h*rate).toFixed(2)}</td></tr>`;}).join('')}
-  </tbody></table>`;
+  let totalH = 0;
+  (logs||[]).forEach(l=>totalH+=hoursNum(l.clock_in,l.clock_out));
+  const totalPay = (totalH*rate).toFixed(2);
+  document.getElementById('hrs-kpis').innerHTML = `
+    <div class="kpi"><div class="k-icon">⏱️</div><div class="k-val">${totalH.toFixed(2)}</div><div class="k-lbl">Total Hours</div></div>
+    <div class="kpi"><div class="k-icon">💵</div><div class="k-val">$${totalPay}</div><div class="k-lbl">Gross Earnings</div></div>
+    <div class="kpi"><div class="k-icon">📋</div><div class="k-val">${logs?.length||0}</div><div class="k-lbl">Sessions</div></div>
+    <div class="kpi"><div class="k-icon">💰</div><div class="k-val">$${rate}</div><div class="k-lbl">Hourly Rate</div></div>`;
+  const rows = document.getElementById('hrs-rows');
+  if(!logs?.length){ rows.innerHTML='<div class="empty"><p>No completed sessions this period.</p></div>'; return; }
+  rows.innerHTML = `<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
+    ${logs.map(l=>{
+      const h = hoursNum(l.clock_in,l.clock_out);
+      return `<tr><td>${l.clock_in.split('T')[0]}</td><td>${fmtDT(l.clock_in)}</td><td>${fmtDT(l.clock_out)}</td><td>${h.toFixed(2)} hrs</td><td style="font-weight:600;color:var(--green);">$${(h*rate).toFixed(2)}</td></tr>`;
+    }).join('')}</tbody></table>`;
 }
 
-// My Invoices (Employee)
-async function loadMyInvoices(){
-  const el = document.getElementById('page-myinvoices');
-  el.innerHTML = `<h2 class="page-title">My Invoices</h2><p class="page-sub">Generate and view your pay invoices</p>
-    <div class="form-card"><h3>Generate Invoice</h3>
+// --- My Invoice ---
+async function empInvoice(){
+  const el = document.getElementById('pg-myinvoice');
+  const mon = weekStart();
+  el.innerHTML = `
+    <h2 class="pg-title">My Invoice</h2>
+    <p class="pg-sub">Generate a pay invoice from your clock records</p>
+    <div class="form-card">
+      <h3>Generate Invoice</h3>
       <div class="form-row">
-        <div class="field"><label>From Date</label><input type="date" id="ei-from"/></div>
-        <div class="field"><label>To Date</label><input type="date" id="ei-to"/></div>
+        <div class="field"><label>From Date</label><input type="date" id="ei-from" value="${mon}"/></div>
+        <div class="field"><label>To Date</label><input type="date" id="ei-to" value="${today()}"/></div>
       </div>
-      <button class="action-btn btn-primary" style="margin-top:16px;" onclick="generateMyInvoice()">Generate</button>
+      <button class="act-btn ab-primary" style="margin-top:14px;" onclick="buildEmpInvoice()">Generate</button>
     </div>
     <div id="ei-preview"></div>
-    <div class="table-wrap" style="margin-top:20px;"><div class="table-header"><h3>Saved Invoices</h3></div><div id="ei-saved"><div class="empty-state"><p>Loading...</p></div></div></div>`;
-  const now = new Date(); const mon = new Date(now);
-  mon.setDate(now.getDate()-now.getDay()+1);
-  document.getElementById('ei-from').value = mon.toISOString().split('T')[0];
-  document.getElementById('ei-to').value = now.toISOString().split('T')[0];
-  await loadSavedInvoices();
+    <div class="tbl-wrap" style="margin-top:20px;">
+      <div class="tbl-top"><h3>My Saved Invoices</h3></div>
+      <div id="ei-saved"></div>
+    </div>`;
+  await loadSavedInvoices('ei-saved', ME.id);
 }
 
-async function generateMyInvoice(){
+async function buildEmpInvoice(){
   const from = document.getElementById('ei-from').value;
-  const to = document.getElementById('ei-to').value;
-  if(!from||!to){ toast('Select date range','error'); return; }
-  const {data:logs} = await sb.from('time_logs').select('*').eq('employee_id',currentUser.id).gte('clock_in',from).lte('clock_in',to+'T23:59:59').not('clock_out','is',null);
-  const {data:profile} = await sb.from('profiles').select('hourly_rate').eq('id',currentUser.id).single();
+  const to   = document.getElementById('ei-to').value;
+  if(!from||!to){ toast('Select a date range','err'); return; }
+  const {data:profile} = await db.from('profiles').select('hourly_rate').eq('id',ME.id).single();
   const rate = profile?.hourly_rate||25;
-  let totalHrs = 0;
-  (logs||[]).forEach(l=>totalHrs+=(new Date(l.clock_out)-new Date(l.clock_in))/3600000);
-  const totalPay = (totalHrs*rate).toFixed(2);
+  await renderInvoice('ei-preview', ME.id, PROFILE.full_name, from, to, rate, false);
+}
+
+// --- Shared invoice renderer ---
+async function renderInvoice(containerId, empId, empName, from, to, rate, isManager){
+  const {data:logs} = await db.from('time_logs').select('*')
+    .eq('employee_id', empId)
+    .gte('clock_in', from)
+    .lte('clock_in', to+'T23:59:59')
+    .not('clock_out','is',null)
+    .order('clock_in');
+  let totalH = 0;
+  (logs||[]).forEach(l=>totalH+=hoursNum(l.clock_in,l.clock_out));
+  const totalPay = (totalH*rate).toFixed(2);
   const invNum = 'CNL-'+Date.now().toString().slice(-6);
-  document.getElementById('ei-preview').innerHTML = `
-    <div class="invoice-preview">
-      <h2>INVOICE</h2>
-      <div style="color:var(--muted);font-size:13px;">Invoice #${invNum}</div>
-      <div class="inv-meta">
-        <div><strong>FROM:</strong><br/>${currentProfile.full_name}</div>
-        <div><strong>TO:</strong><br/>Central Nurses LLC<br/>Wichita, Kansas</div>
-        <div><strong>PERIOD:</strong><br/>${from} to ${to}</div>
-        <div><strong>DATE:</strong><br/>${new Date().toLocaleDateString()}</div>
+  const fromLabel = isManager ? 'Central Nurses LLC<br/>Wichita, Kansas' : empName;
+  const toLabel   = isManager ? empName : 'Central Nurses LLC<br/>Wichita, Kansas';
+  document.getElementById(containerId).innerHTML = `
+    <div class="inv-doc" id="inv-printable">
+      <div class="inv-header">
+        <div class="inv-co"><h2>INVOICE</h2><p>Invoice #${invNum}</p></div>
+        <div style="text-align:right;"><div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Issue Date</div><div style="font-weight:700;font-size:16px;">${new Date().toLocaleDateString()}</div></div>
       </div>
-      <table style="width:100%;border-collapse:collapse;font-size:14px;">
-        <thead><tr style="background:var(--off);"><th style="padding:10px;text-align:left;">Date</th><th style="padding:10px;text-align:left;">Clock In</th><th style="padding:10px;text-align:left;">Clock Out</th><th style="padding:10px;text-align:right;">Hours</th><th style="padding:10px;text-align:right;">Amount</th></tr></thead>
-        <tbody>${(logs||[]).map(l=>{const h=((new Date(l.clock_out)-new Date(l.clock_in))/3600000).toFixed(2);return`<tr><td style="padding:9px 10px;border-top:1px solid var(--border);">${l.clock_in.split('T')[0]}</td><td style="padding:9px 10px;border-top:1px solid var(--border);">${fmtDT(l.clock_in)}</td><td style="padding:9px 10px;border-top:1px solid var(--border);">${fmtDT(l.clock_out)}</td><td style="padding:9px 10px;border-top:1px solid var(--border);text-align:right;">${h}</td><td style="padding:9px 10px;border-top:1px solid var(--border);text-align:right;">$${(h*rate).toFixed(2)}</td></tr>`;}).join('')}</tbody>
+      <div class="inv-meta-grid">
+        <div class="inv-meta-item"><div class="lbl">From</div><div class="val">${fromLabel}</div></div>
+        <div class="inv-meta-item"><div class="lbl">To</div><div class="val">${toLabel}</div></div>
+        <div class="inv-meta-item"><div class="lbl">Period Start</div><div class="val">${from}</div></div>
+        <div class="inv-meta-item"><div class="lbl">Period End</div><div class="val">${to}</div></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
+        <thead><tr style="background:#f8fafc;">
+          <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);">Date</th>
+          <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);">Clock In</th>
+          <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);">Clock Out</th>
+          <th style="padding:10px 14px;text-align:right;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);">Hours</th>
+          <th style="padding:10px 14px;text-align:right;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);">Amount</th>
+        </tr></thead>
+        <tbody>${(logs||[]).map(l=>{
+          const h = hoursNum(l.clock_in,l.clock_out);
+          return `<tr>
+            <td style="padding:10px 14px;border-top:1px solid var(--border);">${l.clock_in.split('T')[0]}</td>
+            <td style="padding:10px 14px;border-top:1px solid var(--border);">${fmtDT(l.clock_in)}</td>
+            <td style="padding:10px 14px;border-top:1px solid var(--border);">${fmtDT(l.clock_out)}</td>
+            <td style="padding:10px 14px;border-top:1px solid var(--border);text-align:right;">${h.toFixed(2)}</td>
+            <td style="padding:10px 14px;border-top:1px solid var(--border);text-align:right;font-weight:600;">$${(h*rate).toFixed(2)}</td>
+          </tr>`;
+        }).join('')}
+        ${!logs?.length?'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">No clock records found for this period.</td></tr>':''}
+        </tbody>
       </table>
-      <div class="inv-total">Total Hours: ${totalHrs.toFixed(2)} hrs &nbsp;|&nbsp; Rate: $${rate}/hr &nbsp;|&nbsp; <strong>TOTAL: $${totalPay}</strong></div>
-      <div style="margin-top:16px;display:flex;gap:12px;">
-        <button class="action-btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
-        <button class="action-btn btn-navy" onclick="saveMyInvoice('${invNum}','${from}','${to}',${totalHrs.toFixed(2)},${totalPay})">💾 Save</button>
+      <div class="inv-totals">
+        <div class="t-item"><div class="t-lbl">Total Hours</div><div class="t-val">${totalH.toFixed(2)}</div></div>
+        <div class="t-item"><div class="t-lbl">Rate</div><div class="t-val">$${rate}/hr</div></div>
+        <div class="t-item"><div class="t-lbl">Total Due</div><div class="t-val big">$${totalPay}</div></div>
+      </div>
+      <div class="inv-actions">
+        <button class="act-btn ab-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+        <button class="act-btn ab-dark" onclick="saveInvoice('${empId}','${invNum}','${from}','${to}',${totalH.toFixed(4)},${totalPay},'${containerId}')">💾 Save to Records</button>
       </div>
     </div>`;
 }
 
-async function saveMyInvoice(invNum,from,to,hrs,amount){
-  const {error} = await sb.from('invoices').insert({employee_id:currentUser.id,invoice_number:invNum,period_start:from,period_end:to,total_hours:hrs,total_amount:amount,status:'pending'});
-  if(error){ toast(error.message,'error'); return; }
-  toast('Invoice saved!','success');
-  await loadSavedInvoices();
+async function saveInvoice(empId, invNum, from, to, hrs, amount, containerId){
+  const {error} = await db.from('invoices').insert({employee_id:empId, invoice_number:invNum, period_start:from, period_end:to, total_hours:hrs, total_amount:amount, status:'pending'});
+  if(error){ toast(error.message,'err'); return; }
+  toast(`Invoice ${invNum} saved!`,'ok');
+  // Reload saved list
+  const savedId = containerId==='inv-preview-area'?'inv-saved-rows':'ei-saved';
+  const empFilter = containerId==='ei-preview'?ME.id:null;
+  await loadSavedInvoices(savedId, empFilter);
 }
 
-async function loadSavedInvoices(){
-  const {data} = await sb.from('invoices').select('*').eq('employee_id',currentUser.id).order('created_at',{ascending:false});
-  const el = document.getElementById('ei-saved');
-  if(!data||!data.length){ el.innerHTML='<div class="empty-state"><p>No saved invoices yet.</p></div>'; return; }
-  el.innerHTML = `<table><thead><tr><th>Invoice #</th><th>Period</th><th>Hours</th><th>Amount</th><th>Status</th></tr></thead><tbody>
-    ${data.map(i=>`<tr><td><strong>${i.invoice_number}</strong></td><td>${i.period_start} → ${i.period_end}</td><td>${i.total_hours} hrs</td><td>$${i.total_amount}</td><td><span class="badge ${i.status==='paid'?'badge-green':'badge-orange'}">${i.status}</span></td></tr>`).join('')}
+async function loadSavedInvoices(elId, empId=null){
+  let q = db.from('invoices').select('*, profiles(full_name)').order('created_at',{ascending:false});
+  if(empId) q = q.eq('employee_id',empId);
+  const {data} = await q;
+  const el = document.getElementById(elId);
+  if(!el) return;
+  if(!data?.length){ el.innerHTML='<div class="empty"><p>No saved invoices yet.</p></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>Invoice #</th>${!empId?'<th>Employee</th>':''}<th>Period</th><th>Hours</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+    ${data.map(i=>`<tr>
+      <td><strong>${i.invoice_number}</strong></td>
+      ${!empId?`<td>${i.profiles?.full_name||'—'}</td>`:''}
+      <td>${i.period_start} → ${i.period_end}</td>
+      <td>${parseFloat(i.total_hours).toFixed(2)} hrs</td>
+      <td style="font-weight:600;">$${parseFloat(i.total_amount).toFixed(2)}</td>
+      <td><span class="badge ${i.status==='paid'?'b-green':i.status==='cancelled'?'b-red':'b-orange'}">${i.status}</span></td>
+    </tr>`).join('')}
   </tbody></table>`;
 }
 
-// My Credentials
-async function loadMyCreds(){
-  const el = document.getElementById('page-mycreds');
-  el.innerHTML = `<h2 class="page-title">My Credentials</h2><p class="page-sub">Your certifications and license status</p><div id="mc-body"><div class="empty-state"><p>Loading...</p></div></div>`;
-  const {data:creds} = await sb.from('credentials').select('*').eq('employee_id',currentUser.id).order('expiry_date');
-  const mc = document.getElementById('mc-body');
-  if(!creds||!creds.length){ mc.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><p>No credentials on file. Contact your manager.</p></div>'; return; }
-  const today = new Date(); today.setHours(0,0,0,0);
-  mc.innerHTML = `<div class="cred-grid">${creds.map(c=>{
-    const exp = new Date(c.expiry_date); exp.setHours(0,0,0,0);
-    const days = Math.round((exp-today)/86400000);
-    const cls = days<0?'red':days<=30?'orange':'green';
-    const lbl = days<0?`Expired ${Math.abs(days)} days ago`:days===0?'Expires today':`${days} days remaining`;
-    return `<div class="cred-card ${cls}"><div class="cred-name">${c.name}</div><div class="cred-exp">Expires: ${c.expiry_date}</div><div class="cred-days ${cls}">${lbl}</div></div>`;
+// --- My Schedule (employee) ---
+async function empSchedule(){
+  const el = document.getElementById('pg-myschedule');
+  el.innerHTML = `<h2 class="pg-title">My Schedule</h2><p class="pg-sub">Your upcoming assigned shifts</p><div id="my-sched"></div>`;
+  const {data:shifts} = await db.from('shifts').select('*').eq('employee_id',ME.id).gte('date',today()).order('date').limit(20);
+  const ms = document.getElementById('my-sched');
+  if(!shifts?.length){ ms.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>No upcoming shifts scheduled. Check back later.</p></div>'; return; }
+  ms.innerHTML = `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Day</th><th>Shift</th><th>Notes</th></tr></thead><tbody>
+    ${shifts.map(s=>{
+      const d = new Date(s.date+'T12:00:00');
+      return `<tr><td>${s.date}</td><td>${d.toLocaleDateString('en-US',{weekday:'long'})}</td><td>${s.shift_time||'—'}</td><td>${s.notes||'—'}</td></tr>`;
+    }).join('')}
+  </tbody></table></div>`;
+}
+
+// --- My Credentials (employee) ---
+async function empCreds(){
+  const el = document.getElementById('pg-mycreds');
+  el.innerHTML = `<h2 class="pg-title">My Credentials</h2><p class="pg-sub">Your certifications and license status</p><div id="mc-area"></div>`;
+  const {data:creds} = await db.from('credentials').select('*').eq('employee_id',ME.id).order('expiry_date');
+  const area = document.getElementById('mc-area');
+  if(!creds?.length){ area.innerHTML='<div class="empty"><div class="empty-icon">📋</div><p>No credentials on file yet. Your manager will add them.</p></div>'; return; }
+  const now = new Date(); now.setHours(0,0,0,0);
+  area.innerHTML = `<div class="cred-grid">${creds.map(c=>{
+    const exp = new Date(c.expiry_date+'T00:00:00');
+    const d = Math.round((exp-now)/864e5);
+    const cls = d<0?'red':d<=30?'orange':'green';
+    const txt = d<0?`Expired ${Math.abs(d)} days ago`:d===0?'Expires today':`${d} days remaining`;
+    return `<div class="cred-card"><div class="cred-stripe ${cls}"></div><div class="cred-name" style="margin-top:4px;">${c.name}</div><div class="cred-exp">Expires: ${c.expiry_date}</div><div class="cred-days ${cls}">${txt}</div></div>`;
   }).join('')}</div>`;
 }
 
-// ===== HELPERS =====
+// ============================================================
+// CONTACT FORM
+// ============================================================
+function sendContact(){
+  const n = document.getElementById('c-name').value.trim();
+  const e = document.getElementById('c-email').value.trim();
+  const m = document.getElementById('c-msg').value.trim();
+  if(!n||!e||!m){ toast('Please fill all fields','err'); return; }
+  const s = document.getElementById('c-subj').value || 'Website Inquiry';
+  window.location.href = `mailto:kipkoechbethwel721@gmail.com?subject=${encodeURIComponent(s+' — '+n)}&body=${encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m)}`;
+}
+
+// ============================================================
+// HERO STATS (public page)
+// ============================================================
+async function loadHeroStats(){
+  const [s1,s2,s3] = await Promise.all([
+    db.from('profiles').select('id',{count:'exact'}).eq('role','employee').eq('status','active'),
+    db.from('time_logs').select('id',{count:'exact'}).is('clock_out',null),
+    db.from('shifts').select('id',{count:'exact'}).gte('date',weekStart()).lte('date',today()),
+  ]);
+  const set = (id,val)=>{ const e=document.getElementById(id); if(e) e.textContent=val; };
+  set('hero-staff', s1.count||0);
+  set('hero-clocked', s2.count||0);
+  set('hero-shifts', s3.count||0);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function today(){ return new Date().toISOString().split('T')[0]; }
+function weekStart(){
+  const n = new Date(); const dow = n.getDay();
+  const m = new Date(n); m.setDate(n.getDate()-(dow===0?6:dow-1));
+  return m.toISOString().split('T')[0];
+}
+function hoursNum(a,b){ return (new Date(b)-new Date(a))/3600000; }
+function hrs(a,b){ return hoursNum(a,b).toFixed(2); }
 function fmtDT(iso){ if(!iso) return '—'; const d=new Date(iso); return d.toLocaleDateString()+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}); }
 function fmtDate(d){ return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
 
-function sendContact(){
-  const name = document.getElementById('c-name').value.trim();
-  const email = document.getElementById('c-email').value.trim();
-  const msg = document.getElementById('c-msg').value.trim();
-  if(!name||!email||!msg){ toast('Please fill all fields','error'); return; }
-  const subject = document.getElementById('c-subject').value||'Website Inquiry';
-  window.location.href = `mailto:kipkoechbethwel721@gmail.com?subject=${encodeURIComponent(subject+' - '+name)}&body=${encodeURIComponent('From: '+name+'\nEmail: '+email+'\n\n'+msg)}`;
-  toast('Opening email client...','success');
-}
-
-// ===== SESSION RESTORE =====
+// ============================================================
+// INIT — restore session on page load
+// ============================================================
 (async()=>{
-  const {data:{session}} = await sb.auth.getSession();
-  if(session?.user) await loadDashboard(session.user);
+  const {data:{session}} = await db.auth.getSession();
+  if(session?.user) await bootDashboard(session.user);
+  else loadHeroStats();
 })();
 </script>
 </body>
