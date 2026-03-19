@@ -3,1317 +3,931 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Central Nurses LLC</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Central Nurses LLC — Staff Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-/* ═══════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════ */
 :root{
-  --navy:#0b1d35;
-  --navy2:#122444;
-  --navy3:#1a3260;
-  --gold:#c9a84c;
-  --gold2:#e8c96a;
-  --white:#ffffff;
-  --off:#f7f5ef;
-  --muted:#64748b;
-  --border:#e2e8f0;
-  --green:#15803d; --gbg:#f0fdf4;
-  --red:#dc2626;   --rbg:#fef2f2;
-  --orange:#c2410c;--obg:#fff7ed;
-  --blue:#0077b6;  --bbg:#eff6ff;
-  --r:12px;
-  --shadow:0 2px 16px rgba(11,29,53,.08);
-  --shadow-lg:0 8px 40px rgba(11,29,53,.16);
+  --navy:#0b1a2e;--navy2:#122040;--navy3:#1a3260;
+  --gold:#c9a84c;--gold2:#e8c96a;--teal:#007ea7;
+  --white:#fff;--cream:#f6f4ee;--muted:#64748b;--border:#e2e8f0;
+  --green:#15803d;--gbg:#f0fdf4;--red:#dc2626;--rbg:#fef2f2;--orange:#c2410c;--obg:#fff7ed;
+  --shadow:0 2px 16px rgba(11,26,46,.08);--shadow-lg:0 12px 48px rgba(11,26,46,.18);--r:13px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
 html{scroll-behavior:smooth;}
-body{font-family:'Outfit',sans-serif;background:var(--off);color:var(--navy);}
-
-/* ═══════════════════════════════════════
-   TOAST
-═══════════════════════════════════════ */
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);}
 #toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
-.t{padding:11px 18px;border-radius:9px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:var(--shadow-lg);animation:tfade .3s ease;max-width:290px;line-height:1.4;}
-.t-info{background:var(--navy);}
-.t-ok{background:var(--green);}
-.t-err{background:var(--red);}
-@keyframes tfade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* ═══════════════════════════════════════
-   PUBLIC SITE
-═══════════════════════════════════════ */
-#site{display:block;}
-#dash{display:none;}
+.t{padding:11px 18px;border-radius:9px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:var(--shadow-lg);animation:tf .3s ease;max-width:290px;line-height:1.4;}
+.tok{background:var(--green);}.terr{background:var(--red);}.tinfo{background:var(--navy);}
+@keyframes tf{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+#site{display:block;}#dash{display:none;}
 
 /* NAV */
-.nav{background:var(--navy);height:68px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(11,29,53,.4);}
-.nav-logo{display:flex;align-items:center;gap:11px;}
-.nav-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
-.nav-logo-text{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:21px;font-weight:700;letter-spacing:.3px;}
-.nav-links{display:flex;align-items:center;gap:30px;}
+.nav{background:var(--navy);height:68px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(11,26,46,.4);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nli{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.nlt{font-family:'Playfair Display',serif;color:var(--gold);font-size:21px;font-weight:700;}
+.nav-links{display:flex;align-items:center;gap:28px;}
 .nav-links a{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
 .nav-links a:hover{color:#fff;}
-.nav-cta{background:var(--gold);color:var(--navy);border:none;padding:9px 22px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;}
+.nav-cta{background:var(--gold);color:var(--navy);border:none;padding:9px 22px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;}
 .nav-cta:hover{background:var(--gold2);}
 
 /* HERO */
-.hero{background:var(--navy);padding:96px 5% 80px;position:relative;overflow:hidden;}
-.hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);}
-.hero::before{content:'';position:absolute;left:5%;bottom:0;width:60%;height:1px;background:linear-gradient(90deg,rgba(201,168,76,.4),transparent);}
-.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;gap:64px;align-items:center;position:relative;z-index:1;}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);padding:5px 14px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5.5vw,70px);color:#fff;line-height:1.06;margin-bottom:20px;}
+.hero{background:var(--navy);padding:90px 5% 76px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;right:-80px;top:-80px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 70%);}
+.hi{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 370px;gap:60px;align-items:center;position:relative;z-index:1;}
+.hero-ey{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);padding:5px 14px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(38px,5.5vw,68px);color:#fff;line-height:1.06;margin-bottom:20px;}
 .hero h1 em{color:var(--gold);font-style:normal;}
 .hero-sub{color:rgba(255,255,255,.6);font-size:16px;line-height:1.8;margin-bottom:36px;max-width:500px;}
-.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
-.btn{padding:13px 28px;border-radius:9px;font-family:'Outfit',sans-serif;font-weight:600;font-size:14.5px;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
-.btn-gold{background:var(--gold);color:var(--navy);}
-.btn-gold:hover{background:var(--gold2);}
-.btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);}
-.btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.07);}
-/* Hero stats card */
-.hero-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;backdrop-filter:blur(8px);}
-.hcard-title{color:rgba(255,255,255,.5);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
-.hstat{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.07);}
-.hstat:last-child{border-bottom:none;padding-bottom:0;}
-.hstat-label{color:rgba(255,255,255,.5);font-size:13px;}
-.hstat-val{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;}
+.hbtns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn{padding:13px 28px;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14.5px;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-g{background:var(--gold);color:var(--navy);}.btn-g:hover{background:var(--gold2);}
+.btn-o{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);}.btn-o:hover{border-color:#fff;}
+.wcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;}
+.wc-t{color:rgba(255,255,255,.45);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
+.wci{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+.wci:last-of-type{border-bottom:none;}
+.wci span{color:rgba(255,255,255,.75);font-size:13.5px;line-height:1.5;}
+.wc-btn{margin-top:20px;width:100%;padding:12px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s;}
+.wc-btn:hover{background:var(--gold2);}
 
 /* STATS BAR */
-.stats-bar{background:var(--gold);display:grid;grid-template-columns:repeat(4,1fr);}
-.sbar-item{padding:26px 20px;text-align:center;border-right:1px solid rgba(11,29,53,.12);}
-.sbar-item:last-child{border-right:none;}
-.sbar-num{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--navy);line-height:1;}
-.sbar-lbl{font-size:11.5px;font-weight:600;color:rgba(11,29,53,.55);margin-top:4px;text-transform:uppercase;letter-spacing:.7px;}
+.sbar{background:var(--gold);display:grid;grid-template-columns:repeat(4,1fr);}
+.sbi{padding:26px 20px;text-align:center;border-right:1px solid rgba(11,26,46,.12);}
+.sbi:last-child{border-right:none;}
+.sbn{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--navy);line-height:1;}
+.sbl{font-size:11.5px;font-weight:600;color:rgba(11,26,46,.55);margin-top:4px;text-transform:uppercase;letter-spacing:.7px;}
 
 /* SECTIONS */
 section{padding:80px 5%;}
-.sec-inner{max-width:1100px;margin:0 auto;}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px;}
-.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,46px);color:var(--navy);margin-bottom:14px;line-height:1.15;}
-.sec-sub{color:var(--muted);font-size:15.5px;line-height:1.75;max-width:520px;}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:48px;}
-.svc-card{background:#fff;border-radius:var(--r);padding:28px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
-.svc-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
-.svc-icon{font-size:30px;margin-bottom:16px;}
-.svc-card h3{font-size:18px;margin-bottom:8px;font-family:'Cormorant Garamond',serif;}
-.svc-card p{color:var(--muted);font-size:13.5px;line-height:1.7;}
+.sec{max-width:1100px;margin:0 auto;}
+.ey{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.st{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,46px);color:var(--navy);margin-bottom:14px;line-height:1.15;}
+.ss{color:var(--muted);font-size:15px;line-height:1.75;max-width:520px;}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:44px;}
+.sc{background:#fff;border-radius:var(--r);padding:28px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
+.sc:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.sc-i{font-size:30px;margin-bottom:16px;}
+.sc h3{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:8px;}
+.sc p{color:var(--muted);font-size:13.5px;line-height:1.7;}
+.join{background:linear-gradient(135deg,var(--navy),var(--navy3));padding:80px 5%;}
+.ji{max-width:680px;margin:0 auto;text-align:center;}
+.ji h2{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,50px);color:#fff;margin-bottom:14px;}
+.ji p{color:rgba(255,255,255,.6);font-size:15.5px;line-height:1.75;margin-bottom:34px;}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:44px;}
+.ci{display:flex;align-items:center;gap:12px;margin-bottom:14px;color:var(--muted);font-size:14px;}
+.ci-i{width:36px;height:36px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;}
+.ff input,.ff select,.ff textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);background:#fff;outline:none;transition:border .2s;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--navy);}
+.ff textarea{min-height:108px;resize:vertical;}
+.subbtn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;}
+.subbtn:hover{background:var(--navy3);}
+footer{background:var(--navy);padding:28px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.fb{font-family:'Playfair Display',serif;color:var(--gold);font-size:18px;font-weight:700;}
+.fc2{color:rgba(255,255,255,.3);font-size:12.5px;}
 
-/* JOIN CTA */
-.join-sec{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);padding:80px 5%;}
-.join-inner{max-width:700px;margin:0 auto;text-align:center;}
-.join-inner h2{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,52px);color:#fff;margin-bottom:14px;}
-.join-inner p{color:rgba(255,255,255,.6);font-size:16px;line-height:1.75;margin-bottom:36px;}
-
-/* CONTACT */
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:44px;}
-.ci{display:flex;align-items:center;gap:12px;margin-bottom:14px;color:var(--muted);font-size:14.5px;}
-.ci-icon{width:36px;height:36px;background:var(--bbg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.form-field{margin-bottom:15px;}
-.form-field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
-.form-field input,.form-field select,.form-field textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--navy);background:#fff;outline:none;transition:border .2s;}
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--blue);}
-.form-field textarea{min-height:110px;resize:vertical;}
-.submit-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;}
-.submit-btn:hover{background:var(--navy3);}
-
-/* FOOTER */
-footer{background:var(--navy);padding:32px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.foot-brand{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:18px;font-weight:700;}
-.foot-copy{color:rgba(255,255,255,.3);font-size:12.5px;}
-
-/* ═══════════════════════════════════════
-   AUTH MODAL
-═══════════════════════════════════════ */
-.overlay{position:fixed;inset:0;background:rgba(11,29,53,.7);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
-.overlay.open{display:flex;}
-.modal{background:#fff;border-radius:18px;padding:40px 36px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);position:relative;animation:mfade .25s ease;}
-@keyframes mfade{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
-.modal-x{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;}
-.modal-logo{text-align:center;margin-bottom:26px;}
-.modal-logo .ml-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 10px;}
-.modal-logo h2{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--navy);}
-.modal-logo p{color:var(--muted);font-size:13px;margin-top:3px;}
-.mfield{margin-bottom:16px;}
-.mfield label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
-.mfield input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--navy);outline:none;transition:border .2s;}
-.mfield input:focus{border-color:var(--navy);}
-.mbtn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+/* MODALS */
+.ov{position:fixed;inset:0;background:rgba(11,26,46,.7);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.ov.open{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:40px 36px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);position:relative;animation:mf .25s ease;}
+@keyframes mf{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+.mx{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;}
+.modal h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--navy);margin-bottom:4px;}
+.msub{color:var(--muted);font-size:13px;margin-bottom:26px;}
+.mf{margin-bottom:16px;}
+.mf label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
+.mf input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;transition:border .2s;}
+.mf input:focus{border-color:var(--navy);}
+.mbtn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .mbtn:hover{background:var(--navy3);}
 .mbtn:disabled{opacity:.55;cursor:not-allowed;}
-.mswitch{text-align:center;margin-top:15px;font-size:13px;color:var(--muted);}
-.mswitch a{color:var(--blue);cursor:pointer;font-weight:600;}
+.msw{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
+.msw a{color:var(--teal);cursor:pointer;font-weight:600;}
 
-/* ═══════════════════════════════════════
-   DASHBOARD
-═══════════════════════════════════════ */
+/* DASHBOARD */
 #dash{flex-direction:column;min-height:100vh;}
-.dbar{background:var(--navy);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(11,29,53,.35);}
-.dbar-logo{display:flex;align-items:center;gap:10px;}
-.dbar-logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
-.dbar-logo-text{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:19px;font-weight:700;}
-.dbar-right{display:flex;align-items:center;gap:14px;}
-.upill{background:rgba(255,255,255,.08);border-radius:50px;padding:5px 14px 5px 6px;display:flex;align-items:center;gap:9px;}
-.uav{width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--navy);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dbar{background:var(--navy);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(11,26,46,.3);}
+.dl{display:flex;align-items:center;gap:10px;}
+.dli{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.dln{font-family:'Playfair Display',serif;color:var(--gold);font-size:19px;font-weight:700;}
+.dr{display:flex;align-items:center;gap:14px;}
+.up{background:rgba(255,255,255,.08);border-radius:50px;padding:5px 14px 5px 6px;display:flex;align-items:center;gap:9px;}
+.uav{width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--navy);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;}
 .unm{color:#fff;font-size:13px;font-weight:500;}
-.urole{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 8px;border-radius:50px;}
-.role-m{background:rgba(201,168,76,.2);color:var(--gold);}
-.role-e{background:rgba(0,119,182,.2);color:#67e8f9;}
-.signout{background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);border:none;padding:7px 15px;border-radius:7px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:background .2s;}
-.signout:hover{background:rgba(255,255,255,.18);}
-
-/* Dash layout */
+.uid{color:rgba(255,255,255,.4);font-size:11px;}
+.urole{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:50px;}
+.rm{background:rgba(201,168,76,.2);color:var(--gold);}
+.re{background:rgba(0,126,167,.2);color:#67e8f9;}
+.so{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:none;padding:7px 14px;border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;transition:background .2s;}
+.so:hover{background:rgba(255,255,255,.18);}
 .dlayout{display:flex;flex:1;min-height:calc(100vh - 62px);}
 .sidebar{width:210px;background:var(--navy2);padding:16px 0;flex-shrink:0;}
 .si{display:flex;align-items:center;gap:11px;padding:12px 20px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13.5px;font-weight:500;transition:all .2s;border-left:3px solid transparent;user-select:none;}
 .si:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.04);}
 .si.active{color:#fff;background:rgba(201,168,76,.12);border-left-color:var(--gold);}
-.si-icon{font-size:17px;width:20px;text-align:center;flex-shrink:0;}
-.dcontent{flex:1;padding:28px;overflow-y:auto;}
-.pg{display:none;}
-.pg.on{display:block;}
-.pg-title{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--navy);margin-bottom:4px;}
-.pg-sub{color:var(--muted);font-size:14px;margin-bottom:26px;}
-
-/* KPI row */
-.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:24px;}
+.si-ic{font-size:17px;width:20px;text-align:center;flex-shrink:0;}
+.dc{flex:1;padding:28px;overflow-y:auto;}
+.pg{display:none;}.pg.on{display:block;}
+.pgt{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:4px;}
+.pgs{color:var(--muted);font-size:14px;margin-bottom:24px;}
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:22px;}
 .kpi{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.kpi-icon{font-size:26px;margin-bottom:10px;}
-.kpi-val{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--navy);line-height:1;}
-.kpi-lbl{font-size:12px;color:var(--muted);margin-top:4px;font-weight:500;}
-
-/* Table */
+.kpi-i{font-size:26px;margin-bottom:10px;}
+.kpi-v{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--navy);line-height:1;}
+.kpi-l{font-size:12px;color:var(--muted);margin-top:4px;font-weight:500;}
 .tw{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
-.th{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.th h3{font-size:15px;font-weight:700;}
+.twt{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.twt h3{font-size:15px;font-weight:700;}
 table{width:100%;border-collapse:collapse;}
-th{background:#f8fafc;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:10px 16px;text-align:left;white-space:nowrap;}
+th{background:#f8f7f3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:10px 16px;text-align:left;white-space:nowrap;}
 td{padding:12px 16px;border-top:1px solid var(--border);font-size:13.5px;vertical-align:middle;}
-tr:hover td{background:rgba(11,29,53,.018);}
+tr:hover td{background:rgba(11,26,46,.018);}
 .badge{display:inline-block;padding:3px 9px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;}
 .bg{background:var(--gbg);color:var(--green);}
 .br{background:var(--rbg);color:var(--red);}
 .bo{background:var(--obg);color:var(--orange);}
-.bb{background:var(--bbg);color:var(--blue);}
-.bx{background:#f1f5f9;color:var(--muted);}
-
-/* Form card */
-.fc{background:#fff;border-radius:var(--r);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
-.fc h3{font-size:15px;font-weight:700;margin-bottom:18px;}
-.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;}
+.fcard{background:#fff;border-radius:var(--r);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
+.fcard h3{font-size:15px;font-weight:700;margin-bottom:16px;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;}
 .field{display:flex;flex-direction:column;gap:5px;}
-.field label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);}
-.field input,.field select,.field textarea{padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13.5px;color:var(--navy);outline:none;transition:border .2s;background:#fff;}
+.field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+.field input,.field select{padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--navy);outline:none;transition:border .2s;background:#fff;width:100%;}
 .field input:focus,.field select:focus{border-color:var(--navy);}
-.sb{padding:9px 18px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
-.sb-navy{background:var(--navy);color:#fff;}
-.sb-navy:hover{background:var(--navy3);}
-.sb-gold{background:var(--gold);color:var(--navy);}
-.sb-gold:hover{background:var(--gold2);}
-.sb-red{background:var(--rbg);color:var(--red);}
-.sb-red:hover{background:var(--red);color:#fff;}
-.sb-sm{padding:5px 12px;font-size:12px;}
-.sbox{padding:8px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border .2s;width:220px;}
-.sbox:focus{border-color:var(--navy);}
+.sb{padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
+.sb-n{background:var(--navy);color:#fff;}.sb-n:hover{background:var(--navy3);}
+.sb-g{background:var(--gold);color:var(--navy);}.sb-g:hover{background:var(--gold2);}
+.mt16{margin-top:16px;}
+.gap8{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.empty{text-align:center;padding:44px;color:var(--muted);}
 
-/* Clock page */
-.clock-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);border-radius:18px;padding:44px;text-align:center;margin-bottom:22px;position:relative;overflow:hidden;}
-.clock-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(201,168,76,.15) 0%,transparent 65%);}
-.clock-time{font-family:'Cormorant Garamond',serif;font-size:76px;font-weight:700;color:var(--gold);letter-spacing:3px;line-height:1;position:relative;}
-.clock-datestr{color:rgba(255,255,255,.45);font-size:14px;margin:8px 0 30px;position:relative;}
-.clock-btn{position:relative;padding:15px 52px;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;cursor:pointer;border:none;transition:all .25s;letter-spacing:.3px;}
+/* CLOCK */
+.clk-hero{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:18px;padding:44px;text-align:center;margin-bottom:22px;position:relative;overflow:hidden;}
+.clk-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(201,168,76,.15) 0%,transparent 65%);}
+.clk-t{font-family:'Playfair Display',serif;font-size:76px;font-weight:700;color:var(--gold);letter-spacing:3px;line-height:1;position:relative;}
+.clk-d{color:rgba(255,255,255,.45);font-size:14px;margin:8px 0 30px;position:relative;}
+.clk-btn{position:relative;padding:15px 52px;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:16px;cursor:pointer;border:none;transition:all .25s;}
 .cb-in{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;box-shadow:0 4px 20px rgba(21,128,61,.4);}
 .cb-in:hover{box-shadow:0 6px 28px rgba(21,128,61,.6);transform:translateY(-2px);}
 .cb-out{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 20px rgba(220,38,38,.4);}
 .cb-out:hover{box-shadow:0 6px 28px rgba(220,38,38,.6);transform:translateY(-2px);}
-.clock-btn:disabled{opacity:.5;cursor:not-allowed;transform:none !important;box-shadow:none !important;}
-.clock-status{color:rgba(255,255,255,.5);font-size:13px;margin-top:14px;position:relative;}
+.clk-btn:disabled{opacity:.5;cursor:not-allowed;transform:none !important;box-shadow:none !important;}
+.clk-s{color:rgba(255,255,255,.5);font-size:13px;margin-top:14px;position:relative;}
 
-/* Scheduling */
-.sched-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);}
-.sg{width:100%;border-collapse:collapse;}
-.sg th{background:var(--navy);color:rgba(255,255,255,.75);font-size:12px;font-weight:600;padding:11px 10px;text-align:center;}
-.sg td{border:1px solid var(--border);padding:5px;height:66px;vertical-align:top;cursor:pointer;font-size:11.5px;transition:background .15s;}
-.sg td:hover{background:#f0f7ff;}
-.sg td.emp-col{background:#f8fafc;font-weight:600;font-size:12px;color:var(--muted);width:115px;cursor:default;vertical-align:middle;padding:8px 10px;}
-.sg td.emp-col:hover{background:#f8fafc;}
-.chip{background:var(--blue);color:#fff;border-radius:4px;padding:3px 7px;margin-bottom:3px;font-size:11px;display:flex;justify-content:space-between;align-items:center;gap:4px;}
-.chip-del{background:none;border:none;color:rgba(255,255,255,.65);cursor:pointer;font-size:14px;line-height:1;}
-
-/* Invoice doc */
-.inv-doc{background:#fff;border-radius:var(--r);box-shadow:var(--shadow-lg);border:1px solid var(--border);overflow:hidden;margin-top:20px;}
-.inv-toolbar{background:#f8fafc;border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.inv-toolbar span{font-size:13px;color:var(--muted);}
-#inv-print-area{padding:48px 52px;}
-.inv-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:24px;border-bottom:3px solid var(--navy);}
-.inv-co-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--navy);}
-.inv-co-sub{color:var(--muted);font-size:13px;margin-top:4px;}
-.inv-word{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:700;color:var(--navy);letter-spacing:-1px;line-height:1;}
-.inv-num{color:var(--muted);font-size:13px;margin-top:4px;}
-.inv-parties{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;background:#f8fafc;border-radius:10px;padding:20px 22px;margin-bottom:28px;border:1px solid var(--border);}
-.inv-party-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:7px;}
-.inv-party-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:3px;}
-.inv-party-detail{font-size:12.5px;color:var(--muted);line-height:1.6;}
-.inv-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:28px;}
-.inv-strip-item{padding:15px 18px;text-align:center;border-right:1px solid var(--border);}
-.inv-strip-item:last-child{border-right:none;}
-.ist-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:5px;}
-.ist-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--navy);}
-.ist-val.gold{color:var(--gold);}
-.inv-tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:24px;}
-.inv-tbl thead tr{background:var(--navy);}
-.inv-tbl thead th{padding:11px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.7);}
-.inv-tbl thead th:last-child{text-align:right;}
-.inv-tbl tbody td{padding:11px 14px;border-top:1px solid var(--border);}
-.inv-tbl tbody td:last-child{text-align:right;font-weight:600;}
-.inv-tbl tfoot td{padding:11px 14px;border-top:2px solid var(--navy);font-weight:700;background:#f8fafc;}
-.inv-tbl tfoot td:last-child{text-align:right;}
-.inv-total-block{display:flex;justify-content:flex-end;margin-bottom:36px;}
-.inv-total-inner{width:280px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-.itr{display:flex;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);font-size:13.5px;}
-.itr:last-child{border-bottom:none;background:var(--navy);padding:14px 16px;}
-.itr-lbl{color:var(--muted);}
-.itr:last-child .itr-lbl{color:rgba(255,255,255,.6);}
-.itr-val{font-weight:700;color:var(--navy);}
-.itr:last-child .itr-val{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);}
-.inv-footer-line{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;align-items:flex-end;}
-.inv-note{font-size:12px;color:var(--muted);line-height:1.6;}
-.sig-area{text-align:right;}
-.sig-line{width:160px;border-bottom:1.5px solid var(--navy);height:30px;margin-bottom:5px;}
-.sig-lbl{font-size:11px;color:var(--muted);}
-
-/* Cred cards */
-.cred-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
-.cred-card{background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden;}
-.cred-bar{position:absolute;top:0;left:0;right:0;height:3px;}
-.cred-bar.g{background:var(--green);}
-.cred-bar.o{background:var(--orange);}
-.cred-bar.r{background:var(--red);}
-.cred-name{font-weight:700;font-size:14px;margin-top:4px;}
-.cred-who{font-size:12px;color:var(--muted);}
-.cred-exp{font-size:12px;color:var(--muted);margin-top:8px;}
-.cred-days{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-top:4px;}
-.cred-days.g{color:var(--green);}
-.cred-days.o{color:var(--orange);}
-.cred-days.r{color:var(--red);}
-
-/* Misc */
+/* INVOICE */
+.inv-wrap{background:#fff;border-radius:var(--r);box-shadow:var(--shadow-lg);border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
+.inv-tb{background:#f8f7f3;border-bottom:1px solid var(--border);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.inv-info{font-size:13px;color:var(--muted);font-weight:500;}
+.inv-info strong{color:var(--navy);}
+.inv-acts{display:flex;gap:9px;}
+.iab{padding:8px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.iab-c{background:#f1f5f9;color:var(--muted);border:1px solid var(--border);}.iab-c:hover{background:var(--border);}
+.iab-s{background:var(--gold);color:var(--navy);}.iab-s:hover{background:var(--gold2);}
+.iab-p{background:var(--navy);color:#fff;}.iab-p:hover{background:var(--teal);}
+#inv-doc{padding:48px 52px;}
+.inv-lh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:26px;border-bottom:3px solid var(--navy);}
+.inv-cn{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
+.inv-cs{color:var(--muted);font-size:12.5px;margin-top:3px;}
+.inv-ca{color:var(--muted);font-size:12px;line-height:1.7;margin-top:6px;}
+.inv-wd{font-family:'Playfair Display',serif;font-size:50px;font-weight:900;color:var(--navy);letter-spacing:-2px;line-height:1;text-align:right;}
+.inv-mt{text-align:right;margin-top:8px;}
+.inv-mr{font-size:13px;margin-bottom:2px;}
+.inv-ig{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:28px;}
+.inv-ic{padding:18px 20px;border-right:1px solid var(--border);}
+.inv-ic:last-child{border-right:none;}
+.iil{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:7px;}
+.iim{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.iis{font-size:12.5px;color:var(--muted);line-height:1.55;}
+.iid{display:inline-block;background:var(--gbg);color:var(--green);font-size:11px;font-weight:700;padding:2px 9px;border-radius:50px;margin-top:4px;}
+.inv-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:28px;}
+.iis2{padding:15px 18px;text-align:center;border-right:1px solid var(--border);background:#fafaf8;}
+.iis2:last-child{border-right:none;background:var(--navy);}
+.iis2-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:5px;}
+.iis2:last-child .iis2-l{color:rgba(255,255,255,.5);}
+.iis2-v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
+.iis2:last-child .iis2-v{color:var(--gold);}
+.inv-tw{display:flex;justify-content:flex-end;margin:20px 0 32px;}
+.inv-tb2{width:280px;border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+.itr{display:flex;justify-content:space-between;align-items:center;padding:11px 17px;border-bottom:1px solid var(--border);font-size:14px;}
+.itr:last-child{border-bottom:none;background:var(--navy);padding:14px 17px;}
+.itrl{color:var(--muted);font-size:13px;}
+.itr:last-child .itrl{color:rgba(255,255,255,.55);}
+.itrr{font-weight:700;color:var(--navy);}
+.itr:last-child .itrr{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);}
+.inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:26px;border-top:1px solid var(--border);}
+.sigl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;}
+.sigln{height:1px;background:var(--navy);margin:32px 0 6px;}
+.signm{font-size:12.5px;color:var(--muted);}
+.inv-note{font-size:12px;color:var(--muted);line-height:1.7;padding:14px 18px;background:#f8f7f3;border-radius:9px;border:1px solid var(--border);margin-top:22px;}
 .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .6s linear infinite;}
 @keyframes rot{to{transform:rotate(360deg);}}
-.empty{text-align:center;padding:44px;color:var(--muted);}
-.empty-icon{font-size:40px;margin-bottom:10px;}
-.mt16{margin-top:16px;}
-.gap8{display:flex;gap:8px;flex-wrap:wrap;}
 
-/* PRINT */
+/* SETUP BANNER */
+.setup-banner{background:#fef9ec;border:2px solid var(--gold);border-radius:12px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:flex-start;gap:14px;}
+.setup-banner .sb-icon{font-size:28px;flex-shrink:0;}
+.setup-banner h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.setup-banner p{font-size:13px;color:var(--muted);line-height:1.6;}
+.setup-banner code{background:#fff;border:1px solid var(--border);padding:2px 8px;border-radius:5px;font-family:monospace;font-size:12px;color:var(--navy);}
+
 @media print{
-  #site,#dash>.dbar,.dlayout>.sidebar,.inv-toolbar,.fc,.krow,.tw,.cred-grid,#toasts{display:none!important;}
-  #dash{display:block!important;}
-  .pg{display:none!important;}
+  #site,#dash>.dbar,.sidebar,.fcard,.krow,.tw,.setup-banner,.inv-tb,#toasts,#saved-section{display:none!important;}
+  #dash{display:block!important;}.pg{display:none!important;}
   #pg-inv{display:block!important;}
-  .inv-doc{box-shadow:none;border:none;}
-  #inv-print-area{padding:24px 32px;}
+  .inv-wrap{box-shadow:none;border:none;}
+  #inv-doc{padding:24px 32px;}
   body{background:#fff;}
 }
 @media(max-width:768px){
   .nav-links{display:none;}
-  .hero-inner{grid-template-columns:1fr;}
-  .hero-card{display:none;}
-  .stats-bar{grid-template-columns:repeat(2,1fr);}
-  .contact-grid{grid-template-columns:1fr;}
-  .sidebar{width:56px;}
-  .si span{display:none;}
-  .dcontent{padding:16px;}
+  .hi{grid-template-columns:1fr;}
+  .wcard{display:none;}
+  .sbar{grid-template-columns:repeat(2,1fr);}
+  .cg{grid-template-columns:1fr;}
+  .sidebar{width:56px;}.si span{display:none;}
+  .dc{padding:16px;}
+  #inv-doc{padding:24px 16px;}
+  .inv-lh{flex-direction:column;gap:16px;}
+  .inv-ig,.inv-strip{grid-template-columns:1fr;}
+  .inv-ic{border-right:none;border-bottom:1px solid var(--border);}
+  .inv-sig{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 <div id="toasts"></div>
 
-<!-- ╔══════════════════════════════════╗
-     ║        PUBLIC WEBSITE            ║
-     ╚══════════════════════════════════╝ -->
+<!-- PUBLIC SITE -->
 <div id="site">
-
-<!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo">
-    <div class="nav-logo-icon">🏥</div>
-    <div class="nav-logo-text">Central Nurses LLC</div>
-  </div>
+  <div class="nav-logo"><div class="nli">🏥</div><div class="nlt">Central Nurses LLC</div></div>
   <div class="nav-links">
-    <a href="#services">Services</a>
-    <a href="#about">About</a>
-    <a href="#join">Careers</a>
-    <a href="#contact">Contact</a>
-    <button class="nav-cta" onclick="openOverlay('o-login')">Staff Portal</button>
+    <a href="#services">Services</a><a href="#about">About</a><a href="#join">Careers</a><a href="#contact">Contact</a>
+    <button class="nav-cta" onclick="openOv('o-login')">Staff Portal</button>
   </div>
 </nav>
-
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-inner">
+  <div class="hi">
     <div>
-      <div class="hero-eyebrow">📍 Wichita, Kansas</div>
+      <div class="hero-ey">📍 Wichita, Kansas · (316) 806-5951</div>
       <h1>Quality Nursing<br/>Care Starts With<br/><em>Great Staff</em></h1>
-      <p class="hero-sub">Central Nurses LLC connects certified nursing professionals with top healthcare facilities across the region — reliably, quickly, and with care.</p>
-      <div class="hero-btns">
-        <button class="btn btn-gold" onclick="openOverlay('o-register')">Join Our Team</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
+      <p class="hero-sub">Central Nurses Staffing Agency — Your most trusted staffing partner. Providing excellent care solutions to patients across the greater Wichita, Kansas area.</p>
+      <div class="hbtns">
+        <button class="btn btn-g" onclick="openOv('o-register')">Join Our Team</button>
+        <button class="btn btn-o" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
       </div>
     </div>
-    <div class="hero-card">
-      <div class="hcard-title">Live Agency Stats</div>
-      <div class="hstat"><span class="hstat-label">Active Staff</span><span class="hstat-val" id="hs-staff">—</span></div>
-      <div class="hstat"><span class="hstat-label">Clocked In Now</span><span class="hstat-val" id="hs-clocked">—</span></div>
-      <div class="hstat"><span class="hstat-label">Shifts This Week</span><span class="hstat-val" id="hs-shifts">—</span></div>
-      <div class="hstat"><span class="hstat-label">Partner Facilities</span><span class="hstat-val">50+</span></div>
+    <div class="wcard">
+      <div class="wc-t">Why Choose Us</div>
+      <div class="wci"><span>✅ &nbsp;Fully credentialed &amp; background-checked staff</span></div>
+      <div class="wci"><span>⚡ &nbsp;Same-day &amp; next-day placement available</span></div>
+      <div class="wci"><span>📋 &nbsp;RNs, LPNs, CNAs &amp; CMAs ready to deploy</span></div>
+      <div class="wci"><span>🕒 &nbsp;24/7 support for facilities &amp; staff</span></div>
+      <div class="wci"><span>🏥 &nbsp;Serving 50+ healthcare facilities in Kansas</span></div>
+      <button class="wc-btn" onclick="openOv('o-register')">Join Our Team →</button>
     </div>
   </div>
 </div>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="sbar-item"><div class="sbar-num">200+</div><div class="sbar-lbl">Qualified Nurses</div></div>
-  <div class="sbar-item"><div class="sbar-num">50+</div><div class="sbar-lbl">Partner Facilities</div></div>
-  <div class="sbar-item"><div class="sbar-num">24/7</div><div class="sbar-lbl">Support Available</div></div>
-  <div class="sbar-item"><div class="sbar-num">10+</div><div class="sbar-lbl">Years Experience</div></div>
+<div class="sbar">
+  <div class="sbi"><div class="sbn">200+</div><div class="sbl">Qualified Nurses</div></div>
+  <div class="sbi"><div class="sbn">50+</div><div class="sbl">Partner Facilities</div></div>
+  <div class="sbi"><div class="sbn">24/7</div><div class="sbl">Support Available</div></div>
+  <div class="sbi"><div class="sbn">10+</div><div class="sbl">Years Experience</div></div>
 </div>
-
-<!-- SERVICES -->
 <section id="services">
-  <div class="sec-inner">
-    <div class="eyebrow">What We Offer</div>
-    <div class="sec-title">Our Staffing Services</div>
-    <div class="sec-sub">Reliable placement of certified nursing professionals across all care settings.</div>
-    <div class="grid3">
-      <div class="svc-card"><div class="svc-icon">👩‍⚕️</div><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments.</p></div>
-      <div class="svc-card"><div class="svc-icon">💊</div><h3>LPN / LVN</h3><p>Licensed practical nurses for long-term care, rehab, and outpatient facilities.</p></div>
-      <div class="svc-card"><div class="svc-icon">🩺</div><h3>CNA Services</h3><p>Certified nursing assistants for daily patient care and support services.</p></div>
-      <div class="svc-card"><div class="svc-icon">🔄</div><h3>Per Diem Staffing</h3><p>Flexible per diem coverage for call-outs and short-notice gaps — same day available.</p></div>
-      <div class="svc-card"><div class="svc-icon">✈️</div><h3>Travel Nursing</h3><p>Contract travel nurses for 8–26 week assignments throughout the region.</p></div>
-      <div class="svc-card"><div class="svc-icon">🏠</div><h3>Home Health</h3><p>Skilled in-home nursing care including wound care and medication management.</p></div>
+  <div class="sec">
+    <div class="ey">What We Offer</div><div class="st">Our Staffing Services</div>
+    <div class="g3">
+      <div class="sc"><div class="sc-i">👩‍⚕️</div><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments.</p></div>
+      <div class="sc"><div class="sc-i">💊</div><h3>LPN / LVN</h3><p>Licensed practical nurses for long-term care, rehab, and outpatient facilities.</p></div>
+      <div class="sc"><div class="sc-i">🩺</div><h3>CNA Services</h3><p>Certified nursing assistants for daily patient care and support.</p></div>
+      <div class="sc"><div class="sc-i">🔄</div><h3>Per Diem Staffing</h3><p>Flexible per diem coverage for call-outs — same day available.</p></div>
+      <div class="sc"><div class="sc-i">✈️</div><h3>Travel Nursing</h3><p>Contract travel nurses for 8–26 week assignments in the region.</p></div>
+      <div class="sc"><div class="sc-i">🏠</div><h3>Home Health</h3><p>Skilled in-home nursing including wound care and medication management.</p></div>
     </div>
   </div>
 </section>
-
-<!-- ABOUT -->
 <section id="about" style="background:#fff;">
-  <div class="sec-inner" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+  <div class="sec" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
     <div>
-      <div class="eyebrow">Who We Are</div>
-      <div class="sec-title">Trusted Healthcare Staffing Partner</div>
-      <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:18px;">Central Nurses LLC is a licensed healthcare staffing agency based in Wichita, Kansas. We specialize in placing certified nursing professionals in hospitals, clinics, and long-term care facilities.</p>
-      <p style="color:var(--muted);font-size:15px;line-height:1.8;">Every nurse we place is fully credentialed, background-checked, and up to date on certifications. We take compliance seriously so our partners don't have to.</p>
+      <div class="ey">Who We Are</div><div class="st">Trusted Healthcare Staffing Partner</div>
+      <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:16px;">Central Nurses is the most reliable and trustworthy Staffing Agency in the greater Central Kansas area — providing excellent care solutions to patients and residents in all healthcare settings.</p>
+      <p style="color:var(--muted);font-size:15px;line-height:1.8;">We are looking for RNs, LPNs, CMAs and CNAs to join our growing team. We work with hospitals, home care, assisted living facilities, clinics, and many others across Wichita.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div class="svc-card"><div class="svc-icon">✅</div><h3>Fully Verified</h3><p>Every credential checked and tracked.</p></div>
-      <div class="svc-card"><div class="svc-icon">⚡</div><h3>Fast Placement</h3><p>Same-day staffing available.</p></div>
-      <div class="svc-card"><div class="svc-icon">🛡️</div><h3>Compliant</h3><p>State licensed and fully insured.</p></div>
-      <div class="svc-card"><div class="svc-icon">🤝</div><h3>Reliable</h3><p>Consistent, professional service.</p></div>
+      <div class="sc"><div class="sc-i">✅</div><h3>Fully Verified</h3><p>Every credential checked and tracked.</p></div>
+      <div class="sc"><div class="sc-i">⚡</div><h3>Fast Placement</h3><p>Same-day staffing available.</p></div>
+      <div class="sc"><div class="sc-i">🛡️</div><h3>Compliant</h3><p>State licensed and fully insured.</p></div>
+      <div class="sc"><div class="sc-i">🤝</div><h3>Reliable</h3><p>Consistent, professional service.</p></div>
     </div>
   </div>
 </section>
-
-<!-- JOIN -->
-<div class="join-sec" id="join">
-  <div class="join-inner">
-    <div class="eyebrow" style="color:#67e8f9;justify-content:center;display:flex;">Careers</div>
-    <h2>Ready to Join<br/>Central Nurses LLC?</h2>
-    <p>Take control of your schedule, earn competitive pay, and work with a supportive team. Creating an account takes under two minutes.</p>
-    <button class="btn btn-gold" onclick="openOverlay('o-register')">Create Your Free Account →</button>
+<div class="join" id="join">
+  <div class="ji">
+    <div class="ey" style="color:#67e8f9;display:flex;justify-content:center;margin-bottom:10px;">Careers</div>
+    <h2>Ready to Join Central Nurses LLC?</h2>
+    <p>When you find the job that really suits you, it doesn't feel like work. We find opportunities that match your abilities, schedule and experience. Expect better pay, flexibility and great benefits.</p>
+    <button class="btn btn-g" onclick="openOv('o-register')">Create Your Free Account →</button>
   </div>
 </div>
-
-<!-- CONTACT -->
 <section id="contact" style="background:#fff;">
-  <div class="sec-inner">
-    <div class="eyebrow">Get In Touch</div>
-    <div class="sec-title">Contact Us</div>
-    <div class="contact-grid">
+  <div class="sec">
+    <div class="ey">Get In Touch</div><div class="st">Contact Us</div>
+    <div class="cg">
       <div>
-        <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:24px;">Have a staffing need or want to learn more? Reach out and we'll respond within one business day.</p>
-        <div class="ci"><div class="ci-icon">📍</div>Wichita, Kansas</div>
-        <div class="ci"><div class="ci-icon">📧</div><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4f24263f24202a2c272d2a3b27382a23787d7e0f28222e2623612c2022">[email&#160;protected]</a></div>
-        <div class="ci"><div class="ci-icon">🕒</div>Mon–Fri: 8:00 AM – 6:00 PM CST</div>
+        <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Reach out and we'll respond within one business day.</p>
+        <div class="ci"><div class="ci-i">📍</div>629 S Longfellow Street, Wichita, KS 67207</div>
+        <div class="ci"><div class="ci-i">📧</div><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a03242c250a092f243e382b26243f38392f3964292527">[email&#160;protected]</a></div>
+        <div class="ci"><div class="ci-i">📞</div>+1(316) 806-5951</div>
+        <div class="ci"><div class="ci-i">🕒</div>Mon–Fri: 8:00 AM – 5:00 PM · Sat–Sun: Closed</div>
       </div>
       <div>
-        <div class="form-field"><label>Your Name</label><input type="text" id="cn" placeholder="Jane Doe"/></div>
-        <div class="form-field"><label>Email</label><input type="email" id="ce" placeholder="you@example.com"/></div>
-        <div class="form-field"><label>Subject</label>
-          <select id="cs"><option value="">Select...</option><option>I need nurses for my facility</option><option>I want to join as a nurse</option><option>General inquiry</option></select>
-        </div>
-        <div class="form-field"><label>Message</label><textarea id="cm" placeholder="Your message..."></textarea></div>
-        <button class="submit-btn" onclick="sendContact()">Send Message</button>
+        <div class="ff"><label>Name</label><input type="text" id="cn" placeholder="Jane Doe"/></div>
+        <div class="ff"><label>Email</label><input type="email" id="ce" placeholder="you@example.com"/></div>
+        <div class="ff"><label>Subject</label><select id="cs"><option>I need nurses for my facility</option><option>I want to join as a nurse</option><option>General inquiry</option></select></div>
+        <div class="ff"><label>Message</label><textarea id="cm" placeholder="Your message..."></textarea></div>
+        <button class="subbtn" onclick="sendContact()">Send Message</button>
       </div>
     </div>
   </div>
 </section>
+<footer><div class="fb">Central Nurses LLC</div><div class="fc2">© 2025 Central Nurses Staffing Agency · 629 S Longfellow Street, Wichita, KS 67207</div></footer>
+</div>
 
-<footer>
-  <div class="foot-brand">Central Nurses LLC</div>
-  <div class="foot-copy">© 2025 Central Nurses LLC · Wichita, Kansas · All rights reserved</div>
-</footer>
-</div><!-- /site -->
-
-<!-- ╔══════════════════════════════════╗
-     ║         AUTH MODALS              ║
-     ╚══════════════════════════════════╝ -->
-
-<!-- LOGIN -->
-<div class="overlay" id="o-login">
+<!-- AUTH MODALS -->
+<div class="ov" id="o-login">
   <div class="modal">
-    <button class="modal-x" onclick="closeOverlay('o-login')">×</button>
-    <div class="modal-logo"><div class="ml-icon">🏥</div><h2>Welcome Back</h2><p>Sign in to your account</p></div>
-    <div class="mfield"><label>Email</label><input type="email" id="l-em" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-    <div class="mfield"><label>Password</label><input type="password" id="l-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="mx" onclick="closeOv('o-login')">×</button>
+    <h2>Welcome Back</h2><p class="msub">Sign in to your staff account</p>
+    <div class="mf"><label>Email</label><input type="email" id="l-em" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <div class="mf"><label>Password</label><input type="password" id="l-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <button class="mbtn" id="lbtn" onclick="doLogin()">Sign In</button>
-    <div class="mswitch">No account? <a onclick="swModal('o-login','o-register')">Register</a> &nbsp;·&nbsp; <a onclick="swModal('o-login','o-forgot')">Forgot password?</a></div>
+    <div class="msw">No account? <a onclick="swOv('o-login','o-register')">Register here</a></div>
   </div>
 </div>
-
-<!-- REGISTER (staff only — no role choice) -->
-<div class="overlay" id="o-register">
+<div class="ov" id="o-register">
   <div class="modal">
-    <button class="modal-x" onclick="closeOverlay('o-register')">×</button>
-    <div class="modal-logo"><div class="ml-icon">🏥</div><h2>Create Account</h2><p>Join Central Nurses as a staff member</p></div>
-    <div class="mfield"><label>Full Name</label><input type="text" id="r-nm" placeholder="Jane Doe"/></div>
-    <div class="mfield"><label>Email</label><input type="email" id="r-em" placeholder="you@email.com"/></div>
-    <div class="mfield"><label>Password</label><input type="password" id="r-pw" placeholder="Minimum 6 characters"/></div>
-    <div class="mfield"><label>Phone (optional)</label><input type="text" id="r-ph" placeholder="(316) 555-0000"/></div>
+    <button class="mx" onclick="closeOv('o-register')">×</button>
+    <h2>Create Account</h2><p class="msub">Join Central Nurses as a staff member</p>
+    <div class="mf"><label>Full Name</label><input type="text" id="r-nm" placeholder="Jane Doe"/></div>
+    <div class="mf"><label>Email</label><input type="email" id="r-em" placeholder="you@email.com"/></div>
+    <div class="mf"><label>Password</label><input type="password" id="r-pw" placeholder="Choose a password"/></div>
+    <div class="mf"><label>Phone (optional)</label><input type="text" id="r-ph" placeholder="(316) 555-0000"/></div>
     <button class="mbtn" id="rbtn" onclick="doRegister()">Create Staff Account</button>
-    <div class="mswitch">Already have an account? <a onclick="swModal('o-register','o-login')">Sign in</a></div>
+    <div class="msw">Already registered? <a onclick="swOv('o-register','o-login')">Sign in</a></div>
   </div>
 </div>
-
-<!-- FORGOT -->
-<div class="overlay" id="o-forgot">
+<div class="ov" id="o-addstaff">
   <div class="modal">
-    <button class="modal-x" onclick="closeOverlay('o-forgot')">×</button>
-    <div class="modal-logo"><div class="ml-icon">🔑</div><h2>Reset Password</h2><p>We'll email you a reset link</p></div>
-    <div class="mfield"><label>Email</label><input type="email" id="f-em" placeholder="you@email.com"/></div>
-    <button class="mbtn" onclick="doForgot()">Send Reset Link</button>
-    <div class="mswitch"><a onclick="swModal('o-forgot','o-login')">← Back to login</a></div>
+    <button class="mx" onclick="closeOv('o-addstaff')">×</button>
+    <h2>Add Staff Member</h2><p class="msub">Add a new employee profile</p>
+    <div class="mf"><label>Full Name</label><input type="text" id="as-nm"/></div>
+    <div class="mf"><label>Email</label><input type="email" id="as-em"/></div>
+    <div class="mf"><label>Temporary Password</label><input type="password" id="as-pw"/></div>
+    <div class="mf"><label>Position (RN, LPN, CNA, CMA)</label><input type="text" id="as-pos"/></div>
+    <div class="mf"><label>Phone</label><input type="text" id="as-ph"/></div>
+    <div class="mf"><label>Hourly Rate ($)</label><input type="number" id="as-rate" value="25" min="1"/></div>
+    <button class="mbtn" onclick="addStaff()">Add Employee</button>
   </div>
 </div>
 
-<!-- ASSIGN SHIFT -->
-<div class="overlay" id="o-shift">
-  <div class="modal">
-    <button class="modal-x" onclick="closeOverlay('o-shift')">×</button>
-    <div class="modal-logo"><div class="ml-icon">📅</div><h2>Assign Shift</h2><p id="shift-ctx"></p></div>
-    <div class="mfield"><label>Employee</label><select id="shift-emp"></select></div>
-    <div class="mfield"><label>Shift Time</label>
-      <select id="shift-time">
-        <option>7:00 AM – 3:00 PM</option><option>3:00 PM – 11:00 PM</option>
-        <option>11:00 PM – 7:00 AM</option><option>8:00 AM – 4:00 PM</option>
-        <option>12:00 PM – 8:00 PM</option>
-      </select>
-    </div>
-    <div class="mfield"><label>Notes (optional)</label><input type="text" id="shift-notes" placeholder="e.g. ICU unit"/></div>
-    <button class="mbtn" onclick="saveShift()">Assign Shift</button>
-  </div>
-</div>
-
-<!-- ADD EMPLOYEE -->
-<div class="overlay" id="o-addemp">
-  <div class="modal">
-    <button class="modal-x" onclick="closeOverlay('o-addemp')">×</button>
-    <div class="modal-logo"><div class="ml-icon">👤</div><h2>Add Staff Member</h2><p>Add a profile manually</p></div>
-    <div class="mfield"><label>Full Name</label><input type="text" id="ae-nm"/></div>
-    <div class="mfield"><label>Email</label><input type="email" id="ae-em"/></div>
-    <div class="mfield"><label>Phone</label><input type="text" id="ae-ph"/></div>
-    <div class="mfield"><label>Position</label><input type="text" id="ae-pos" placeholder="RN, LPN, CNA, CMA..."/></div>
-    <div class="mfield"><label>Hourly Rate ($)</label><input type="number" id="ae-rate" value="25" min="1"/></div>
-    <button class="mbtn" onclick="addEmployee()">Add Employee</button>
-  </div>
-</div>
-
-<!-- ╔══════════════════════════════════╗
-     ║          DASHBOARD               ║
-     ╚══════════════════════════════════╝ -->
+<!-- DASHBOARD -->
 <div id="dash">
-  <!-- Top Bar -->
   <div class="dbar">
-    <div class="dbar-logo">
-      <div class="dbar-logo-icon">🏥</div>
-      <div class="dbar-logo-text">Central Nurses LLC</div>
-    </div>
-    <div class="dbar-right">
-      <div class="upill">
+    <div class="dl"><div class="dli">🏥</div><div class="dln">Central Nurses LLC</div></div>
+    <div class="dr">
+      <div class="up">
         <div class="uav" id="u-av"></div>
-        <div><div class="unm" id="u-nm"></div><div class="urole" id="u-role"></div></div>
+        <div><div class="unm" id="u-nm"></div><div class="uid" id="u-id"></div><div class="urole" id="u-role"></div></div>
       </div>
-      <button class="signout" onclick="doSignOut()">Sign Out</button>
+      <button class="so" onclick="doSignOut()">Sign Out</button>
     </div>
   </div>
   <div class="dlayout">
     <div class="sidebar" id="sidebar"></div>
-    <div class="dcontent" id="dcontent"></div>
+    <div class="dc" id="dcontent"></div>
   </div>
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ╔══════════════════════════════════╗
-// ║         SUPABASE INIT            ║
-// ╚══════════════════════════════════╝
-const {createClient} = supabase;
-const db = createClient(
-  'https://giqxizpvspcazghwcubr.supabase.co',
-  'sb_publishable_c17RxaTOGAjGBaEEiP8Wvg_5q_R7gZf'
-);
+// ══════════════════════════════════════════
+// ⚠️  PASTE YOUR APPS SCRIPT WEB APP URL BELOW
+// ══════════════════════════════════════════
+const API = 'https://script.google.com/macros/s/AKfycbwDMVvHuheElPOcaI1683Hxj1shnGPJ62YVI31N7PD2DCgm28v96wBDLYTKj6atYb5S/exec';
+// Example: const API = 'https://script.google.com/macros/s/AKfyc.../exec';
 
-let ME = null, PROF = null;
-let _emps = [], _shiftCtx = null, _clockInterval = null, _schedOffset = 0;
-let _isClockedIn = false, _activeLogId = null;
-
-// ╔══════════════════════════════════╗
-// ║            TOAST                 ║
-// ╚══════════════════════════════════╝
-function toast(msg, type='info'){
-  const w = document.getElementById('toasts');
-  const d = document.createElement('div');
-  d.className = `t t-${type}`;
-  d.textContent = msg;
-  w.appendChild(d);
-  setTimeout(()=>d.remove(), 3800);
+// ══════════════════════════════════════════
+// API HELPERS
+// ══════════════════════════════════════════
+async function apiGet(action, params={}){
+  const url = API+'?action='+action+'&'+new URLSearchParams(params);
+  const r = await fetch(url); return r.json();
+}
+async function apiPost(action, body={}){
+  const r = await fetch(API,{method:'POST',body:JSON.stringify({action,...body})}); return r.json();
 }
 
-// ╔══════════════════════════════════╗
-// ║           OVERLAYS               ║
-// ╚══════════════════════════════════╝
-function openOverlay(id){document.getElementById(id).classList.add('open');}
-function closeOverlay(id){document.getElementById(id).classList.remove('open');}
-function swModal(a,b){closeOverlay(a);openOverlay(b);}
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let ME=null, _clockInt=null, _isClockedIn=false, _currentInv=null, _allStaff=[];
 
-// ╔══════════════════════════════════╗
-// ║             AUTH                 ║
-// ╚══════════════════════════════════╝
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function toast(msg,type='info'){
+  const w=document.getElementById('toasts');
+  const d=document.createElement('div');
+  d.className='t t'+type; d.textContent=msg; w.appendChild(d);
+  setTimeout(()=>d.remove(),3800);
+}
+
+// ══════════════════════════════════════════
+// OVERLAYS
+// ══════════════════════════════════════════
+function openOv(id){document.getElementById(id).classList.add('open');}
+function closeOv(id){document.getElementById(id).classList.remove('open');}
+function swOv(a,b){closeOv(a);openOv(b);}
+
+// ══════════════════════════════════════════
+// CHECK API CONFIGURED
+// ══════════════════════════════════════════
+function isConfigured(){
+  if(API==='PASTE_YOUR_APPS_SCRIPT_URL_HERE'||!API.includes('script.google.com')){
+    toast('Apps Script URL not set up yet. See setup instructions.','err');
+    return false;
+  }
+  return true;
+}
+
+// ══════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════
 async function doLogin(){
-  const em = document.getElementById('l-em').value.trim();
-  const pw = document.getElementById('l-pw').value;
+  if(!isConfigured()) return;
+  const em=document.getElementById('l-em').value.trim();
+  const pw=document.getElementById('l-pw').value;
   if(!em||!pw){toast('Enter email and password','err');return;}
-  const btn = document.getElementById('lbtn');
+  const btn=document.getElementById('lbtn');
   btn.innerHTML='<span class="spin"></span> Signing in…';btn.disabled=true;
-  const {data,error} = await db.auth.signInWithPassword({email:em,password:pw});
-  btn.innerHTML='Sign In';btn.disabled=false;
-  if(error){toast(error.message,'err');return;}
-  closeOverlay('o-login');
-  await bootDash(data.user);
+  try{
+    const res=await apiPost('login',{email:em,password:pw});
+    btn.innerHTML='Sign In';btn.disabled=false;
+    if(!res.success){toast(res.error||'Login failed','err');return;}
+    closeOv('o-login');bootDash(res.employee);
+  }catch(e){btn.innerHTML='Sign In';btn.disabled=false;toast('Connection error — check Apps Script URL','err');}
 }
 
 async function doRegister(){
-  const nm = document.getElementById('r-nm').value.trim();
-  const em = document.getElementById('r-em').value.trim();
-  const pw = document.getElementById('r-pw').value;
-  const ph = document.getElementById('r-ph').value.trim();
+  if(!isConfigured()) return;
+  const nm=document.getElementById('r-nm').value.trim();
+  const em=document.getElementById('r-em').value.trim();
+  const pw=document.getElementById('r-pw').value;
+  const ph=document.getElementById('r-ph').value.trim();
   if(!nm||!em||!pw){toast('Name, email and password required','err');return;}
-  if(pw.length<6){toast('Password must be at least 6 characters','err');return;}
-  const btn = document.getElementById('rbtn');
+  const btn=document.getElementById('rbtn');
   btn.innerHTML='<span class="spin"></span> Creating…';btn.disabled=true;
-  const {data,error} = await db.auth.signUp({email:em,password:pw,options:{data:{full_name:nm,role:'employee',phone:ph}}});
-  btn.innerHTML='Create Staff Account';btn.disabled=false;
-  if(error){toast(error.message,'err');return;}
-  if(data.user){
-    await db.from('profiles').upsert({id:data.user.id,full_name:nm,email:em,phone:ph||null,role:'employee',status:'active'},{onConflict:'id'});
-  }
-  toast('Welcome to Central Nurses! 🎉','ok');
-  closeOverlay('o-register');
-  if(data.user) await bootDash(data.user);
+  try{
+    const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph});
+    btn.innerHTML='Create Staff Account';btn.disabled=false;
+    if(!res.success){toast(res.error||'Registration failed','err');return;}
+    toast('Welcome to Central Nurses! 🎉','ok');
+    closeOv('o-register');bootDash(res.employee);
+  }catch(e){btn.innerHTML='Create Staff Account';btn.disabled=false;toast('Connection error','err');}
 }
 
-async function doForgot(){
-  const em = document.getElementById('f-em').value.trim();
-  if(!em){toast('Enter your email','err');return;}
-  const {error} = await db.auth.resetPasswordForEmail(em,{redirectTo:window.location.href});
-  if(error){toast(error.message,'err');return;}
-  toast('Reset link sent — check your email!','ok');
-  closeOverlay('o-forgot');
-}
-
-async function doSignOut(){
-  await db.auth.signOut();
-  ME=null;PROF=null;
-  if(_clockInterval)clearInterval(_clockInterval);
+function doSignOut(){
+  ME=null;if(_clockInt)clearInterval(_clockInt);
+  localStorage.removeItem('cn_user');
   document.getElementById('dash').style.display='none';
   document.getElementById('site').style.display='block';
   toast('Signed out');
 }
 
-// ╔══════════════════════════════════╗
-// ║         BOOT DASHBOARD           ║
-// ╚══════════════════════════════════╝
-async function bootDash(user){
-  ME = user;
-  let {data:prof} = await db.from('profiles').select('*').eq('auth_id',user.id).single();
-  if(!prof){
-    const m = user.user_metadata||{};
-    const fresh={auth_id:user.id,full_name:m.full_name||user.email,email:user.email,role:m.role||'employee',status:'active'};
-    await db.from('profiles').insert(fresh);
-    prof=fresh;
-  }
-  PROF=prof;
-  // Header
-  const ini=(prof.full_name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+// ══════════════════════════════════════════
+// BOOT DASHBOARD
+// ══════════════════════════════════════════
+function bootDash(emp){
+  ME=emp; localStorage.setItem('cn_user',JSON.stringify(emp));
+  const ini=(emp.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('u-av').textContent=ini;
-  document.getElementById('u-nm').textContent=prof.full_name||user.email;
+  document.getElementById('u-nm').textContent=emp.name;
+  document.getElementById('u-id').textContent=emp.id||'';
   const rt=document.getElementById('u-role');
-  rt.textContent=prof.role==='manager'?'Manager':'Staff';
-  rt.className='urole '+(prof.role==='manager'?'role-m':'role-e');
+  rt.textContent=emp.role==='manager'?'Manager':'Staff';
+  rt.className='urole '+(emp.role==='manager'?'rm':'re');
   document.getElementById('site').style.display='none';
   document.getElementById('dash').style.display='flex';
-  if(prof.role==='manager') buildManagerDash();
-  else buildEmployeeDash();
+  emp.role==='manager'?buildMgr():buildEmp();
 }
 
-// ╔══════════════════════════════════╗
-// ║        MANAGER DASHBOARD         ║
-// ╚══════════════════════════════════╝
-const MGR_NAV=[
-  {id:'overview',  icon:'📊', label:'Overview'},
-  {id:'employees', icon:'👥', label:'Employees'},
-  {id:'timesheets',icon:'⏱️', label:'Timesheets'},
-  {id:'scheduling',icon:'📅', label:'Scheduling'},
-  {id:'invoices',  icon:'🧾', label:'Invoices'},
-];
-
-function buildManagerDash(){
-  document.getElementById('sidebar').innerHTML=MGR_NAV.map(n=>`
-    <div class="si" id="si-${n.id}" onclick="mgrPage('${n.id}')">
-      <span class="si-icon">${n.icon}</span><span>${n.label}</span>
-    </div>`).join('');
-  document.getElementById('dcontent').innerHTML=MGR_NAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
-  mgrPage('overview');
+// ══════════════════════════════════════════
+// MANAGER DASHBOARD
+// ══════════════════════════════════════════
+const MNAV=[{id:'overview',icon:'📊',label:'Overview'},{id:'staff',icon:'👥',label:'Staff'},{id:'timesheets',icon:'⏱️',label:'Timesheets'},{id:'invoices',icon:'🧾',label:'Invoices'}];
+function buildMgr(){
+  document.getElementById('sidebar').innerHTML=MNAV.map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('');
+  document.getElementById('dcontent').innerHTML=MNAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
+  mPg('overview');
 }
-
-function mgrPage(id){
+function mPg(id){
   document.querySelectorAll('.si').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));
   document.getElementById('si-'+id)?.classList.add('active');
   document.getElementById('pg-'+id)?.classList.add('on');
-  ({overview:pgOverview,employees:pgEmployees,timesheets:pgTimesheets,scheduling:pgScheduling,invoices:pgInvoices})[id]?.();
+  ({overview:mOverview,staff:mStaff,timesheets:mTimesheets,invoices:mInvoices})[id]?.();
 }
 
-// ── Overview ──
-async function pgOverview(){
+async function mOverview(){
   const el=document.getElementById('pg-overview');
-  el.innerHTML='<div class="empty"><div class="empty-icon">⏳</div></div>';
-  const [s1,s2,s3,s4]=await Promise.all([
-    db.from('profiles').select('id',{count:'exact'}).eq('role','employee').eq('status','active'),
-    db.from('time_logs').select('id',{count:'exact'}).is('clock_out',null),
-    db.from('shifts').select('id',{count:'exact'}).eq('date',today()),
-    db.from('time_logs').select('*,profiles(full_name)').order('clock_in',{ascending:false}).limit(10),
-  ]);
-  el.innerHTML=`
-    <div class="pg-title">Overview</div>
-    <div class="pg-sub">Welcome back, ${PROF.full_name}</div>
-    <div class="krow">
-      <div class="kpi"><div class="kpi-icon">👥</div><div class="kpi-val">${s1.count||0}</div><div class="kpi-lbl">Active Staff</div></div>
-      <div class="kpi"><div class="kpi-icon">🟢</div><div class="kpi-val">${s2.count||0}</div><div class="kpi-lbl">Clocked In Now</div></div>
-      <div class="kpi"><div class="kpi-icon">📅</div><div class="kpi-val">${s3.count||0}</div><div class="kpi-lbl">Shifts Today</div></div>
-    </div>
-    <div class="tw">
-      <div class="th"><h3>Recent Clock Activity</h3></div>
-      ${renderLogsTable(s4.data)}
-    </div>`;
-}
-
-function renderLogsTable(logs){
-  if(!logs?.length) return '<div class="empty"><p>No clock activity yet.</p></div>';
-  return `<table><thead><tr><th>Employee</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th></tr></thead><tbody>
-    ${logs.map(l=>{
-      const h=l.clock_out?fmtHrs(l.clock_in,l.clock_out)+'h':'—';
-      return `<tr><td><strong>${l.profiles?.full_name||'—'}</strong></td><td>${fmtDT(l.clock_in)}</td><td>${l.clock_out?fmtDT(l.clock_out):'Active'}</td><td>${h}</td><td><span class="badge ${l.clock_out?'bg':'bo'}">${l.clock_out?'Done':'Active'}</span></td></tr>`;
-    }).join('')}</tbody></table>`;
-}
-
-// ── Employees ──
-async function pgEmployees(){
-  const el=document.getElementById('pg-employees');
-  el.innerHTML=`
-    <div class="pg-title">Employees</div>
-    <div class="pg-sub">Manage your nursing staff</div>
-    <div class="tw">
-      <div class="th">
-        <h3>All Staff</h3>
-        <div class="gap8">
-          <input class="sbox" id="emp-q" placeholder="Search name or email…" oninput="filterEmps()"/>
-          <button class="sb sb-navy" onclick="openOverlay('o-addemp')">+ Add Staff</button>
-        </div>
+  el.innerHTML=`<div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div><div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);width:28px;height:28px;"></span></div>`;
+  try{
+    const res=await apiGet('getStaff');
+    const staff=res.staff||[];
+    const active=staff.filter(s=>s.status==='active').length;
+    el.innerHTML=`
+      <div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div>
+      <div class="krow">
+        <div class="kpi"><div class="kpi-i">👥</div><div class="kpi-v">${active}</div><div class="kpi-l">Active Staff</div></div>
+        <div class="kpi"><div class="kpi-i">📋</div><div class="kpi-v">${staff.length}</div><div class="kpi-l">Total Employees</div></div>
+        <div class="kpi"><div class="kpi-i">🏥</div><div class="kpi-v">50+</div><div class="kpi-l">Partner Facilities</div></div>
       </div>
-      <div id="emp-rows"></div>
-    </div>`;
-  await loadEmpRows();
+      <div class="tw">
+        <div class="twt"><h3>Staff Directory</h3></div>
+        ${staff.length?`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Rate/hr</th><th>Status</th></tr></thead><tbody>
+          ${staff.map(s=>`<tr><td><span class="badge bg">${s.id}</span></td><td><strong>${s.name}</strong></td><td>${s.position||'—'}</td><td>${s.email||'—'}</td><td>${s.rate?'$'+s.rate:'—'}</td><td><span class="badge ${s.status==='active'?'bg':'bo'}">${s.status}</span></td></tr>`).join('')}
+        </tbody></table>`:'<div class="empty"><p>No staff yet.</p></div>'}
+      </div>`;
+  }catch(e){el.innerHTML+='<div class="empty"><p>Error loading. Check your Apps Script URL.</p></div>';}
 }
 
-async function loadEmpRows(){
-  const {data}=await db.from('profiles').select('*').eq('role','employee').order('full_name');
-  _emps=data||[];
-  filterEmps();
+async function mStaff(){
+  const el=document.getElementById('pg-staff');
+  el.innerHTML=`<div class="pgt">Staff</div><div class="pgs">Manage your nursing team</div>
+    <div class="tw"><div class="twt"><h3>All Employees</h3><button class="sb sb-n" onclick="openOv('o-addstaff')">+ Add Staff</button></div>
+    <div id="sr"><div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);"></span></div></div></div>`;
+  await loadStaff();
 }
-function filterEmps(){
-  const q=(document.getElementById('emp-q')?.value||'').toLowerCase();
-  renderEmpRows(q?_emps.filter(e=>(e.full_name+e.email).toLowerCase().includes(q)):_emps);
+async function loadStaff(){
+  try{
+    const res=await apiGet('getStaff'); _allStaff=res.staff||[];
+    const el=document.getElementById('sr');
+    if(!_allStaff.length){el.innerHTML='<div class="empty"><p>No staff yet. Click + Add Staff to begin.</p></div>';return;}
+    el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th></tr></thead><tbody>
+      ${_allStaff.map(s=>`<tr><td><span class="badge bg">${s.id}</span></td><td><strong>${s.name}</strong></td><td>${s.position||'—'}</td><td>${s.email||'—'}</td><td>${s.phone||'—'}</td><td>${s.rate?'$'+s.rate:'—'}</td><td><span class="badge ${s.status==='active'?'bg':'bo'}">${s.status}</span></td></tr>`).join('')}
+    </tbody></table>`;
+  }catch(e){toast('Error loading staff','err');}
 }
-function renderEmpRows(list){
-  const el=document.getElementById('emp-rows');
-  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">👤</div><p>No employees found.</p></div>';return;}
-  el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Position</th><th>Rate</th><th>Status</th><th></th></tr></thead><tbody>
-    ${list.map(e=>`<tr>
-      <td><span class="badge bb">${e.employee_id||'—'}</span></td>
-      <td><strong>${e.full_name}</strong></td>
-      <td>${e.email||'—'}</td>
-      <td>${e.position||'—'}</td>
-      <td>${e.hourly_rate?'$'+e.hourly_rate+'/hr':'—'}</td>
-      <td><span class="badge ${e.status==='active'?'bg':'bx'}">${e.status||'active'}</span></td>
-      <td><div class="gap8">
-        <button class="sb sb-sm sb-navy" onclick="editRate('${e.id}','${e.full_name}',${e.hourly_rate||25})">Set Rate</button>
-        <button class="sb sb-sm ${e.status==='active'?'sb-red':'sb-navy'}" onclick="toggleEmp('${e.id}','${e.status||'active'}')">${e.status==='active'?'Deactivate':'Activate'}</button>
-      </div></td>
-    </tr>`).join('')}</tbody></table>`;
-}
-async function addEmployee(){
-  const nm=document.getElementById('ae-nm').value.trim();
-  const em=document.getElementById('ae-em').value.trim();
-  const ph=document.getElementById('ae-ph').value.trim();
-  const pos=document.getElementById('ae-pos').value.trim();
-  const rate=parseFloat(document.getElementById('ae-rate').value)||25;
+async function addStaff(){
+  const nm=document.getElementById('as-nm').value.trim();
+  const em=document.getElementById('as-em').value.trim();
+  const pw=document.getElementById('as-pw').value;
+  const pos=document.getElementById('as-pos').value.trim();
+  const ph=document.getElementById('as-ph').value.trim();
+  const rate=document.getElementById('as-rate').value;
   if(!nm){toast('Name is required','err');return;}
-  const {error}=await db.from('profiles').insert({full_name:nm,email:em||null,phone:ph||null,position:pos||null,hourly_rate:rate,role:'employee',status:'active'});
-  if(error){toast(error.message,'err');return;}
-  toast(nm+' added!','ok');
-  closeOverlay('o-addemp');
-  await loadEmpRows();
-}
-function editRate(id,name,cur){
-  const r=prompt(`Set hourly rate for ${name} (current: $${cur}/hr):`,cur);
-  if(r===null)return;
-  const rate=parseFloat(r);
-  if(isNaN(rate)||rate<1){toast('Invalid rate','err');return;}
-  db.from('profiles').update({hourly_rate:rate}).eq('id',id).then(()=>{toast(`${name} rate set to $${rate}/hr`,'ok');loadEmpRows();});
-}
-async function toggleEmp(id,cur){
-  const ns=cur==='active'?'inactive':'active';
-  await db.from('profiles').update({status:ns}).eq('id',id);
-  toast('Status updated to '+ns,'ok');
-  await loadEmpRows();
+  try{
+    const res=await apiPost('addStaff',{name:nm,email:em,password:pw,position:pos,phone:ph,rate:parseFloat(rate)||25});
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast(nm+' added! Employee ID: '+res.id,'ok');
+    closeOv('o-addstaff');await loadStaff();
+  }catch(e){toast('Error adding staff','err');}
 }
 
-// ── Timesheets ──
-async function pgTimesheets(){
+async function mTimesheets(){
   const el=document.getElementById('pg-timesheets');
-  el.innerHTML=`
-    <div class="pg-title">Timesheets</div>
-    <div class="pg-sub">All staff clock records</div>
-    <div class="tw">
-      <div class="th">
-        <h3>Time Records</h3>
-        <div class="gap8">
-          <select id="ts-emp" onchange="loadTS()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;">
-            <option value="">All Employees</option>
-          </select>
-          <input type="date" id="ts-from" onchange="loadTS()"/>
-          <input type="date" id="ts-to" onchange="loadTS()"/>
-          <button class="sb sb-red" onclick="clockOutAll()">Clock Out All</button>
-        </div>
+  el.innerHTML=`<div class="pgt">Timesheets</div><div class="pgs">Clock records saved in your Google Sheet</div>
+    <div class="fcard"><h3>Filter by Employee &amp; Period</h3>
+      <div class="fgrid">
+        <div class="field"><label>Employee</label><select id="ts-e"><option value="">— Select —</option></select></div>
+        <div class="field"><label>From</label><input type="date" id="ts-f" value="${weekStart()}"/></div>
+        <div class="field"><label>To</label><input type="date" id="ts-t" value="${today()}"/></div>
       </div>
-      <div id="ts-rows"><div class="empty"><p>Loading…</p></div></div>
-    </div>`;
-  const {data:emps}=await db.from('profiles').select('id,full_name').eq('role','employee').order('full_name');
-  const sel=document.getElementById('ts-emp');
-  (emps||[]).forEach(e=>sel.innerHTML+=`<option value="${e.id}">${e.full_name}</option>`);
-  await loadTS();
+      <button class="sb sb-n mt16" onclick="loadTS()">Load Records</button>
+    </div>
+    <div id="ts-r"></div>`;
+  try{
+    const res=await apiGet('getStaff'); _allStaff=res.staff||[];
+    const sel=document.getElementById('ts-e');
+    _allStaff.forEach(s=>sel.innerHTML+=`<option value="${s.id}" data-rate="${s.rate||25}">${s.name} (${s.id})</option>`);
+  }catch(e){}
 }
 async function loadTS(){
-  const empId=document.getElementById('ts-emp')?.value;
-  const from=document.getElementById('ts-from')?.value;
-  const to=document.getElementById('ts-to')?.value;
-  let q=db.from('time_logs').select('*,profiles(full_name,hourly_rate)').order('clock_in',{ascending:false});
-  if(empId)q=q.eq('employee_id',empId);
-  if(from)q=q.gte('clock_in',from);
-  if(to)q=q.lte('clock_in',to+'T23:59:59');
-  const {data:logs}=await q;
-  const el=document.getElementById('ts-rows');
-  if(!logs?.length){el.innerHTML='<div class="empty"><div class="empty-icon">⏱️</div><p>No records found.</p></div>';return;}
-  el.innerHTML=`<table><thead><tr><th>Employee</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Pay</th><th>Status</th><th></th></tr></thead><tbody>
-    ${logs.map(l=>{
-      const h=l.clock_out?fmtHrs(l.clock_in,l.clock_out):null;
-      const pay=h&&l.profiles?.hourly_rate?'$'+(parseFloat(h)*l.profiles.hourly_rate).toFixed(2):'—';
-      return `<tr>
-        <td><strong>${l.profiles?.full_name||'—'}</strong></td>
-        <td>${fmtDT(l.clock_in)}</td>
-        <td>${l.clock_out?fmtDT(l.clock_out):'Active'}</td>
-        <td>${h?h+' hrs':'—'}</td><td>${pay}</td>
-        <td><span class="badge ${l.clock_out?'bg':'bo'}">${l.clock_out?'Done':'Active'}</span></td>
-        <td><div class="gap8">
-          ${!l.clock_out?`<button class="sb sb-sm sb-navy" onclick="manualClockOut('${l.id}')">Clock Out</button>`:''}
-          <button class="sb sb-sm sb-red" onclick="delLog('${l.id}')">Delete</button>
-        </div></td>
-      </tr>`;
-    }).join('')}</tbody></table>`;
-}
-async function manualClockOut(id){await db.from('time_logs').update({clock_out:new Date().toISOString()}).eq('id',id);toast('Clocked out','ok');await loadTS();}
-async function delLog(id){if(!confirm('Delete this record?'))return;await db.from('time_logs').delete().eq('id',id);toast('Deleted');await loadTS();}
-async function clockOutAll(){if(!confirm('Clock out ALL active employees?'))return;await db.from('time_logs').update({clock_out:new Date().toISOString()}).is('clock_out',null);toast('All clocked out','ok');await loadTS();}
-
-// ── Scheduling ──
-async function pgScheduling(){
-  const el=document.getElementById('pg-scheduling');
-  el.innerHTML=`
-    <div class="pg-title">Scheduling</div>
-    <div class="pg-sub">Click any cell to assign a shift</div>
-    <div class="tw">
-      <div class="sched-nav">
-        <button class="sb sb-navy" onclick="_schedOffset--;drawSched()">← Prev Week</button>
-        <strong id="sched-range"></strong>
-        <button class="sb sb-navy" onclick="_schedOffset++;drawSched()">Next Week →</button>
+  const sel=document.getElementById('ts-e');
+  const empId=sel.value;
+  const from=document.getElementById('ts-f').value;
+  const to=document.getElementById('ts-t').value;
+  if(!empId){toast('Select an employee','err');return;}
+  const emp=_allStaff.find(s=>s.id===empId);
+  const rate=parseFloat(emp?.rate)||25;
+  const el=document.getElementById('ts-r');
+  el.innerHTML='<div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);width:26px;height:26px;"></span></div>';
+  try{
+    const res=await apiGet('getHours',{employeeId:empId,from,to});
+    const sessions=res.sessions||[];
+    const totalH=res.totalHours||0;
+    el.innerHTML=`<div class="tw" style="margin-top:16px;">
+      <div class="twt"><h3>${emp?.name||empId} · ${from} → ${to}</h3>
+        <span style="font-weight:700;color:var(--green);">${totalH.toFixed(2)} hrs · $${(totalH*rate).toFixed(2)}</span>
       </div>
-      <div id="sched-body"></div>
+      ${sessions.length?`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
+        ${sessions.map(s=>`<tr><td>${s.date}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td><strong>${s.hours} hrs</strong></td><td style="color:var(--green);font-weight:600;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}
+      </tbody></table>`:'<div class="empty"><p>No records for this period.</p></div>'}
     </div>`;
-  const {data:emps}=await db.from('profiles').select('id,full_name').eq('role','employee').eq('status','active').order('full_name');
-  _emps=emps||[];
-  await drawSched();
+  }catch(e){el.innerHTML='<div class="empty"><p>Error loading records.</p></div>';}
 }
-function wkDates(off=0){
-  const n=new Date(),dow=n.getDay(),mon=new Date(n);
-  mon.setDate(n.getDate()-(dow===0?6:dow-1)+off*7);
-  return Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
-}
-async function drawSched(){
-  const days=wkDates(_schedOffset);
-  const s=days[0].toISOString().split('T')[0],e=days[6].toISOString().split('T')[0];
-  document.getElementById('sched-range').textContent=`${fmtDate(days[0])} – ${fmtDate(days[6])}`;
-  const {data:shifts}=await db.from('shifts').select('*').gte('date',s).lte('date',e);
-  const dnames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  let html=`<table class="sg"><thead><tr><th>Employee</th>${days.map((d,i)=>`<th>${dnames[i]}<br/><small style="font-weight:400;opacity:.7;">${d.getMonth()+1}/${d.getDate()}</small></th>`).join('')}</tr></thead><tbody>`;
-  (_emps.length?_emps:[{id:'_',full_name:'No active staff'}]).forEach(emp=>{
-    html+=`<tr><td class="emp-col">${emp.full_name}</td>`;
-    days.forEach(d=>{
-      const ds=d.toISOString().split('T')[0];
-      const dayShifts=(shifts||[]).filter(s=>s.employee_id===emp.id&&s.date===ds);
-      html+=`<td onclick="openShiftModal('${emp.id}','${emp.full_name}','${ds}')">
-        ${dayShifts.map(s=>`<div class="chip">${s.shift_time||'Shift'}<button class="chip-del" onclick="event.stopPropagation();delShift('${s.id}')">×</button></div>`).join('')}
-      </td>`;
-    });
-    html+='</tr>';
-  });
-  html+='</tbody></table>';
-  document.getElementById('sched-body').innerHTML=html;
-}
-function openShiftModal(empId,empName,date){
-  _shiftCtx={empId,date};
-  document.getElementById('shift-ctx').textContent=`${empName} — ${fmtDate(new Date(date+'T12:00:00'))}`;
-  const sel=document.getElementById('shift-emp');
-  sel.innerHTML=_emps.map(e=>`<option value="${e.id}" ${e.id===empId?'selected':''}>${e.full_name}</option>`).join('');
-  document.getElementById('shift-notes').value='';
-  openOverlay('o-shift');
-}
-async function saveShift(){
-  const empId=document.getElementById('shift-emp').value;
-  const time=document.getElementById('shift-time').value;
-  const notes=document.getElementById('shift-notes').value;
-  const {error}=await db.from('shifts').insert({employee_id:empId,date:_shiftCtx.date,shift_time:time,notes:notes||null});
-  if(error){toast(error.message,'err');return;}
-  toast('Shift assigned!','ok');closeOverlay('o-shift');await drawSched();
-}
-async function delShift(id){await db.from('shifts').delete().eq('id',id);toast('Shift removed');await drawSched();}
 
-// ── Invoices (Manager) ──
-async function pgInvoices(){
+async function mInvoices(){
   const el=document.getElementById('pg-invoices');
-  el.innerHTML=`
-    <div class="pg-title">Invoice Generator</div>
-    <div class="pg-sub">Generate pay invoices from actual clock records</div>
-    <div class="fc">
-      <h3>Generate Invoice</h3>
+  el.innerHTML=`<div class="pgt">Invoice Generator</div><div class="pgs">Generate pay invoices from Google Sheets clock records</div>
+    <div class="fcard"><h3>Generate Invoice</h3>
       <div class="fgrid">
-        <div class="field"><label>Employee</label><select id="inv-emp-sel"></select></div>
-        <div class="field"><label>From Date</label><input type="date" id="inv-from" value="${weekStart()}"/></div>
-        <div class="field"><label>To Date</label><input type="date" id="inv-to" value="${today()}"/></div>
-        <div class="field"><label>Hourly Rate ($/hr)</label><input type="number" id="inv-rate" value="25" min="1" step="0.5"/></div>
+        <div class="field"><label>Employee</label><select id="inv-e" onchange="autoRate()"><option value="">— Select —</option></select></div>
+        <div class="field"><label>From Date</label><input type="date" id="inv-f" value="${weekStart()}"/></div>
+        <div class="field"><label>To Date</label><input type="date" id="inv-t" value="${today()}"/></div>
+        <div class="field"><label>Hourly Rate ($/hr)</label><input type="number" id="inv-r" value="25" min="1" step="0.5"/></div>
       </div>
-      <button class="sb sb-gold mt16" onclick="genInvoice('inv-preview','inv-saved','manager')">🧾 Generate Invoice</button>
+      <button class="sb sb-g mt16" onclick="genInv()">🧾 &nbsp;Generate Invoice</button>
     </div>
-    <div id="inv-preview"></div>
-    <div class="tw mt16">
-      <div class="th"><h3>Saved Invoices</h3></div>
-      <div id="inv-saved"><div class="empty"><p>Loading…</p></div></div>
+    <div id="inv-area"></div>
+    <div id="saved-section" style="margin-top:24px;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:16px;">Saved Invoices</h3>
+      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading…</p></div></div></div>
     </div>`;
-  const {data:emps}=await db.from('profiles').select('id,full_name,position,hourly_rate').eq('role','employee').order('full_name');
-  const sel=document.getElementById('inv-emp-sel');
-  sel.innerHTML='<option value="">— Select employee —</option>';
-  (emps||[]).forEach(e=>sel.innerHTML+=`<option value="${e.id}" data-name="${e.full_name}" data-pos="${e.position||''}" data-rate="${e.hourly_rate||25}">${e.full_name}${e.position?' ('+e.position+')':''}</option>`);
-  sel.onchange=()=>{const o=sel.options[sel.selectedIndex];if(o?.dataset.rate)document.getElementById('inv-rate').value=o.dataset.rate;};
-  await loadSavedInvoices('inv-saved');
+  try{
+    const res=await apiGet('getStaff'); _allStaff=res.staff||[];
+    const sel=document.getElementById('inv-e');
+    _allStaff.forEach(s=>sel.innerHTML+=`<option value="${s.id}" data-name="${s.name}" data-pos="${s.position||''}" data-rate="${s.rate||25}">${s.name} (${s.id})${s.position?' · '+s.position:''}</option>`);
+  }catch(e){}
+  await loadSaved();
+}
+function autoRate(){
+  const sel=document.getElementById('inv-e');
+  const opt=sel.options[sel.selectedIndex];
+  if(opt?.dataset.rate) document.getElementById('inv-r').value=opt.dataset.rate;
+}
+async function genInv(){
+  const sel=document.getElementById('inv-e');
+  const opt=sel.options[sel.selectedIndex];
+  if(!sel.value){toast('Select an employee','err');return;}
+  const from=document.getElementById('inv-f').value;
+  const to=document.getElementById('inv-t').value;
+  const rate=parseFloat(document.getElementById('inv-r').value)||25;
+  if(!from||!to){toast('Select date range','err');return;}
+  await buildInv('inv-area',sel.value,opt.dataset.name,opt.dataset.pos||'Staff',sel.value,from,to,rate,true);
 }
 
-// ╔══════════════════════════════════╗
-// ║       EMPLOYEE DASHBOARD         ║
-// ╚══════════════════════════════════╝
-const EMP_NAV=[
-  {id:'clock',    icon:'⏰', label:'Clock In/Out'},
-  {id:'myhours',  icon:'📊', label:'My Hours'},
-  {id:'myinvoice',icon:'🧾', label:'My Invoice'},
-  {id:'mysched',  icon:'📅', label:'My Schedule'},
-];
-function buildEmployeeDash(){
-  document.getElementById('sidebar').innerHTML=EMP_NAV.map(n=>`
-    <div class="si" id="si-${n.id}" onclick="empPage('${n.id}')">
-      <span class="si-icon">${n.icon}</span><span>${n.label}</span>
-    </div>`).join('');
-  document.getElementById('dcontent').innerHTML=EMP_NAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
-  empPage('clock');
+// ══════════════════════════════════════════
+// EMPLOYEE DASHBOARD
+// ══════════════════════════════════════════
+const ENAV=[{id:'clock',icon:'⏰',label:'Clock In/Out'},{id:'myhours',icon:'📊',label:'My Hours'},{id:'myinv',icon:'🧾',label:'My Invoice'}];
+function buildEmp(){
+  document.getElementById('sidebar').innerHTML=ENAV.map(n=>`<div class="si" id="si-${n.id}" onclick="ePg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('');
+  document.getElementById('dcontent').innerHTML=ENAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
+  ePg('clock');
 }
-function empPage(id){
+function ePg(id){
   document.querySelectorAll('.si').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));
   document.getElementById('si-'+id)?.classList.add('active');
   document.getElementById('pg-'+id)?.classList.add('on');
-  ({clock:pgClock,myhours:pgMyHours,myinvoice:pgMyInvoice,mysched:pgMySched})[id]?.();
+  ({clock:eClock,myhours:eHours,myinv:eInv})[id]?.();
 }
 
-// ── Clock ──
-async function pgClock(){
+async function eClock(){
   const el=document.getElementById('pg-clock');
-  el.innerHTML=`
-    <div class="pg-title">Time Clock</div>
-    <div class="pg-sub">Record your shift start and end time</div>
-    <div class="clock-hero">
-      <div class="clock-time" id="clk-t"></div>
-      <div class="clock-datestr" id="clk-d"></div>
-      <button class="clock-btn cb-in" id="clk-btn" onclick="toggleClock()">Loading…</button>
-      <div class="clock-status" id="clk-s"></div>
+  el.innerHTML=`<div class="pgt">Time Clock</div><div class="pgs">Clock in when you arrive · Clock out when you leave · Saved to Google Sheets</div>
+    <div class="clk-hero">
+      <div class="clk-t" id="ct"></div>
+      <div class="clk-d" id="cd"></div>
+      <button class="clk-btn cb-in" id="cb" onclick="toggleClock()">Checking…</button>
+      <div class="clk-s" id="cs"></div>
     </div>
-    <div class="tw">
-      <div class="th"><h3>Today's Sessions</h3></div>
-      <div id="today-rows"></div>
-    </div>`;
-  if(_clockInterval)clearInterval(_clockInterval);
-  const tick=()=>{
-    const n=new Date();
-    const ct=document.getElementById('clk-t');
-    const cd=document.getElementById('clk-d');
-    if(ct)ct.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    if(cd)cd.textContent=n.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  };
-  tick();_clockInterval=setInterval(tick,1000);
-  await refreshClockState();
-  await loadTodaySessions();
+    <div class="tw"><div class="twt"><h3>Today's Sessions</h3></div><div id="tr"></div></div>`;
+  if(_clockInt)clearInterval(_clockInt);
+  const tick=()=>{const n=new Date();const ct=document.getElementById('ct');const cd=document.getElementById('cd');if(ct)ct.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});if(cd)cd.textContent=n.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});};
+  tick();_clockInt=setInterval(tick,1000);
+  await refreshClock();await loadToday();
 }
-async function refreshClockState(){
-  const {data}=await db.from('time_logs').select('*').eq('employee_id',ME.id).is('clock_out',null).maybeSingle();
-  _isClockedIn=!!data;_activeLogId=data?.id||null;
-  const btn=document.getElementById('clk-btn');
-  const st=document.getElementById('clk-s');
-  if(!btn)return;
-  if(_isClockedIn){
-    btn.textContent='Clock Out';btn.className='clock-btn cb-out';
-    st.textContent='Clocked in since '+new Date(data.clock_in).toLocaleTimeString();
-  } else {
-    btn.textContent='Clock In';btn.className='clock-btn cb-in';
-    st.textContent='You are not currently clocked in';
-  }
+async function refreshClock(){
+  try{
+    const res=await apiGet('getClockStatus',{employeeId:ME.id});
+    _isClockedIn=res.isClockedIn||false;
+    const btn=document.getElementById('cb');const st=document.getElementById('cs');
+    if(!btn)return;
+    if(_isClockedIn){btn.textContent='Clock Out';btn.className='clk-btn cb-out';st.textContent='Clocked in since '+new Date(res.clockIn).toLocaleTimeString();}
+    else{btn.textContent='Clock In';btn.className='clk-btn cb-in';st.textContent='You are not currently clocked in';}
+  }catch(e){const st=document.getElementById('cs');if(st)st.textContent='Could not check status';}
 }
 async function toggleClock(){
-  const btn=document.getElementById('clk-btn');
-  btn.disabled=true;
-  if(!_isClockedIn){
-    const {data,error}=await db.from('time_logs').insert({employee_id:ME.id,clock_in:new Date().toISOString()}).select().single();
-    if(error){toast(error.message,'err');btn.disabled=false;return;}
-    _activeLogId=data.id;_isClockedIn=true;
-    toast('Clocked in! Have a great shift. ✅','ok');
-  } else {
-    const {error}=await db.from('time_logs').update({clock_out:new Date().toISOString()}).eq('id',_activeLogId);
-    if(error){toast(error.message,'err');btn.disabled=false;return;}
-    _isClockedIn=false;_activeLogId=null;
-    toast('Clocked out. Good work! 👋','ok');
-  }
-  btn.disabled=false;
-  await refreshClockState();
-  await loadTodaySessions();
+  const btn=document.getElementById('cb');btn.disabled=true;
+  try{
+    let res;
+    if(!_isClockedIn){
+      res=await apiPost('clockIn',{employeeId:ME.id,name:ME.name,position:ME.position||''});
+      if(res.success){_isClockedIn=true;toast('Clocked in! ✅ Saved to Google Sheets','ok');}
+      else toast(res.error||'Clock in failed','err');
+    }else{
+      res=await apiPost('clockOut',{employeeId:ME.id});
+      if(res.success){_isClockedIn=false;toast('Clocked out! '+res.hoursWorked+' hrs recorded 👋','ok');}
+      else toast(res.error||'Clock out failed','err');
+    }
+  }catch(e){toast('Connection error','err');}
+  btn.disabled=false;await refreshClock();await loadToday();
 }
-async function loadTodaySessions(){
-  const {data:logs}=await db.from('time_logs').select('*').eq('employee_id',ME.id).gte('clock_in',today()).order('clock_in',{ascending:false});
-  const el=document.getElementById('today-rows');
-  if(!logs?.length){el.innerHTML='<div class="empty"><p>No sessions recorded today.</p></div>';return;}
-  let tot=0;
-  logs.forEach(l=>{if(l.clock_out)tot+=hoursNum(l.clock_in,l.clock_out);});
-  el.innerHTML=`<table><thead><tr><th>Clock In</th><th>Clock Out</th><th>Duration</th></tr></thead><tbody>
-    ${logs.map(l=>{
-      const h=l.clock_out?fmtHrs(l.clock_in,l.clock_out)+' hrs':'<span class="badge bo">Active</span>';
-      return `<tr><td>${fmtDT(l.clock_in)}</td><td>${l.clock_out?fmtDT(l.clock_out):'—'}</td><td>${h}</td></tr>`;
-    }).join('')}</tbody></table>
-  <div style="padding:12px 16px;border-top:1px solid var(--border);font-weight:600;font-size:14px;">Total today: <span style="color:var(--blue);">${tot.toFixed(2)} hours</span></div>`;
+async function loadToday(){
+  const el=document.getElementById('tr');if(!el)return;
+  try{
+    const res=await apiGet('getHours',{employeeId:ME.id,from:today(),to:today()});
+    const sessions=res.sessions||[];
+    if(!sessions.length){el.innerHTML='<div class="empty"><p>No sessions today yet.</p></div>';return;}
+    let tot=0;sessions.forEach(s=>tot+=parseFloat(s.hours)||0);
+    el.innerHTML=`<table><thead><tr><th>Clock In</th><th>Clock Out</th><th>Hours</th></tr></thead><tbody>
+      ${sessions.map(s=>`<tr><td>${s.clockIn}</td><td>${s.clockOut||'—'}</td><td>${s.hours?s.hours+' hrs':'<span class="badge bo">Active</span>'}</td></tr>`).join('')}
+    </tbody></table><div style="padding:12px 16px;border-top:1px solid var(--border);font-weight:600;font-size:14px;">Today total: <span style="color:var(--teal);">${tot.toFixed(2)} hrs</span></div>`;
+  }catch(e){el.innerHTML='<div class="empty"><p>Could not load.</p></div>';}
 }
 
-// ── My Hours ──
-async function pgMyHours(){
+async function eHours(){
   const el=document.getElementById('pg-myhours');
-  el.innerHTML=`
-    <div class="pg-title">My Hours</div>
-    <div class="pg-sub">Your work records and earnings</div>
-    <div style="margin-bottom:18px;">
-      <select id="hrs-period" onchange="loadMyHours()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;">
-        <option value="week">This Week</option>
-        <option value="month">This Month</option>
-        <option value="all">All Time</option>
-      </select>
+  el.innerHTML=`<div class="pgt">My Hours</div><div class="pgs">Your records from Google Sheets</div>
+    <div class="gap8" style="margin-bottom:18px;">
+      <input type="date" id="mf" value="${weekStart()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
+      <input type="date" id="mt" value="${today()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
+      <button class="sb sb-n" onclick="loadEmpHours()">Load</button>
     </div>
-    <div class="krow" id="hrs-kpis"></div>
-    <div class="tw"><div id="hrs-rows"></div></div>`;
-  await loadMyHours();
+    <div class="krow" id="hk"></div>
+    <div class="tw"><div id="hr2"><div class="empty"><p>Select dates and click Load.</p></div></div></div>`;
 }
-async function loadMyHours(){
-  const period=document.getElementById('hrs-period')?.value||'week';
-  let from=null;
-  if(period==='week')from=weekStart();
-  else if(period==='month')from=new Date().toISOString().slice(0,7)+'-01';
-  let q=db.from('time_logs').select('*').eq('employee_id',ME.id).not('clock_out','is',null).order('clock_in',{ascending:false});
-  if(from)q=q.gte('clock_in',from);
-  const [{data:logs},{data:prof}]=await Promise.all([q,db.from('profiles').select('hourly_rate').eq('id',ME.id).single()]);
-  const rate=prof?.hourly_rate||25;
-  let tot=0;(logs||[]).forEach(l=>tot+=hoursNum(l.clock_in,l.clock_out));
-  const pay=(tot*rate).toFixed(2);
-  document.getElementById('hrs-kpis').innerHTML=`
-    <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-val">${tot.toFixed(2)}</div><div class="kpi-lbl">Hours Worked</div></div>
-    <div class="kpi"><div class="kpi-icon">💵</div><div class="kpi-val">$${pay}</div><div class="kpi-lbl">Gross Earnings</div></div>
-    <div class="kpi"><div class="kpi-icon">📋</div><div class="kpi-val">${logs?.length||0}</div><div class="kpi-lbl">Sessions</div></div>
-    <div class="kpi"><div class="kpi-icon">💰</div><div class="kpi-val">$${rate}</div><div class="kpi-lbl">Hourly Rate</div></div>`;
-  const rows=document.getElementById('hrs-rows');
-  if(!logs?.length){rows.innerHTML='<div class="empty"><p>No sessions for this period.</p></div>';return;}
-  rows.innerHTML=`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
-    ${logs.map(l=>{
-      const h=hoursNum(l.clock_in,l.clock_out);
-      return `<tr><td>${l.clock_in.split('T')[0]}</td><td>${fmtDT(l.clock_in)}</td><td>${fmtDT(l.clock_out)}</td><td>${h.toFixed(2)} hrs</td><td style="font-weight:600;color:var(--green);">$${(h*rate).toFixed(2)}</td></tr>`;
-    }).join('')}</tbody></table>`;
+async function loadEmpHours(){
+  const from=document.getElementById('mf').value;
+  const to=document.getElementById('mt').value;
+  const rate=parseFloat(ME.rate)||25;
+  try{
+    const res=await apiGet('getHours',{employeeId:ME.id,from,to});
+    const totalH=res.totalHours||0;
+    const sessions=res.sessions||[];
+    document.getElementById('hk').innerHTML=`
+      <div class="kpi"><div class="kpi-i">⏱️</div><div class="kpi-v">${totalH.toFixed(2)}</div><div class="kpi-l">Total Hours</div></div>
+      <div class="kpi"><div class="kpi-i">💵</div><div class="kpi-v">$${(totalH*rate).toFixed(2)}</div><div class="kpi-l">Gross Earnings</div></div>
+      <div class="kpi"><div class="kpi-i">📋</div><div class="kpi-v">${sessions.length}</div><div class="kpi-l">Sessions</div></div>
+      <div class="kpi"><div class="kpi-i">💰</div><div class="kpi-v">$${rate}</div><div class="kpi-l">Hourly Rate</div></div>`;
+    const el=document.getElementById('hr2');
+    if(!sessions.length){el.innerHTML='<div class="empty"><p>No sessions for this period.</p></div>';return;}
+    el.innerHTML=`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
+      ${sessions.map(s=>`<tr><td>${s.date}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td>${s.hours} hrs</td><td style="color:var(--green);font-weight:600;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}
+    </tbody></table>`;
+  }catch(e){toast('Error loading hours','err');}
 }
 
-// ── My Invoice ──
-async function pgMyInvoice(){
-  const el=document.getElementById('pg-myinvoice');
-  el.innerHTML=`
-    <div class="pg-title">My Invoice</div>
-    <div class="pg-sub">Generate a pay invoice from your clock records</div>
-    <div class="fc">
-      <h3>Generate Invoice</h3>
+async function eInv(){
+  const el=document.getElementById('pg-myinv');
+  el.innerHTML=`<div class="pgt">My Invoice</div><div class="pgs">Generate your pay invoice from clock records</div>
+    <div class="fcard"><h3>Select Pay Period</h3>
       <div class="fgrid">
-        <div class="field"><label>From Date</label><input type="date" id="ei-from" value="${weekStart()}"/></div>
-        <div class="field"><label>To Date</label><input type="date" id="ei-to" value="${today()}"/></div>
+        <div class="field"><label>From Date</label><input type="date" id="ef" value="${weekStart()}"/></div>
+        <div class="field"><label>To Date</label><input type="date" id="et" value="${today()}"/></div>
       </div>
-      <button class="sb sb-gold mt16" onclick="genInvoice('ei-preview','ei-saved','employee')">🧾 Generate Invoice</button>
+      <button class="sb sb-g mt16" onclick="genEmpInv()">🧾 &nbsp;Generate Invoice</button>
     </div>
-    <div id="ei-preview"></div>
-    <div class="tw mt16">
-      <div class="th"><h3>My Saved Invoices</h3></div>
-      <div id="ei-saved"><div class="empty"><p>Loading…</p></div></div>
+    <div id="inv-area"></div>
+    <div id="saved-section" style="margin-top:24px;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:16px;">My Saved Invoices</h3>
+      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading…</p></div></div></div>
     </div>`;
-  await loadSavedInvoices('ei-saved',ME.id);
+  await loadSaved(ME.id);
+}
+async function genEmpInv(){
+  const from=document.getElementById('ef').value;
+  const to=document.getElementById('et').value;
+  if(!from||!to){toast('Select date range','err');return;}
+  const rate=parseFloat(ME.rate)||25;
+  await buildInv('inv-area',ME.id,ME.name,ME.position||'Staff',ME.id,from,to,rate,false);
 }
 
-// ── My Schedule ──
-async function pgMySched(){
-  const el=document.getElementById('pg-mysched');
-  el.innerHTML=`<div class="pg-title">My Schedule</div><div class="pg-sub">Your upcoming assigned shifts</div><div id="my-sched-body"><div class="empty"><p>Loading…</p></div></div>`;
-  const {data:shifts}=await db.from('shifts').select('*').eq('employee_id',ME.id).gte('date',today()).order('date').limit(20);
-  const sb2=document.getElementById('my-sched-body');
-  if(!shifts?.length){sb2.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>No upcoming shifts scheduled.</p></div>';return;}
-  sb2.innerHTML=`<div class="tw"><table><thead><tr><th>Date</th><th>Day</th><th>Shift</th><th>Notes</th></tr></thead><tbody>
-    ${shifts.map(s=>{const d=new Date(s.date+'T12:00:00');return`<tr><td>${s.date}</td><td>${d.toLocaleDateString('en-US',{weekday:'long'})}</td><td>${s.shift_time||'—'}</td><td>${s.notes||'—'}</td></tr>`;}).join('')}
-  </tbody></table></div>`;
+// ══════════════════════════════════════════
+// INVOICE ENGINE
+// ══════════════════════════════════════════
+async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
+  const area=document.getElementById(areaId);
+  area.innerHTML='<div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);width:28px;height:28px;"></span></div>';
+  try{
+    const res=await apiGet('getHours',{employeeId:empId,from,to});
+    const totalH=res.totalHours||0;
+    const totalPay=totalH*rate;
+    const sessions=res.sessions||[];
+    const invNum='CNL-'+Date.now().toString().slice(-7);
+    const issued=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    _currentInv={empId,empName,invNum,from,to,totalHours:totalH,totalAmount:totalPay,rate,position:empPos};
+    const f=new Date(from+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const t=new Date(to+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    area.innerHTML=`
+    <div class="inv-wrap">
+      <div class="inv-tb">
+        <div class="inv-info"><strong>${empName}</strong> &nbsp;·&nbsp; ${sessions.length} sessions &nbsp;·&nbsp; ${totalH.toFixed(2)} hrs &nbsp;·&nbsp; <strong>$${totalPay.toFixed(2)}</strong></div>
+        <div class="inv-acts">
+          <button class="iab iab-c" onclick="document.getElementById('${areaId}').innerHTML='';_currentInv=null;">✕ Clear</button>
+          <button class="iab iab-s" onclick="saveInv()">💾 Save</button>
+          <button class="iab iab-p" onclick="window.print()">🖨️ Print / PDF</button>
+        </div>
+      </div>
+      <div id="inv-doc">
+        <div class="inv-lh">
+          <div>
+            <div style="display:flex;align-items:center;gap:11px;margin-bottom:8px;">
+              <div style="width:46px;height:46px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">🏥</div>
+              <div><div class="inv-cn">Central Nurses LLC</div><div class="inv-cs">Staffing Agency · Wichita, Kansas</div></div>
+            </div>
+            <div class="inv-ca">629 S Longfellow Street, Wichita, KS 67207<br/>Info@Centralnurses.com · +1(316) 806-5951</div>
+          </div>
+          <div>
+            <div class="inv-wd">INVOICE</div>
+            <div class="inv-mt">
+              <div class="inv-mr"><span>Invoice # </span><strong>${invNum}</strong></div>
+              <div class="inv-mr"><span>Issued: </span><strong>${issued}</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="inv-ig">
+          <div class="inv-ic"><div class="iil">Employee</div><div class="iim">${empName}</div><div class="iis">${empPos}</div><div class="iid">${empCode}</div></div>
+          <div class="inv-ic"><div class="iil">Issued By</div><div class="iim">Central Nurses LLC</div><div class="iis">629 S Longfellow Street<br/>Wichita, KS 67207</div></div>
+          <div class="inv-ic"><div class="iil">Pay Period</div><div class="iim" style="font-size:15px;">${f} – ${t}</div><div class="iis">${Math.round((new Date(to)-new Date(from))/86400000)+1} day period</div></div>
+        </div>
+        <div class="inv-strip">
+          <div class="iis2"><div class="iis2-l">Total Hours</div><div class="iis2-v">${totalH.toFixed(2)}</div></div>
+          <div class="iis2"><div class="iis2-l">Rate / Hour</div><div class="iis2-v">$${rate}</div></div>
+          <div class="iis2"><div class="iis2-l">Sessions</div><div class="iis2-v">${sessions.length}</div></div>
+          <div class="iis2"><div class="iis2-l">Total Due</div><div class="iis2-v">$${totalPay.toFixed(2)}</div></div>
+        </div>
+        <div class="inv-tw">
+          <div class="inv-tb2">
+            <div class="itr"><span class="itrl">Total Hours Worked</span><span class="itrr">${totalH.toFixed(2)} hrs</span></div>
+            <div class="itr"><span class="itrl">Hourly Rate</span><span class="itrr">$${rate.toFixed(2)}/hr</span></div>
+            <div class="itr"><span class="itrl">TOTAL AMOUNT DUE</span><span class="itrr">$${totalPay.toFixed(2)}</span></div>
+          </div>
+        </div>
+        <div class="inv-sig">
+          <div><div class="sigl">Employee Signature</div><div class="sigln"></div><div class="signm">${empName} / Date</div></div>
+          <div><div class="sigl">Authorized By (Manager)</div><div class="sigln"></div><div class="signm">Central Nurses LLC · Management</div></div>
+        </div>
+        <div class="inv-note"><strong>Note:</strong> Generated from verified clock records in Google Sheets. Hours calculated from actual clock-in/out timestamps. Questions? Contact <strong>Info@Centralnurses.com</strong> or call <strong>+1(316) 806-5951</strong>.</div>
+      </div>
+    </div>`;
+    area.scrollIntoView({behavior:'smooth',block:'start'});
+    toast('Invoice generated!','ok');
+    await loadSaved(isMgr?null:ME.id);
+  }catch(e){area.innerHTML='<div class="empty"><p>Error generating invoice.</p></div>';toast('Error','err');}
 }
 
-// ╔══════════════════════════════════╗
-// ║       INVOICE ENGINE             ║
-// ╚══════════════════════════════════╝
-let _currentInv=null;
-
-async function genInvoice(previewId,savedId,mode){
-  let empId,empName,empPos,empEmail,rate;
-  if(mode==='manager'){
-    const sel=document.getElementById('inv-emp-sel');
-    const opt=sel.options[sel.selectedIndex];
-    if(!sel.value){toast('Select an employee','err');return;}
-    empId=sel.value;empName=opt.dataset.name;empPos=opt.dataset.pos;
-    rate=parseFloat(document.getElementById('inv-rate').value)||25;
-    const from=document.getElementById('inv-from').value;
-    const to=document.getElementById('inv-to').value;
-    if(!from||!to){toast('Select a date range','err');return;}
-    await buildInvoiceDoc(previewId,savedId,empId,empName,empPos,'',from,to,rate);
-  } else {
-    const from=document.getElementById('ei-from').value;
-    const to=document.getElementById('ei-to').value;
-    if(!from||!to){toast('Select a date range','err');return;}
-    const {data:prof}=await db.from('profiles').select('full_name,position,email,hourly_rate').eq('id',ME.id).single();
-    await buildInvoiceDoc(previewId,savedId,ME.id,prof.full_name,prof.position||'Staff',prof.email||'',from,to,prof.hourly_rate||25);
-  }
-}
-
-async function buildInvoiceDoc(previewId,savedId,empId,empName,empPos,empEmail,from,to,rate){
-  const {data:logs}=await db.from('time_logs').select('*')
-    .eq('employee_id',empId)
-    .gte('clock_in',from+'T00:00:00')
-    .lte('clock_in',to+'T23:59:59')
-    .not('clock_out','is',null)
-    .order('clock_in');
-  let totalH=0;
-  (logs||[]).forEach(l=>totalH+=hoursNum(l.clock_in,l.clock_out));
-  const totalPay=(totalH*rate);
-  const invNum='CNL-'+Date.now().toString().slice(-7);
-  const issueDate=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  _currentInv={empId,invNum,from,to,totalH,totalPay,rate};
-
-  const fromFmt=new Date(from+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  const toFmt=new Date(to+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-
-  document.getElementById(previewId).innerHTML=`
-  <div class="inv-doc">
-    <div class="inv-toolbar">
-      <span>${empName} · ${logs?.length||0} sessions · $${totalPay.toFixed(2)} total</span>
-      <div class="gap8">
-        <button class="sb sb-navy sb-sm" onclick="document.getElementById('${previewId}').innerHTML='';_currentInv=null;">✕ Clear</button>
-        <button class="sb sb-gold sb-sm" onclick="saveInvoice('${savedId}')">💾 Save</button>
-        <button class="sb sb-navy sb-sm" onclick="window.print()">🖨️ Print / PDF</button>
-      </div>
-    </div>
-    <div id="inv-print-area">
-      <div class="inv-head">
-        <div>
-          <div class="inv-co-name">Central Nurses LLC</div>
-          <div class="inv-co-sub">Wichita, Kansas · Healthcare Staffing</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="inv-word">INVOICE</div>
-          <div class="inv-num"># ${invNum}</div>
-          <div class="inv-num">Issued: ${issueDate}</div>
-        </div>
-      </div>
-      <div class="inv-parties">
-        <div>
-          <div class="inv-party-lbl">From</div>
-          <div class="inv-party-name">Central Nurses LLC</div>
-          <div class="inv-party-detail">Wichita, Kansas<br/>kipkoechbethwel721@gmail.com</div>
-        </div>
-        <div>
-          <div class="inv-party-lbl">Employee</div>
-          <div class="inv-party-name">${empName}</div>
-          <div class="inv-party-detail">${empPos||'Staff'}${empEmail?'<br/>'+empEmail:''}</div>
-        </div>
-        <div>
-          <div class="inv-party-lbl">Pay Period</div>
-          <div class="inv-party-name" style="font-size:15px;">${fromFmt} – ${toFmt}</div>
-          <div class="inv-party-detail">${Math.round((new Date(to)-new Date(from))/86400000)+1} day period</div>
-        </div>
-      </div>
-      <div class="inv-strip">
-        <div class="inv-strip-item"><div class="ist-lbl">Sessions</div><div class="ist-val">${logs?.length||0}</div></div>
-        <div class="inv-strip-item"><div class="ist-lbl">Total Hours</div><div class="ist-val">${totalH.toFixed(2)}</div></div>
-        <div class="inv-strip-item"><div class="ist-lbl">Rate / Hour</div><div class="ist-val">$${rate}</div></div>
-        <div class="inv-strip-item"><div class="ist-lbl">Total Due</div><div class="ist-val gold">$${totalPay.toFixed(2)}</div></div>
-      </div>
-      <table class="inv-tbl">
-        <thead><tr><th>#</th><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Amount</th></tr></thead>
-        <tbody>${logs?.length?logs.map((l,i)=>{
-          const h=hoursNum(l.clock_in,l.clock_out);
-          return `<tr><td style="color:var(--muted);font-size:12px;">${i+1}</td><td>${new Date(l.clock_in).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</td><td>${fmtTime(l.clock_in)}</td><td>${fmtTime(l.clock_out)}</td><td>${h.toFixed(2)} hrs</td><td>$${(h*rate).toFixed(2)}</td></tr>`;
-        }).join(''):`<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">No completed sessions found for this period.</td></tr>`}</tbody>
-        <tfoot><tr><td colspan="4" style="color:var(--muted);font-size:12px;">All times in local timezone</td><td>${totalH.toFixed(2)} hrs</td><td>$${totalPay.toFixed(2)}</td></tr></tfoot>
-      </table>
-      <div class="inv-total-block">
-        <div class="inv-total-inner">
-          <div class="itr"><span class="itr-lbl">Total Hours</span><span class="itr-val">${totalH.toFixed(2)} hrs</span></div>
-          <div class="itr"><span class="itr-lbl">Rate per Hour</span><span class="itr-val">$${rate.toFixed(2)}</span></div>
-          <div class="itr"><span class="itr-lbl">TOTAL AMOUNT DUE</span><span class="itr-val">$${totalPay.toFixed(2)}</span></div>
-        </div>
-      </div>
-      <div class="inv-footer-line">
-        <div class="inv-note">Thank you for your service.<br/>Central Nurses LLC · Wichita, Kansas</div>
-        <div class="sig-area"><div class="sig-line"></div><div class="sig-lbl">Authorized Signature</div></div>
-      </div>
-    </div>
-  </div>`;
-  document.getElementById(previewId).scrollIntoView({behavior:'smooth',block:'start'});
-  toast('Invoice generated!','ok');
-  await loadSavedInvoices(savedId, empId===ME.id&&PROF.role!=='manager'?ME.id:null);
-}
-
-async function saveInvoice(savedId){
+async function saveInv(){
   if(!_currentInv){toast('Generate an invoice first','err');return;}
-  const {empId,invNum,from,to,totalH,totalPay,rate}=_currentInv;
-  const {error}=await db.from('invoices').insert({employee_id:empId,invoice_number:invNum,period_start:from,period_end:to,total_hours:totalH,total_amount:totalPay,status:'pending'});
-  if(error){toast(error.message,'err');return;}
-  toast('Invoice saved!','ok');
-  _currentInv=null;
-  await loadSavedInvoices(savedId, savedId==='ei-saved'?ME.id:null);
+  const c=_currentInv;
+  try{
+    const res=await apiPost('saveInvoice',{invoiceNumber:c.invNum,employeeId:c.empId,name:c.empName,position:c.position||'',from:c.from,to:c.to,totalHours:c.totalHours,rate:c.rate,totalAmount:c.totalAmount});
+    if(!res.success){toast(res.error||'Save failed','err');return;}
+    toast('Invoice saved to Google Sheets! ✅','ok');
+    _currentInv=null;
+    await loadSaved(ME.role!=='manager'?ME.id:null);
+  }catch(e){toast('Error saving','err');}
 }
 
-async function loadSavedInvoices(elId,empFilter=null){
-  const el=document.getElementById(elId);
-  if(!el)return;
-  let q=db.from('invoices').select('*,profiles(full_name,position)').order('created_at',{ascending:false});
-  if(empFilter)q=q.eq('employee_id',empFilter);
-  const {data}=await q;
-  if(!data?.length){el.innerHTML='<div class="empty"><p>No saved invoices yet.</p></div>';return;}
-  const isMgr=PROF.role==='manager'&&!empFilter;
-  el.innerHTML=`<table><thead><tr><th>Invoice #</th>${isMgr?'<th>Employee</th>':''}<th>Period</th><th>Hours</th><th>Total</th><th>Status</th>${isMgr?'<th></th>':''}</tr></thead><tbody>
-    ${data.map(inv=>`<tr>
-      <td><strong>${inv.invoice_number}</strong></td>
-      ${isMgr?`<td>${inv.profiles?.full_name||'—'}<br/><span style="font-size:11px;color:var(--muted);">${inv.profiles?.position||''}</span></td>`:''}
-      <td style="font-size:13px;">${inv.period_start} → ${inv.period_end}</td>
-      <td>${parseFloat(inv.total_hours).toFixed(2)} hrs</td>
-      <td style="font-weight:700;">$${parseFloat(inv.total_amount).toFixed(2)}</td>
-      <td><span class="badge ${inv.status==='paid'?'bg':inv.status==='cancelled'?'br':'bo'}">${inv.status}</span></td>
-      ${isMgr?`<td><button class="sb sb-sm sb-navy" onclick="markPaid('${inv.id}',this)" ${inv.status==='paid'?'disabled':''}>Mark Paid</button></td>`:''}
-    </tr>`).join('')}
-  </tbody></table>`;
-}
-async function markPaid(id,btn){
-  btn.disabled=true;btn.textContent='…';
-  await db.from('invoices').update({status:'paid'}).eq('id',id);
-  toast('Marked as paid','ok');
-  await loadSavedInvoices('inv-saved');
+async function loadSaved(empFilter=null){
+  const el=document.getElementById('saved-rows');if(!el)return;
+  try{
+    const params=empFilter?{employeeId:empFilter}:{};
+    const res=await apiGet('getSavedInvoices',params);
+    const invs=res.invoices||[];
+    const isMgr=ME.role==='manager'&&!empFilter;
+    if(!invs.length){el.innerHTML='<div class="empty"><p>No saved invoices yet.</p></div>';return;}
+    el.innerHTML=`<table><thead><tr><th>Invoice #</th>${isMgr?'<th>Employee</th><th>ID</th>':''}<th>Period</th><th>Hours</th><th>Total</th></tr></thead><tbody>
+      ${invs.map(i=>`<tr><td><strong>${i.invoiceNumber}</strong></td>${isMgr?`<td>${i.name}</td><td><span class="badge bg">${i.employeeId}</span></td>`:''}<td style="font-size:12.5px;">${i.from} → ${i.to}</td><td>${parseFloat(i.totalHours||0).toFixed(2)} hrs</td><td style="font-weight:700;">$${parseFloat(i.totalAmount||0).toFixed(2)}</td></tr>`).join('')}
+    </tbody></table>`;
+  }catch(e){el.innerHTML='<div class="empty"><p>Could not load invoices.</p></div>';}
 }
 
-// ╔══════════════════════════════════╗
-// ║          HERO STATS              ║
-// ╚══════════════════════════════════╝
-async function loadHeroStats(){
-  const [s1,s2,s3]=await Promise.all([
-    db.from('profiles').select('id',{count:'exact'}).eq('role','employee').eq('status','active'),
-    db.from('time_logs').select('id',{count:'exact'}).is('clock_out',null),
-    db.from('shifts').select('id',{count:'exact'}).gte('date',weekStart()).lte('date',today()),
-  ]);
-  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  set('hs-staff',s1.count||0);
-  set('hs-clocked',s2.count||0);
-  set('hs-shifts',s3.count||0);
-}
-
-// ╔══════════════════════════════════╗
-// ║       CONTACT FORM               ║
-// ╚══════════════════════════════════╝
+// ══════════════════════════════════════════
+// CONTACT
+// ══════════════════════════════════════════
 function sendContact(){
   const n=document.getElementById('cn').value.trim();
   const e=document.getElementById('ce').value.trim();
   const m=document.getElementById('cm').value.trim();
   if(!n||!e||!m){toast('Please fill all fields','err');return;}
-  const s=document.getElementById('cs').value||'Website Inquiry';
-  window.location.href=`mailto:kipkoechbethwel721@gmail.com?subject=${encodeURIComponent(s+' — '+n)}&body=${encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m)}`;
+  window.location.href=`mailto:Info@Centralnurses.com?subject=${encodeURIComponent(document.getElementById('cs').value+' — '+n)}&body=${encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m)}`;
 }
 
-// ╔══════════════════════════════════╗
-// ║           HELPERS                ║
-// ╚══════════════════════════════════╝
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
 function today(){return new Date().toISOString().split('T')[0];}
 function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));return m.toISOString().split('T')[0];}
-function hoursNum(a,b){return(new Date(b)-new Date(a))/3600000;}
-function fmtHrs(a,b){return hoursNum(a,b).toFixed(2);}
-function fmtTime(iso){return new Date(iso).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});}
-function fmtDT(iso){if(!iso)return'—';const d=new Date(iso);return d.toLocaleDateString()+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});}
-function fmtDate(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
 
-// ╔══════════════════════════════════╗
-// ║         SESSION RESTORE          ║
-// ╚════════════�
+// ══════════════════════════════════════════
+// SESSION RESTORE
+const _saved=localStorage.getItem('cn_user');
+if(_saved){try{bootDash(JSON.parse(_saved));}catch(e){localStorage.removeItem('cn_user');}}
+</script>
+</body>
+</html>
