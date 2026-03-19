@@ -375,6 +375,17 @@ tr:hover td{background:rgba(11,26,46,.018);}
     <div class="mf"><label>Email</label><input type="email" id="r-em" placeholder="you@email.com"/></div>
     <div class="mf"><label>Password</label><input type="password" id="r-pw" placeholder="Choose a password"/></div>
     <div class="mf"><label>Phone (optional)</label><input type="text" id="r-ph" placeholder="(316) 555-0000"/></div>
+    <div class="mf"><label>Position / Discipline</label>
+      <select id="r-pos" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:#0b1a2e;outline:none;">
+        <option value="">Select your position...</option>
+        <option value="RN">RN — Registered Nurse</option>
+        <option value="LPN">LPN — Licensed Practical Nurse</option>
+        <option value="CNA">CNA — Certified Nursing Assistant</option>
+        <option value="CMA">CMA — Certified Medical Assistant</option>
+        <option value="LVN">LVN — Licensed Vocational Nurse</option>
+        <option value="Staff">Other / Staff</option>
+      </select>
+    </div>
     <button class="mbtn" id="rbtn" onclick="doRegister()">Create Staff Account</button>
     <div class="msw">Already registered? <a onclick="swOv('o-register','o-login')">Sign in</a></div>
   </div>
@@ -490,11 +501,12 @@ async function doRegister(){
   const em=document.getElementById('r-em').value.trim();
   const pw=document.getElementById('r-pw').value;
   const ph=document.getElementById('r-ph').value.trim();
+  const pos=document.getElementById('r-pos')?.value||'Staff';
   if(!nm||!em||!pw){toast('Name, email and password required','err');return;}
   const btn=document.getElementById('rbtn');
   btn.innerHTML='<span class="spin"></span> Creating…';btn.disabled=true;
   try{
-    const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph});
+    const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph,position:pos});
     btn.innerHTML='Create Staff Account';btn.disabled=false;
     if(!res.success){toast(res.error||'Registration failed','err');return;}
     toast('Welcome to Central Nurses! 🎉','ok');
@@ -560,8 +572,8 @@ async function mOverview(){
       </div>
       <div class="tw">
         <div class="twt"><h3>Staff Directory</h3></div>
-        ${staff.length?`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Rate/hr</th><th>Status</th></tr></thead><tbody>
-          ${staff.map(s=>`<tr><td><span class="badge bg">${s.id}</span></td><td><strong>${s.name}</strong></td><td>${s.position||'—'}</td><td>${s.email||'—'}</td><td>${s.rate?'$'+s.rate:'—'}</td><td><span class="badge ${s.status==='active'?'bg':'bo'}">${s.status}</span></td></tr>`).join('')}
+        ${staff.length?`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Rate/hr</th><th>Status</th><th></th></tr></thead><tbody>
+          ${staff.map(s=>`<tr><td><span class="badge bg">${s.id}</span></td><td><strong>${s.name}</strong></td><td>${s.position||'—'}</td><td>${s.email||'—'}</td><td>${s.rate?'$'+s.rate+'/hr':'—'}</td><td><span class="badge ${s.status==='active'?'bg':'bo'}">${s.status}</span></td><td><button class="sb sb-n" style="padding:4px 10px;font-size:12px;" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Set Rate</button></td></tr>`).join('')}
         </tbody></table>`:'<div class="empty"><p>No staff yet.</p></div>'}
       </div>`;
   }catch(e){el.innerHTML+='<div class="empty"><p>Error loading. Check your Apps Script URL.</p></div>';}
@@ -579,7 +591,7 @@ async function loadStaff(){
     const res=await apiGet('getStaff'); _allStaff=res.staff||[];
     const el=document.getElementById('sr');
     if(!_allStaff.length){el.innerHTML='<div class="empty"><p>No staff yet. Click + Add Staff to begin.</p></div>';return;}
-    el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th></tr></thead><tbody>
+    el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th><th></th></tr></thead><tbody>
       ${_allStaff.map(s=>`<tr><td><span class="badge bg">${s.id}</span></td><td><strong>${s.name}</strong></td><td>${s.position||'—'}</td><td>${s.email||'—'}</td><td>${s.phone||'—'}</td><td>${s.rate?'$'+s.rate:'—'}</td><td><span class="badge ${s.status==='active'?'bg':'bo'}">${s.status}</span></td></tr>`).join('')}
     </tbody></table>`;
   }catch(e){toast('Error loading staff','err');}
@@ -598,6 +610,17 @@ async function addStaff(){
     toast(nm+' added! Employee ID: '+res.id,'ok');
     closeOv('o-addstaff');await loadStaff();
   }catch(e){toast('Error adding staff','err');}
+}
+
+function editRate(id, name, cur){
+  const r = prompt("Set hourly rate for " + name + "\nCurrent: $" + cur + "/hr\n\nEnter new rate:", cur);
+  if(r===null||r==="") return;
+  const rate = parseFloat(r);
+  if(isNaN(rate)||rate<1){toast("Enter a valid rate","err");return;}
+  apiGet("updateRate",{employeeId:id, rate:rate}).then(res=>{
+    if(res.success){toast(name+" rate updated to $"+rate+"/hr","ok");loadStaff();}
+    else toast(res.error||"Failed","err");
+  });
 }
 
 async function mTimesheets(){
