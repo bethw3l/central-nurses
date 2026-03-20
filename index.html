@@ -4,20 +4,22 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Central Nurses LLC — Staff Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#0b1a2e;--navy2:#122040;--navy3:#1a3260;
   --gold:#c9a84c;--gold2:#e8c96a;--teal:#007ea7;
   --white:#fff;--cream:#f6f4ee;--muted:#64748b;--border:#e2e8f0;
-  --green:#15803d;--gbg:#f0fdf4;--red:#dc2626;--rbg:#fef2f2;--orange:#c2410c;--obg:#fff7ed;
+  --green:#15803d;--gbg:#f0fdf4;--red:#dc2626;--rbg:#fef2f2;
+  --orange:#c2410c;--obg:#fff7ed;--blue:#1d4ed8;--bbg:#eff6ff;
+  --rn:#1e3a5f;--lpn:#1a4731;--cna:#4a1942;--cma:#7c3205;
   --shadow:0 2px 16px rgba(11,26,46,.08);--shadow-lg:0 12px 48px rgba(11,26,46,.18);--r:13px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);}
 #toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
-.t{padding:11px 18px;border-radius:9px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:var(--shadow-lg);animation:tf .3s ease;max-width:290px;line-height:1.4;}
+.t{padding:11px 18px;border-radius:9px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:var(--shadow-lg);animation:tf .3s ease;max-width:300px;line-height:1.4;}
 .tok{background:var(--green);}.terr{background:var(--red);}.tinfo{background:var(--navy);}
 @keyframes tf{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 #site{display:block;}#dash{display:none;}
@@ -52,20 +54,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);
 .wci span{color:rgba(255,255,255,.75);font-size:13.5px;line-height:1.5;}
 .wc-btn{margin-top:20px;width:100%;padding:12px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s;}
 .wc-btn:hover{background:var(--gold2);}
-
-/* STATS BAR */
 .sbar{background:var(--gold);display:grid;grid-template-columns:repeat(4,1fr);}
 .sbi{padding:26px 20px;text-align:center;border-right:1px solid rgba(11,26,46,.12);}
 .sbi:last-child{border-right:none;}
 .sbn{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--navy);line-height:1;}
 .sbl{font-size:11.5px;font-weight:600;color:rgba(11,26,46,.55);margin-top:4px;text-transform:uppercase;letter-spacing:.7px;}
-
-/* SECTIONS */
 section{padding:80px 5%;}
 .sec{max-width:1100px;margin:0 auto;}
 .ey{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
 .st{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,46px);color:var(--navy);margin-bottom:14px;line-height:1.15;}
-.ss{color:var(--muted);font-size:15px;line-height:1.75;max-width:520px;}
 .g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:44px;}
 .sc{background:#fff;border-radius:var(--r);padding:28px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
 .sc:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
@@ -93,20 +90,31 @@ footer{background:var(--navy);padding:28px 5%;display:flex;align-items:center;ju
 /* MODALS */
 .ov{position:fixed;inset:0;background:rgba(11,26,46,.7);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
 .ov.open{display:flex;}
-.modal{background:#fff;border-radius:18px;padding:40px 36px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);position:relative;animation:mf .25s ease;}
+.modal{background:#fff;border-radius:18px;padding:40px 36px;width:100%;max-width:440px;box-shadow:var(--shadow-lg);position:relative;animation:mf .25s ease;max-height:90vh;overflow-y:auto;}
+.modal-wide{max-width:860px;}
 @keyframes mf{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
 .mx{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;}
 .modal h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--navy);margin-bottom:4px;}
 .msub{color:var(--muted);font-size:13px;margin-bottom:26px;}
 .mf{margin-bottom:16px;}
 .mf label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
-.mf input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;transition:border .2s;}
-.mf input:focus{border-color:var(--navy);}
+.mf input,.mf select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;transition:border .2s;}
+.mf input:focus,.mf select:focus{border-color:var(--navy);}
 .mbtn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .mbtn:hover{background:var(--navy3);}
 .mbtn:disabled{opacity:.55;cursor:not-allowed;}
 .msw{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
 .msw a{color:var(--teal);cursor:pointer;font-weight:600;}
+
+/* EMPLOYEE DETAIL MODAL */
+.emp-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.emp-detail-item{background:#f8f7f3;border-radius:8px;padding:10px 14px;}
+.edl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px;}
+.edv{font-size:13.5px;color:var(--navy);font-weight:500;}
+.edv.exp-ok{color:var(--green);font-weight:700;}
+.edv.exp-warn{color:var(--orange);font-weight:700;}
+.edv.exp-bad{color:var(--red);font-weight:700;}
+.section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
 
 /* DASHBOARD */
 #dash{flex-direction:column;min-height:100vh;}
@@ -125,31 +133,70 @@ footer{background:var(--navy);padding:28px 5%;display:flex;align-items:center;ju
 .so{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:none;padding:7px 14px;border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;transition:background .2s;}
 .so:hover{background:rgba(255,255,255,.18);}
 .dlayout{display:flex;flex:1;min-height:calc(100vh - 62px);}
-.sidebar{width:210px;background:var(--navy2);padding:16px 0;flex-shrink:0;}
-.si{display:flex;align-items:center;gap:11px;padding:12px 20px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13.5px;font-weight:500;transition:all .2s;border-left:3px solid transparent;user-select:none;}
+.sidebar{width:215px;background:var(--navy2);padding:16px 0;flex-shrink:0;overflow-y:auto;}
+.si{display:flex;align-items:center;gap:11px;padding:11px 20px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;transition:all .2s;border-left:3px solid transparent;user-select:none;}
 .si:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.04);}
 .si.active{color:#fff;background:rgba(201,168,76,.12);border-left-color:var(--gold);}
-.si-ic{font-size:17px;width:20px;text-align:center;flex-shrink:0;}
+.si-ic{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+.si-group{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.25);padding:14px 20px 6px;margin-top:4px;}
+.si-disc{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .dc{flex:1;padding:28px;overflow-y:auto;}
 .pg{display:none;}.pg.on{display:block;}
 .pgt{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:4px;}
 .pgs{color:var(--muted);font-size:14px;margin-bottom:24px;}
-.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:22px;}
+
+/* KPI */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:22px;}
 .kpi{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.kpi-i{font-size:26px;margin-bottom:10px;}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:500;}
+.kpi-badge{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:50px;}
 .kpi-v{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--navy);line-height:1;}
-.kpi-l{font-size:12px;color:var(--muted);margin-top:4px;font-weight:500;}
+
+/* TABLE */
 .tw{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
 .twt{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
 .twt h3{font-size:15px;font-weight:700;}
 table{width:100%;border-collapse:collapse;}
 th{background:#f8f7f3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:10px 16px;text-align:left;white-space:nowrap;}
-td{padding:12px 16px;border-top:1px solid var(--border);font-size:13.5px;vertical-align:middle;}
+td{padding:11px 16px;border-top:1px solid var(--border);font-size:13.5px;vertical-align:middle;}
 tr:hover td{background:rgba(11,26,46,.018);}
 .badge{display:inline-block;padding:3px 9px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;}
 .bg{background:var(--gbg);color:var(--green);}
 .br{background:var(--rbg);color:var(--red);}
 .bo{background:var(--obg);color:var(--orange);}
+.bb{background:var(--bbg);color:var(--blue);}
+.bx{background:#f1f5f9;color:var(--muted);}
+.badge-rn{background:rgba(30,58,95,.15);color:var(--rn);}
+.badge-lpn{background:rgba(26,71,49,.15);color:var(--lpn);}
+.badge-cna{background:rgba(74,25,66,.15);color:var(--cna);}
+.badge-cma{background:rgba(124,50,5,.15);color:var(--cma);}
+
+/* SPECIALTY TABS */
+.spec-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.spec-tab{padding:9px 20px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;border:2px solid transparent;transition:all .2s;}
+.spec-tab.active,.spec-tab:hover{color:#fff;}
+.tab-rn{border-color:var(--rn);color:var(--rn);}
+.tab-rn.active,.tab-rn:hover{background:var(--rn);}
+.tab-lpn{border-color:var(--lpn);color:var(--lpn);}
+.tab-lpn.active,.tab-lpn:hover{background:var(--lpn);}
+.tab-cna{border-color:var(--cna);color:var(--cna);}
+.tab-cna.active,.tab-cna:hover{background:var(--cna);}
+.tab-cma{border-color:var(--cma);color:var(--cma);}
+.tab-cma.active,.tab-cma:hover{background:var(--cma);}
+.tab-all{border-color:var(--navy);color:var(--navy);}
+.tab-all.active,.tab-all:hover{background:var(--navy);color:#fff;}
+
+/* DISCIPLINE HEADER BAR */
+.disc-header{border-radius:10px 10px 0 0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+.disc-header h3{color:#fff;font-size:15px;font-weight:700;}
+.disc-header span{color:rgba(255,255,255,.65);font-size:13px;}
+.dh-rn{background:var(--rn);}
+.dh-lpn{background:var(--lpn);}
+.dh-cna{background:var(--cna);}
+.dh-cma{background:var(--cma);}
+
+/* FORM CARD */
 .fcard{background:#fff;border-radius:var(--r);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
 .fcard h3{font-size:15px;font-weight:700;margin-bottom:16px;}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;}
@@ -160,9 +207,15 @@ tr:hover td{background:rgba(11,26,46,.018);}
 .sb{padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
 .sb-n{background:var(--navy);color:#fff;}.sb-n:hover{background:var(--navy3);}
 .sb-g{background:var(--gold);color:var(--navy);}.sb-g:hover{background:var(--gold2);}
+.sb-r{background:var(--rbg);color:var(--red);}.sb-r:hover{background:var(--red);color:#fff;}
+.sb-teal{background:var(--teal);color:#fff;}.sb-teal:hover{opacity:.85;}
+.sb-sm{padding:5px 12px;font-size:12px;}
 .mt16{margin-top:16px;}
 .gap8{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.sbox{padding:8px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;transition:border .2s;width:240px;}
+.sbox:focus{border-color:var(--navy);}
 .empty{text-align:center;padding:44px;color:var(--muted);}
+.empty-icon{font-size:36px;margin-bottom:10px;}
 
 /* CLOCK */
 .clk-hero{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:18px;padding:44px;text-align:center;margin-bottom:22px;position:relative;overflow:hidden;}
@@ -174,7 +227,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
 .cb-in:hover{box-shadow:0 6px 28px rgba(21,128,61,.6);transform:translateY(-2px);}
 .cb-out{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 20px rgba(220,38,38,.4);}
 .cb-out:hover{box-shadow:0 6px 28px rgba(220,38,38,.6);transform:translateY(-2px);}
-.clk-btn:disabled{opacity:.5;cursor:not-allowed;transform:none !important;box-shadow:none !important;}
+.clk-btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
 .clk-s{color:rgba(255,255,255,.5);font-size:13px;margin-top:14px;position:relative;}
 
 /* INVOICE */
@@ -223,36 +276,37 @@ tr:hover td{background:rgba(11,26,46,.018);}
 .signm{font-size:12.5px;color:var(--muted);}
 .inv-note{font-size:12px;color:var(--muted);line-height:1.7;padding:14px 18px;background:#f8f7f3;border-radius:9px;border:1px solid var(--border);margin-top:22px;}
 .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .6s linear infinite;}
+.spin-d{border-color:var(--border);border-top-color:var(--navy);width:24px;height:24px;}
 @keyframes rot{to{transform:rotate(360deg);}}
 
-/* SETUP BANNER */
-.setup-banner{background:#fef9ec;border:2px solid var(--gold);border-radius:12px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:flex-start;gap:14px;}
-.setup-banner .sb-icon{font-size:28px;flex-shrink:0;}
-.setup-banner h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.setup-banner p{font-size:13px;color:var(--muted);line-height:1.6;}
-.setup-banner code{background:#fff;border:1px solid var(--border);padding:2px 8px;border-radius:5px;font-family:monospace;font-size:12px;color:var(--navy);}
+/* CREDENTIAL EXPIRY COLORS */
+.cred-ok{color:var(--green);font-weight:700;}
+.cred-warn{color:var(--orange);font-weight:700;}
+.cred-bad{color:var(--red);font-weight:700;}
+.cred-na{color:var(--muted);}
 
 @media print{
-  #site,#dash>.dbar,.sidebar,.fcard,.krow,.tw,.setup-banner,.inv-tb,#toasts,#saved-section{display:none!important;}
+  #site,#dash>.dbar,.sidebar,.fcard,.krow,.spec-tabs,.inv-tb,#toasts,#saved-section,.tw:not(#inv-wrap-tw){display:none!important;}
   #dash{display:block!important;}.pg{display:none!important;}
-  #pg-inv{display:block!important;}
+  #pg-invoices{display:block!important;}
   .inv-wrap{box-shadow:none;border:none;}
   #inv-doc{padding:24px 32px;}
   body{background:#fff;}
 }
-@media(max-width:768px){
-  .nav-links{display:none;}
+@media(max-width:900px){
+  .nav-links a{display:none;}
   .hi{grid-template-columns:1fr;}
   .wcard{display:none;}
   .sbar{grid-template-columns:repeat(2,1fr);}
   .cg{grid-template-columns:1fr;}
-  .sidebar{width:56px;}.si span{display:none;}
+  .sidebar{width:56px;}.si span,.si-group,.si-disc{display:none;}
   .dc{padding:16px;}
   #inv-doc{padding:24px 16px;}
   .inv-lh{flex-direction:column;gap:16px;}
   .inv-ig,.inv-strip{grid-template-columns:1fr;}
   .inv-ic{border-right:none;border-bottom:1px solid var(--border);}
   .inv-sig{grid-template-columns:1fr;}
+  .emp-detail-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -262,7 +316,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
 <!-- PUBLIC SITE -->
 <div id="site">
 <nav class="nav">
-  <div class="nav-logo"><div class="nli"></div><div class="nlt">Central Nurses LLC</div></div>
+  <div class="nav-logo"><div class="nli">+</div><div class="nlt">Central Nurses LLC</div></div>
   <div class="nav-links">
     <a href="#services">Services</a><a href="#about">About</a><a href="#join">Careers</a><a href="#contact">Contact</a>
     <button class="nav-cta" onclick="openOv('o-login')">Staff Portal</button>
@@ -271,7 +325,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
 <div class="hero">
   <div class="hi">
     <div>
-      <div class="hero-ey">📍 Wichita, Kansas · (316) 806-5951</div>
+      <div class="hero-ey">Wichita, Kansas · (316) 806-5951</div>
       <h1>Quality Nursing<br/>Care Starts With<br/><em>Great Staff</em></h1>
       <p class="hero-sub">Central Nurses Staffing Agency — Your most trusted staffing partner. Providing excellent care solutions to patients across the greater Wichita, Kansas area.</p>
       <div class="hbtns">
@@ -281,12 +335,12 @@ tr:hover td{background:rgba(11,26,46,.018);}
     </div>
     <div class="wcard">
       <div class="wc-t">Why Choose Us</div>
-      <div class="wci"><span>✅ &nbsp;Fully credentialed &amp; background-checked staff</span></div>
-      <div class="wci"><span>⚡ &nbsp;Same-day &amp; next-day placement available</span></div>
-      <div class="wci"><span> &nbsp;RNs, LPNs, CNAs &amp; CMAs ready to deploy</span></div>
-      <div class="wci"><span>🕒 &nbsp;24/7 support for facilities &amp; staff</span></div>
-      <div class="wci"><span> &nbsp;Serving 50+ healthcare facilities in Kansas</span></div>
-      <button class="wc-btn" onclick="openOv('o-register')">Join Our Team →</button>
+      <div class="wci"><span>Fully credentialed and background-checked staff</span></div>
+      <div class="wci"><span>Same-day and next-day placement available</span></div>
+      <div class="wci"><span>RNs, LPNs, CNAs and CMAs ready to deploy</span></div>
+      <div class="wci"><span>24/7 support for facilities and staff</span></div>
+      <div class="wci"><span>Serving 50+ healthcare facilities in Kansas</span></div>
+      <button class="wc-btn" onclick="openOv('o-register')">Join Our Team</button>
     </div>
   </div>
 </div>
@@ -300,12 +354,12 @@ tr:hover td{background:rgba(11,26,46,.018);}
   <div class="sec">
     <div class="ey">What We Offer</div><div class="st">Our Staffing Services</div>
     <div class="g3">
-      <div class="sc"><div class="sc-i">👩‍⚕️</div><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments.</p></div>
-      <div class="sc"><div class="sc-i">💊</div><h3>LPN / LVN</h3><p>Licensed practical nurses for long-term care, rehab, and outpatient facilities.</p></div>
-      <div class="sc"><div class="sc-i">🩺</div><h3>CNA Services</h3><p>Certified nursing assistants for daily patient care and support.</p></div>
-      <div class="sc"><div class="sc-i">🔄</div><h3>Per Diem Staffing</h3><p>Flexible per diem coverage for call-outs — same day available.</p></div>
-      <div class="sc"><div class="sc-i">✈️</div><h3>Travel Nursing</h3><p>Contract travel nurses for 8–26 week assignments in the region.</p></div>
-      <div class="sc"><div class="sc-i">🏠</div><h3>Home Health</h3><p>Skilled in-home nursing including wound care and medication management.</p></div>
+      <div class="sc"><div class="sc-i">+</div><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments. Employee IDs: RNCL####</p></div>
+      <div class="sc"><div class="sc-i">+</div><h3>LPN / LVN</h3><p>Licensed practical nurses for long-term care, rehab, and outpatient facilities. Employee IDs: LPCL####</p></div>
+      <div class="sc"><div class="sc-i">+</div><h3>CNA Services</h3><p>Certified nursing assistants for daily patient care and support. Employee IDs: CACL####</p></div>
+      <div class="sc"><div class="sc-i">+</div><h3>Per Diem Staffing</h3><p>Flexible per diem coverage for call-outs — same day available.</p></div>
+      <div class="sc"><div class="sc-i">+</div><h3>Travel Nursing</h3><p>Contract travel nurses for 8-26 week assignments in the region.</p></div>
+      <div class="sc"><div class="sc-i">+</div><h3>CMA Services</h3><p>Certified medical assistants for clinical and administrative support. Employee IDs: CMCL####</p></div>
     </div>
   </div>
 </section>
@@ -317,10 +371,10 @@ tr:hover td{background:rgba(11,26,46,.018);}
       <p style="color:var(--muted);font-size:15px;line-height:1.8;">We are looking for RNs, LPNs, CMAs and CNAs to join our growing team. We work with hospitals, home care, assisted living facilities, clinics, and many others across Wichita.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div class="sc"><div class="sc-i">✅</div><h3>Fully Verified</h3><p>Every credential checked and tracked.</p></div>
-      <div class="sc"><div class="sc-i">⚡</div><h3>Fast Placement</h3><p>Same-day staffing available.</p></div>
-      <div class="sc"><div class="sc-i">🛡️</div><h3>Compliant</h3><p>State licensed and fully insured.</p></div>
-      <div class="sc"><div class="sc-i">🤝</div><h3>Reliable</h3><p>Consistent, professional service.</p></div>
+      <div class="sc"><h3>Fully Verified</h3><p>Every credential checked and tracked.</p></div>
+      <div class="sc"><h3>Fast Placement</h3><p>Same-day staffing available.</p></div>
+      <div class="sc"><h3>Compliant</h3><p>State licensed and fully insured.</p></div>
+      <div class="sc"><h3>Reliable</h3><p>Consistent, professional service.</p></div>
     </div>
   </div>
 </section>
@@ -328,8 +382,8 @@ tr:hover td{background:rgba(11,26,46,.018);}
   <div class="ji">
     <div class="ey" style="color:#67e8f9;display:flex;justify-content:center;margin-bottom:10px;">Careers</div>
     <h2>Ready to Join Central Nurses LLC?</h2>
-    <p>When you find the job that really suits you, it doesn't feel like work. We find opportunities that match your abilities, schedule and experience. Expect better pay, flexibility and great benefits.</p>
-    <button class="btn btn-g" onclick="openOv('o-register')">Create Your Free Account →</button>
+    <p>When you find the job that really suits you, it does not feel like work. We find opportunities that match your abilities, schedule and experience. Expect better pay, flexibility and great benefits.</p>
+    <button class="btn btn-g" onclick="openOv('o-register')">Create Your Free Account</button>
   </div>
 </div>
 <section id="contact" style="background:#fff;">
@@ -337,11 +391,11 @@ tr:hover td{background:rgba(11,26,46,.018);}
     <div class="ey">Get In Touch</div><div class="st">Contact Us</div>
     <div class="cg">
       <div>
-        <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Reach out and we'll respond within one business day.</p>
-        <div class="ci"><div class="ci-i">📍</div>629 S Longfellow Street, Wichita, KS 67207</div>
-        <div class="ci"><div class="ci-i">📧</div><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a03242c250a092f243e382b26243f38392f3964292527">[email&#160;protected]</a></div>
-        <div class="ci"><div class="ci-i">📞</div>+1(316) 806-5951</div>
-        <div class="ci"><div class="ci-i">🕒</div>Mon–Fri: 8:00 AM – 5:00 PM · Sat–Sun: Closed</div>
+        <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Reach out and we will respond within one business day.</p>
+        <div class="ci"><div class="ci-i">+</div>629 S Longfellow Street, Wichita, KS 67207</div>
+        <div class="ci"><div class="ci-i">+</div>Info@Centralnurses.com</div>
+        <div class="ci"><div class="ci-i">+</div>+1(316) 806-5951</div>
+        <div class="ci"><div class="ci-i">+</div>Mon-Fri: 8:00 AM - 5:00 PM · Sat-Sun: Closed</div>
       </div>
       <div>
         <div class="ff"><label>Name</label><input type="text" id="cn" placeholder="Jane Doe"/></div>
@@ -353,13 +407,13 @@ tr:hover td{background:rgba(11,26,46,.018);}
     </div>
   </div>
 </section>
-<footer><div class="fb">Central Nurses LLC</div><div class="fc2">© 2025 Central Nurses Staffing Agency · 629 S Longfellow Street, Wichita, KS 67207</div></footer>
+<footer><div class="fb">Central Nurses LLC</div><div class="fc2">2025 Central Nurses Staffing Agency · 629 S Longfellow Street, Wichita, KS 67207</div></footer>
 </div>
 
 <!-- AUTH MODALS -->
 <div class="ov" id="o-login">
   <div class="modal">
-    <button class="mx" onclick="closeOv('o-login')">×</button>
+    <button class="mx" onclick="closeOv('o-login')">x</button>
     <h2>Welcome Back</h2><p class="msub">Sign in to your staff account</p>
     <div class="mf"><label>Email</label><input type="email" id="l-em" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <div class="mf"><label>Password</label><input type="password" id="l-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
@@ -369,7 +423,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
 </div>
 <div class="ov" id="o-register">
   <div class="modal">
-    <button class="mx" onclick="closeOv('o-register')">×</button>
+    <button class="mx" onclick="closeOv('o-register')">x</button>
     <h2>Create Account</h2><p class="msub">Join Central Nurses as a staff member</p>
     <div class="mf"><label>Full Name</label><input type="text" id="r-nm" placeholder="Jane Doe"/></div>
     <div class="mf"><label>Email</label><input type="email" id="r-em" placeholder="you@email.com"/></div>
@@ -378,11 +432,11 @@ tr:hover td{background:rgba(11,26,46,.018);}
     <div class="mf"><label>Position / Discipline</label>
       <select id="r-pos" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:#0b1a2e;outline:none;">
         <option value="">Select your position...</option>
-        <option value="RN">RN — Registered Nurse</option>
-        <option value="LPN">LPN — Licensed Practical Nurse</option>
-        <option value="CNA">CNA — Certified Nursing Assistant</option>
-        <option value="CMA">CMA — Certified Medical Assistant</option>
-        <option value="LVN">LVN — Licensed Vocational Nurse</option>
+        <option value="RN">RN - Registered Nurse</option>
+        <option value="LPN">LPN - Licensed Practical Nurse</option>
+        <option value="CNA">CNA - Certified Nursing Assistant</option>
+        <option value="CMA">CMA - Certified Medical Assistant</option>
+        <option value="LVN">LVN - Licensed Vocational Nurse</option>
         <option value="Staff">Other / Staff</option>
       </select>
     </div>
@@ -392,22 +446,44 @@ tr:hover td{background:rgba(11,26,46,.018);}
 </div>
 <div class="ov" id="o-addstaff">
   <div class="modal">
-    <button class="mx" onclick="closeOv('o-addstaff')">×</button>
+    <button class="mx" onclick="closeOv('o-addstaff')">x</button>
     <h2>Add Staff Member</h2><p class="msub">Add a new employee profile</p>
     <div class="mf"><label>Full Name</label><input type="text" id="as-nm"/></div>
     <div class="mf"><label>Email</label><input type="email" id="as-em"/></div>
     <div class="mf"><label>Temporary Password</label><input type="password" id="as-pw"/></div>
-    <div class="mf"><label>Position (RN, LPN, CNA, CMA)</label><input type="text" id="as-pos"/></div>
+    <div class="mf"><label>Position</label>
+      <select id="as-pos">
+        <option value="RN">RN - Registered Nurse</option>
+        <option value="LPN">LPN - Licensed Practical Nurse</option>
+        <option value="CNA">CNA - Certified Nursing Assistant</option>
+        <option value="CMA">CMA - Certified Medical Assistant</option>
+        <option value="Staff">Other / Staff</option>
+      </select>
+    </div>
     <div class="mf"><label>Phone</label><input type="text" id="as-ph"/></div>
     <div class="mf"><label>Hourly Rate ($)</label><input type="number" id="as-rate" value="25" min="1"/></div>
     <button class="mbtn" onclick="addStaff()">Add Employee</button>
   </div>
 </div>
 
+<!-- EMPLOYEE DETAIL MODAL -->
+<div class="ov" id="o-empdetail">
+  <div class="modal modal-wide">
+    <button class="mx" onclick="closeOv('o-empdetail')">x</button>
+    <h2 id="ed-name">Employee Details</h2>
+    <p class="msub" id="ed-subtitle"></p>
+    <div id="ed-body"></div>
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+      <button class="mbtn" style="flex:1;" onclick="genInvFromDetail()">Generate Invoice</button>
+      <button class="mbtn" style="flex:1;background:var(--teal);" onclick="closeOv('o-empdetail')">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- DASHBOARD -->
 <div id="dash">
   <div class="dbar">
-    <div class="dl"><div class="dli"></div><div class="dln">Central Nurses LLC</div></div>
+    <div class="dl"><div class="dli">+</div><div class="dln">Central Nurses LLC</div></div>
     <div class="dr">
       <div class="up">
         <div class="uav" id="u-av"></div>
@@ -422,71 +498,38 @@ tr:hover td{background:rgba(11,26,46,.018);}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ══════════════════════════════════════════
-// ⚠️  PASTE YOUR APPS SCRIPT WEB APP URL BELOW
-// ══════════════════════════════════════════
+<script>
 const API = 'https://script.google.com/macros/s/AKfycbxM2-Urxt_9Nml_HCEy4W471SIoDJLXNsaI1-JZSrfe7CbLCxQPsPRMTq20u7k5Gadk/exec';
-// Example: const API = 'https://script.google.com/macros/s/AKfyc.../exec';
 
-// ══════════════════════════════════════════
-// API HELPERS
-// ══════════════════════════════════════════
 async function apiGet(action, params={}){
   const url = API+'?action='+action+'&'+new URLSearchParams(params);
-  const r = await fetch(url, {redirect:'follow'}); 
-  return r.json();
+  const r = await fetch(url,{redirect:'follow'}); return r.json();
 }
 async function apiPost(action, body={}){
-  // Apps Script requires form-encoded POST or URL params for CORS
   const url = API+'?action='+action+'&'+new URLSearchParams(body);
-  const r = await fetch(url, {redirect:'follow'});
-  return r.json();
+  const r = await fetch(url,{redirect:'follow'}); return r.json();
 }
 
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
-let ME=null, _clockInt=null, _isClockedIn=false, _currentInv=null, _allStaff=[];
+let ME=null, _clockInt=null, _isClockedIn=false, _currentInv=null, _allStaff=[], _detailEmp=null;
 
-// ══════════════════════════════════════════
 // TOAST
-// ══════════════════════════════════════════
 function toast(msg,type='info'){
   const w=document.getElementById('toasts');
   const d=document.createElement('div');
   d.className='t t'+type; d.textContent=msg; w.appendChild(d);
   setTimeout(()=>d.remove(),3800);
 }
-
-// ══════════════════════════════════════════
-// OVERLAYS
-// ══════════════════════════════════════════
 function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id){document.getElementById(id).classList.remove('open');}
 function swOv(a,b){closeOv(a);openOv(b);}
 
-// ══════════════════════════════════════════
-// CHECK API CONFIGURED
-// ══════════════════════════════════════════
-function isConfigured(){
-  if(API==='PASTE_YOUR_APPS_SCRIPT_URL_HERE'||!API.includes('script.google.com')){
-    toast('Apps Script URL not set up yet. See setup instructions.','err');
-    return false;
-  }
-  return true;
-}
-
-// ══════════════════════════════════════════
 // AUTH
-// ══════════════════════════════════════════
 async function doLogin(){
-  if(!isConfigured()) return;
   const em=document.getElementById('l-em').value.trim();
   const pw=document.getElementById('l-pw').value;
   if(!em||!pw){toast('Enter email and password','err');return;}
   const btn=document.getElementById('lbtn');
-  btn.innerHTML='<span class="spin"></span> Signing in…';btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span> Signing in...';btn.disabled=true;
   try{
     const res=await apiPost('login',{email:em,password:pw});
     btn.innerHTML='Sign In';btn.disabled=false;
@@ -496,17 +539,16 @@ async function doLogin(){
 }
 
 async function doRegister(){
-  if(!isConfigured()) return;
   const nm=document.getElementById('r-nm').value.trim();
   const em=document.getElementById('r-em').value.trim();
   const pw=document.getElementById('r-pw').value;
   const ph=document.getElementById('r-ph').value.trim();
   const pos=document.getElementById('r-pos')?.value||'Staff';
-  const MANAGER_EMAIL='kipkoechbethwel721@gmail.com';
-  const isManager=em.toLowerCase()===MANAGER_EMAIL.toLowerCase();
+  const OWNER='kipkoechbethwel721@gmail.com';
+  const isManager=em.toLowerCase()===OWNER.toLowerCase();
   if(!nm||!em||!pw){toast('Name, email and password required','err');return;}
   const btn=document.getElementById('rbtn');
-  btn.innerHTML='<span class="spin"></span> Creating…';btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span> Creating...';btn.disabled=true;
   try{
     const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph,position:pos,role:isManager?'manager':'employee'});
     btn.innerHTML='Create Staff Account';btn.disabled=false;
@@ -514,60 +556,6 @@ async function doRegister(){
     toast('Account created successfully. Welcome to Central Nurses.','ok');
     closeOv('o-register');bootDash(res.employee);
   }catch(e){btn.innerHTML='Create Staff Account';btn.disabled=false;toast('Connection error','err');}
-}
-
-
-function printInvoice(){
-  const doc = document.getElementById('inv-doc');
-  if(!doc){ toast('Generate an invoice first','err'); return; }
-
-  const css = `<style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'DM Sans',sans-serif;background:#fff;color:#0b1a2e;padding:32px 40px;}
-    .inv-lh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:22px;border-bottom:3px solid #0b1a2e;}
-    .inv-cn{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#0b1a2e;}
-    .inv-cs,.inv-ca{color:#64748b;font-size:12px;line-height:1.7;margin-top:3px;}
-    .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-    .logo-box{width:44px;height:44px;background:linear-gradient(135deg,#0b1a2e,#007ea7);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;}
-    .inv-wd{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#0b1a2e;letter-spacing:-2px;text-align:right;}
-    .inv-mt{text-align:right;margin-top:8px;font-size:13px;color:#0b1a2e;}
-    .inv-ig{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
-    .inv-ic{padding:16px 18px;border-right:1px solid #e2e8f0;}
-    .inv-ic:last-child{border-right:none;}
-    .iil{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#64748b;margin-bottom:6px;}
-    .iim{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#0b1a2e;margin-bottom:2px;}
-    .iis{font-size:12px;color:#64748b;line-height:1.5;}
-    .iid{display:inline-block;background:#f0fdf4;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:50px;margin-top:4px;}
-    .inv-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
-    .iis2{padding:14px 16px;text-align:center;border-right:1px solid #e2e8f0;background:#fafaf8;}
-    .iis2:last-child{border-right:none;background:#0b1a2e;}
-    .iis2-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:4px;}
-    .iis2:last-child .iis2-l{color:rgba(255,255,255,.5);}
-    .iis2-v{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0b1a2e;}
-    .iis2:last-child .iis2-v{color:#c9a84c;}
-    .inv-tw{display:flex;justify-content:flex-end;margin:16px 0 28px;}
-    .inv-tb2{width:260px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;}
-    .itr{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #e2e8f0;font-size:13.5px;}
-    .itr:last-child{border-bottom:none;background:#0b1a2e;padding:13px 16px;}
-    .itrl{color:#64748b;font-size:13px;}
-    .itr:last-child .itrl{color:rgba(255,255,255,.55);}
-    .itrr{font-weight:700;color:#0b1a2e;}
-    .itr:last-child .itrr{font-family:'Playfair Display',serif;font-size:24px;color:#c9a84c;}
-    .inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:36px;padding-top:22px;border-top:1px solid #e2e8f0;margin-top:4px;}
-    .sigl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:6px;}
-    .sigln{height:1px;background:#0b1a2e;margin:28px 0 5px;}
-    .signm{font-size:12px;color:#64748b;}
-    .inv-note{font-size:11.5px;color:#64748b;line-height:1.65;padding:12px 16px;background:#f8f7f3;border-radius:8px;border:1px solid #e2e8f0;margin-top:20px;}
-    .inv-tb,.inv-acts,.iab{display:none!important;}
-  </style>`;
-
-  const win = window.open('','_blank','width=900,height=750');
-  win.document.write('<!DOCTYPE html><html><head><title>Central Nurses Invoice</title>' + css + '</head><body>');
-  win.document.write(doc.innerHTML);
-  win.document.write('</body></html>');
-  win.document.close();
-  setTimeout(function(){ win.print(); }, 1200);
 }
 
 function doSignOut(){
@@ -578,15 +566,10 @@ function doSignOut(){
   toast('Signed out');
 }
 
-// ══════════════════════════════════════════
 // BOOT DASHBOARD
-// ══════════════════════════════════════════
 function bootDash(emp){
-  // Always force manager role for the owner email regardless of sheet value
-  const OWNER = 'kipkoechbethwel721@gmail.com';
-  if(emp.email && emp.email.toLowerCase() === OWNER.toLowerCase()){
-    emp.role = 'manager';
-  }
+  const OWNER='kipkoechbethwel721@gmail.com';
+  if(emp.email&&emp.email.toLowerCase()===OWNER.toLowerCase()) emp.role='manager';
   ME=emp; localStorage.setItem('cn_user',JSON.stringify(emp));
   const ini=(emp.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('u-av').textContent=ini;
@@ -600,12 +583,24 @@ function bootDash(emp){
   emp.role==='manager'?buildMgr():buildEmp();
 }
 
-// ══════════════════════════════════════════
-// MANAGER DASHBOARD
-// ══════════════════════════════════════════
-const MNAV=[{id:'overview',icon:'📊',label:'Overview'},{id:'staff',icon:'',label:'Staff'},{id:'timesheets',icon:'',label:'Timesheets'},{id:'invoices',icon:'🧾',label:'Invoices'}];
+// MANAGER NAV
+const MNAV=[
+  {id:'overview', icon:'[O]', label:'Overview'},
+  {id:'rn',       icon:'[R]', label:'RN Staff',  disc:'RN',  cls:'badge-rn'},
+  {id:'lpn',      icon:'[L]', label:'LPN Staff', disc:'LPN', cls:'badge-lpn'},
+  {id:'cna',      icon:'[C]', label:'CNA Staff', disc:'CNA', cls:'badge-cna'},
+  {id:'cma',      icon:'[M]', label:'CMA Staff', disc:'CMA', cls:'badge-cma'},
+  {id:'timesheets',icon:'[T]',label:'Timesheets'},
+  {id:'invoices',  icon:'[I]',label:'Invoices'},
+];
 function buildMgr(){
-  document.getElementById('sidebar').innerHTML=MNAV.map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('');
+  document.getElementById('sidebar').innerHTML=`
+    <div class="si-group">Main</div>
+    ${MNAV.slice(0,1).map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('')}
+    <div class="si-group">By Specialty</div>
+    ${MNAV.slice(1,5).map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic" style="width:8px;height:8px;border-radius:50%;background:var(--${n.disc.toLowerCase()});display:inline-block;"></span><span>${n.label}</span></div>`).join('')}
+    <div class="si-group">Management</div>
+    ${MNAV.slice(5).map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('')}`;
   document.getElementById('dcontent').innerHTML=MNAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
   mPg('overview');
 }
@@ -614,107 +609,269 @@ function mPg(id){
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));
   document.getElementById('si-'+id)?.classList.add('active');
   document.getElementById('pg-'+id)?.classList.add('on');
-  ({overview:mOverview,staff:mStaff,timesheets:mTimesheets,invoices:mInvoices})[id]?.();
+  const map={overview:mOverview,rn:()=>mDisc('RN'),lpn:()=>mDisc('LPN'),cna:()=>mDisc('CNA'),cma:()=>mDisc('CMA'),timesheets:mTimesheets,invoices:mInvoices};
+  map[id]?.();
 }
 
+// OVERVIEW
 async function mOverview(){
   const el=document.getElementById('pg-overview');
-  el.innerHTML=`<div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div><div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);width:28px;height:28px;"></span></div>`;
+  el.innerHTML=`<div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div><div class="empty"><span class="spin spin-d"></span></div>`;
   try{
     const res=await apiGet('getStaff');
-    const staff=res.staff||[];
-    const active=staff.filter(s=>s.status==='active').length;
+    const all=res.staff||[];
+    const active=all.filter(s=>s.status&&s.status.toLowerCase()==='active').length;
+    const byDisc={RN:0,LPN:0,CNA:0,CMA:0};
+    all.forEach(s=>{
+      const d=(s.position||s.Discipline||'').toUpperCase().split('/')[0].trim();
+      if(byDisc[d]!==undefined) byDisc[d]++;
+    });
     el.innerHTML=`
       <div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div>
       <div class="krow">
-        <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${active}</div><div class="kpi-l">Active Staff</div></div>
-        <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${staff.length}</div><div class="kpi-l">Total Employees</div></div>
-        <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">50+</div><div class="kpi-l">Partner Facilities</div></div>
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Total Staff</span></div><div class="kpi-v">${all.length}</div></div>
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Active</span><span class="badge bg">Active</span></div><div class="kpi-v">${active}</div></div>
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">RN Staff</span><span class="badge badge-rn">RN</span></div><div class="kpi-v">${byDisc.RN}</div></div>
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">LPN Staff</span><span class="badge badge-lpn">LPN</span></div><div class="kpi-v">${byDisc.LPN}</div></div>
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">CNA Staff</span><span class="badge badge-cna">CNA</span></div><div class="kpi-v">${byDisc.CNA}</div></div>
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">CMA Staff</span><span class="badge badge-cma">CMA</span></div><div class="kpi-v">${byDisc.CMA}</div></div>
       </div>
       <div class="tw">
-        <div class="twt"><h3>Staff Directory</h3></div>
-        ${staff.length?`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Rate/hr</th><th>Status</th><th></th></tr></thead><tbody>
-          ${staff.map(s=>`<tr><td><span class="badge bg">${s.id}</span></td><td><strong>${s.name}</strong></td><td>${s.position||'—'}</td><td>${s.email||'—'}</td><td>${s.rate?'$'+s.rate+'/hr':'—'}</td><td><span class="badge ${s.status==='active'?'bg':'bo'}">${s.status}</span></td><td><button class="sb sb-n" style="padding:4px 10px;font-size:12px;" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Set Rate</button></td></tr>`).join('')}
-        </tbody></table>`:'<div class="empty"><p>No staff yet.</p></div>'}
+        <div class="twt">
+          <h3>All Staff Directory</h3>
+          <div class="gap8">
+            <input class="sbox" id="ov-search" placeholder="Search by name or ID..." oninput="filterOvTable()"/>
+            <button class="sb sb-n" onclick="openOv('o-addstaff')">+ Add Staff</button>
+          </div>
+        </div>
+        <div id="ov-table"></div>
       </div>`;
-  }catch(e){el.innerHTML+='<div class="empty"><p>Error loading. Check your Apps Script URL.</p></div>';}
+    _allStaff=all;
+    renderStaffTable(all,'ov-table',true);
+  }catch(e){el.innerHTML+='<div class="empty"><p>Error loading. Check Apps Script URL.</p></div>';}
+}
+function filterOvTable(){
+  const q=(document.getElementById('ov-search')?.value||'').toLowerCase();
+  renderStaffTable(q?_allStaff.filter(s=>(s.name+s.id+(s.position||'')).toLowerCase().includes(q)):_allStaff,'ov-table',true);
 }
 
-async function mStaff(){
-  const el=document.getElementById('pg-staff');
-  el.innerHTML=`<div class="pgt">Staff</div><div class="pgs">Manage your nursing team</div>
-    <div class="tw"><div class="twt"><h3>All Employees</h3><button class="sb sb-n" onclick="openOv('o-addstaff')">+ Add Staff</button></div>
-    <div id="sr"><div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);"></span></div></div></div>`;
-  await loadStaff();
-}
-async function loadStaff(){
+// DISCIPLINE PAGE
+async function mDisc(disc){
+  const pgId='pg-'+disc.toLowerCase();
+  const el=document.getElementById(pgId);
+  const colors={RN:'--rn',LPN:'--lpn',CNA:'--cna',CMA:'--cma'};
+  const col=colors[disc]||'--navy';
+  el.innerHTML=`
+    <div class="pgt">${disc} Staff</div>
+    <div class="pgs">All ${disc} nurses and staff members</div>
+    <div class="tw" style="overflow:visible;">
+      <div class="disc-header dh-${disc.toLowerCase()}">
+        <h3>${disc} — ${disc==='RN'?'Registered Nurses':disc==='LPN'?'Licensed Practical Nurses':disc==='CNA'?'Certified Nursing Assistants':'Certified Medical Assistants'}</h3>
+        <span id="${disc.toLowerCase()}-count">Loading...</span>
+      </div>
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;">
+        <input class="sbox" id="${disc.toLowerCase()}-search" placeholder="Search by name, ID or status..." oninput="filterDiscTable('${disc}')"/>
+        <select id="${disc.toLowerCase()}-status" onchange="filterDiscTable('${disc}')" style="padding:8px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+      <div id="${disc.toLowerCase()}-table"><div class="empty"><span class="spin spin-d"></span></div></div>
+    </div>`;
   try{
-    const res=await apiGet('getStaff'); _allStaff=res.staff||[];
-    const el=document.getElementById('sr');
-    if(!_allStaff.length){el.innerHTML='<div class="empty"><p>No staff yet. Click + Add Staff to begin.</p></div>';return;}
-    el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th><th></th></tr></thead><tbody>
-      ${_allStaff.map(s=>`<tr><td><span class="badge bg">${s.id}</span></td><td><strong>${s.name}</strong></td><td>${s.position||'—'}</td><td>${s.email||'—'}</td><td>${s.phone||'—'}</td><td>${s.rate?'$'+s.rate:'—'}</td><td><span class="badge ${s.status==='active'?'bg':'bo'}">${s.status}</span></td></tr>`).join('')}
-    </tbody></table>`;
-  }catch(e){toast('Error loading staff','err');}
-}
-async function addStaff(){
-  const nm=document.getElementById('as-nm').value.trim();
-  const em=document.getElementById('as-em').value.trim();
-  const pw=document.getElementById('as-pw').value;
-  const pos=document.getElementById('as-pos').value.trim();
-  const ph=document.getElementById('as-ph').value.trim();
-  const rate=document.getElementById('as-rate').value;
-  if(!nm){toast('Name is required','err');return;}
-  try{
-    const res=await apiPost('addStaff',{name:nm,email:em,password:pw,position:pos,phone:ph,rate:parseFloat(rate)||25});
-    if(!res.success){toast(res.error||'Failed','err');return;}
-    toast(nm+' added. Employee ID: '+res.id,'ok');
-    closeOv('o-addstaff');await loadStaff();
-  }catch(e){toast('Error adding staff','err');}
+    const res=await apiGet('getStaff',{discipline:disc});
+    const staff=res.staff||[];
+    document.getElementById(disc.toLowerCase()+'-count').textContent=staff.length+' staff members';
+    window['_'+disc.toLowerCase()+'Staff']=staff;
+    renderDiscTable(staff,disc.toLowerCase()+'-table',disc);
+  }catch(e){document.getElementById(disc.toLowerCase()+'-table').innerHTML='<div class="empty"><p>Error loading.</p></div>';}
 }
 
-function editRate(id, name, cur){
-  const r = prompt("Set hourly rate for " + name + "\nCurrent: $" + cur + "/hr\n\nEnter new hourly rate ($):", cur);
-  if(r===null||r==="") return;
-  const rate = parseFloat(r);
-  if(isNaN(rate)||rate<1){toast("Enter a valid rate","err");return;}
-  toast("Updating rate...");
-  apiGet("updateRate",{employeeId:id, rate:rate}).then(async res=>{
-    if(res.success){
-      toast(name + " rate updated to $" + rate + "/hr");
-      // Reload staff list so table shows new rate
-      await loadStaff();
-      // If invoice panel is open, refresh the employee dropdown with new rate
-      const invSel = document.getElementById('inv-e');
-      if(invSel){
-        const opts = invSel.options;
-        for(let i=0;i<opts.length;i++){
-          if(opts[i].value===id){
-            opts[i].dataset.rate = rate;
-            opts[i].text = opts[i].text.replace(/\$[0-9.]+\/hr/,'').trim();
-            // Update the rate field if this employee is currently selected
-            if(invSel.value===id){
-              const rateField = document.getElementById('inv-r');
-              if(rateField) rateField.value = rate;
-            }
-            break;
-          }
+function filterDiscTable(disc){
+  const d=disc.toLowerCase();
+  const q=(document.getElementById(d+'-search')?.value||'').toLowerCase();
+  const st=(document.getElementById(d+'-status')?.value||'').toLowerCase();
+  let staff=window['_'+d+'Staff']||[];
+  if(q) staff=staff.filter(s=>(s['Full Name']||s.name||'').toLowerCase().includes(q)||(s['Employee ID']||s.id||'').toLowerCase().includes(q));
+  if(st) staff=staff.filter(s=>(s['Status']||s.status||'').toLowerCase()===st);
+  renderDiscTable(staff,d+'-table',disc);
+}
+
+function renderDiscTable(staff,elId,disc){
+  const el=document.getElementById(elId);
+  if(!staff.length){el.innerHTML='<div class="empty"><div class="empty-icon">+</div><p>No staff found.</p></div>';return;}
+  el.innerHTML=`<table><thead><tr>
+    <th>Employee ID</th><th>Name</th><th>Status</th><th>Hire Date</th>
+    <th>License Expiry</th><th>BLS/CPR</th><th>TB Test</th><th>Drug Screen</th><th>Notes</th><th></th>
+  </tr></thead><tbody>
+    ${staff.map(s=>{
+      const id=s['Employee ID']||s.id||'';
+      const nm=s['Full Name']||s.name||'';
+      const st=(s['Status']||s.status||'').toLowerCase();
+      const hd=s['Hire Date']||s.hireDate||'';
+      const lic=s['License Expiry']||s['License']||'';
+      const bls=s['BLS/CPR']||'';
+      const tb=s['TB Test/CXR']||'';
+      const drug=s['Drug Screen']||s['Drug  Screen']||'';
+      const notes=(s['Notes Section']||'').substring(0,40)+(s['Notes Section']?.length>40?'...':'');
+      return `<tr>
+        <td><span class="badge badge-${disc.toLowerCase()}">${id}</span></td>
+        <td><strong>${nm}</strong></td>
+        <td><span class="badge ${st==='active'?'bg':'bx'}">${st}</span></td>
+        <td>${hd||'—'}</td>
+        <td class="${credClass(lic)}">${lic||'—'}</td>
+        <td class="${credClass(bls)}">${bls||'—'}</td>
+        <td class="${credClass(tb)}">${tb||'—'}</td>
+        <td class="${credClass(drug)}">${drug||'—'}</td>
+        <td style="font-size:12px;color:var(--muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${s['Notes Section']||''}">${notes||'—'}</td>
+        <td><div class="gap8">
+          <button class="sb sb-teal sb-sm" onclick="viewEmployee('${id}','${disc}')">View</button>
+          <button class="sb sb-g sb-sm" onclick="quickInvoice('${id}','${nm}','${disc}')">Invoice</button>
+        </div></td>
+      </tr>`;
+    }).join('')}
+  </tbody></table>`;
+}
+
+function credClass(dateStr){
+  if(!dateStr||dateStr==='N/A'||dateStr==='n/a') return 'cred-na';
+  const d=new Date(dateStr); if(isNaN(d)) return 'cred-na';
+  const days=Math.round((d-new Date())/86400000);
+  if(days<0) return 'cred-bad';
+  if(days<=60) return 'cred-warn';
+  return 'cred-ok';
+}
+
+// VIEW EMPLOYEE DETAIL
+async function viewEmployee(empId,disc){
+  document.getElementById('ed-name').textContent='Loading...';
+  document.getElementById('ed-subtitle').textContent='';
+  document.getElementById('ed-body').innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';
+  openOv('o-empdetail');
+  try{
+    const res=await apiGet('getStaffById',{employeeId:empId});
+    if(!res.success){document.getElementById('ed-body').innerHTML='<div class="empty"><p>'+res.error+'</p></div>';return;}
+    const e=res.employee;
+    _detailEmp={id:empId,name:e['Full Name']||e.name,position:e['Discipline']||e.position||disc,rate:e.rate||25};
+    document.getElementById('ed-name').textContent=e['Full Name']||empId;
+    document.getElementById('ed-subtitle').textContent=(e['Employee ID']||empId)+' · '+(e['Discipline']||disc)+' · '+(e['Status']||'');
+    
+    // Render all fields in organized sections
+    const sections={
+      'Basic Information':['Employee ID','Full Name','Status','Discipline','Hire Date','GDrive Hire Date','Final Hire Date','Facility'],
+      'Licenses & Certifications':['License Expiry','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP'],
+      'Documentation':['Resume','CEU','Education Verification','Job Description','References','Annual Evaluation','Ongoing Evaluation'],
+      'Compliance & Training':['Annual Core Mandatory Exams','Skills Checklist','Specialty Exam','Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS'],
+      'Medical':['TB Test/CXR','TB Questionnaire','Physical','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen'],
+      'Other':['Covid Requirement','Handbook Acknowledgement Form'],
+      'Notes':['Notes Section','Team Notes']
+    };
+    
+    let html='';
+    for(const[sectionTitle,fields] of Object.entries(sections)){
+      const hasData=fields.some(f=>e[f]&&e[f].trim()&&e[f].trim()!=='');
+      if(!hasData) continue;
+      html+=`<div class="section-divider">${sectionTitle}</div><div class="emp-detail-grid">`;
+      fields.forEach(f=>{
+        const val=e[f]||'';
+        if(!val&&!['Employee ID','Full Name','Status','Discipline'].includes(f)) return;
+        const cls=isDateField(f)?credClass(val):'';
+        html+=`<div class="emp-detail-item"><div class="edl">${f}</div><div class="edv ${cls}">${val||'—'}</div></div>`;
+      });
+      html+='</div>';
+    }
+    
+    // Any remaining fields not in sections
+    html+=`<div class="section-divider">All Fields</div><div class="emp-detail-grid">`;
+    Object.entries(e).forEach(([k,v])=>{
+      if(!v||v.trim()==='') return;
+      html+=`<div class="emp-detail-item"><div class="edl">${k}</div><div class="edv">${v}</div></div>`;
+    });
+    html+='</div>';
+    
+    document.getElementById('ed-body').innerHTML=html;
+  }catch(e){document.getElementById('ed-body').innerHTML='<div class="empty"><p>Error loading details.</p></div>';}
+}
+
+function isDateField(f){
+  const dateFields=['License Expiry','BLS/CPR','TB Test/CXR','Drug Screen','ACLS','PALS','NRP','Primary Source Verification','Nursys Verification','Annual Core Mandatory Exams','Skills Checklist','Specialty Exam','OIG','NSOPW','SAM EPLS','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Covid Requirement','Handbook Acknowledgement Form'];
+  return dateFields.includes(f);
+}
+
+function genInvFromDetail(){
+  if(!_detailEmp){toast('No employee selected','err');return;}
+  closeOv('o-empdetail');
+  mPg('invoices');
+  setTimeout(()=>{
+    const sel=document.getElementById('inv-e');
+    if(sel){
+      for(let i=0;i<sel.options.length;i++){
+        if(sel.options[i].value===_detailEmp.id){
+          sel.selectedIndex=i;
+          autoRate();
+          break;
         }
       }
-      // Update _allStaff cache
-      const emp = _allStaff.find(s=>s.id===id);
-      if(emp) emp.rate = rate;
-    } else {
-      toast(res.error||"Failed to update rate","err");
     }
-  });
+  },300);
 }
 
+function quickInvoice(empId,empName,disc){
+  mPg('invoices');
+  setTimeout(()=>{
+    const sel=document.getElementById('inv-e');
+    if(sel){
+      for(let i=0;i<sel.options.length;i++){
+        if(sel.options[i].value===empId){
+          sel.selectedIndex=i;
+          autoRate();
+          break;
+        }
+      }
+    }
+  },300);
+}
+
+// RENDER GENERAL STAFF TABLE
+function renderStaffTable(staff,elId,showDisc){
+  const el=document.getElementById(elId);
+  if(!staff.length){el.innerHTML='<div class="empty"><div class="empty-icon">+</div><p>No staff found.</p></div>';return;}
+  el.innerHTML=`<table><thead><tr>
+    <th>ID</th><th>Name</th>${showDisc?'<th>Position</th>':''}<th>Email</th><th>Rate/hr</th><th>Status</th><th></th>
+  </tr></thead><tbody>
+    ${staff.map(s=>{
+      const disc=(s.position||'').toUpperCase().split('/')[0].trim();
+      const bc=disc==='RN'?'badge-rn':disc==='LPN'?'badge-lpn':disc==='CNA'?'badge-cna':disc==='CMA'?'badge-cma':'bb';
+      return `<tr>
+        <td><span class="badge ${bc}">${s.id}</span></td>
+        <td><strong>${s.name}</strong></td>
+        ${showDisc?`<td><span class="badge ${bc}">${s.position||'—'}</span></td>`:''}
+        <td>${s.email||'—'}</td>
+        <td>${s.rate?'$'+s.rate+'/hr':'—'}</td>
+        <td><span class="badge ${(s.status||'').toLowerCase()==='active'?'bg':'bx'}">${s.status||'—'}</span></td>
+        <td><div class="gap8">
+          <button class="sb sb-n sb-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Set Rate</button>
+        </div></td>
+      </tr>`;
+    }).join('')}
+  </tbody></table>`;
+}
+
+// TIMESHEETS
 async function mTimesheets(){
   const el=document.getElementById('pg-timesheets');
-  el.innerHTML=`<div class="pgt">Timesheets</div><div class="pgs">View clock records by employee and date</div>
-    <div class="fcard"><h3>Filter by Employee &amp; Period</h3>
+  el.innerHTML=`
+    <div class="pgt">Timesheets</div><div class="pgs">View clock records by employee and date</div>
+    <div class="fcard"><h3>Filter Records</h3>
       <div class="fgrid">
+        <div class="field"><label>Discipline</label>
+          <select id="ts-disc" onchange="loadTSEmps()">
+            <option value="">All</option>
+            <option value="RN">RN</option><option value="LPN">LPN</option>
+            <option value="CNA">CNA</option><option value="CMA">CMA</option>
+          </select>
+        </div>
         <div class="field"><label>Employee</label><select id="ts-e"><option value="">— Select —</option></select></div>
         <div class="field"><label>From</label><input type="date" id="ts-f" value="${weekStart()}"/></div>
         <div class="field"><label>To</label><input type="date" id="ts-t" value="${today()}"/></div>
@@ -722,10 +879,20 @@ async function mTimesheets(){
       <button class="sb sb-n mt16" onclick="loadTS()">Load Records</button>
     </div>
     <div id="ts-r"></div>`;
+  await loadTSEmps();
+}
+async function loadTSEmps(){
+  const disc=document.getElementById('ts-disc')?.value||'';
   try{
-    const res=await apiGet('getStaff'); _allStaff=res.staff||[];
+    const res=await apiGet('getStaff',disc?{discipline:disc}:{});
+    _allStaff=res.staff||[];
     const sel=document.getElementById('ts-e');
-    _allStaff.forEach(s=>sel.innerHTML+=`<option value="${s.id}" data-rate="${s.rate||25}">${s.name} (${s.id})</option>`);
+    sel.innerHTML='<option value="">— Select employee —</option>';
+    _allStaff.forEach(s=>{
+      const nm=s['Full Name']||s.name||'';
+      const id=s['Employee ID']||s.id||'';
+      sel.innerHTML+=`<option value="${id}" data-rate="${s.rate||25}">${nm} (${id})</option>`;
+    });
   }catch(e){}
 }
 async function loadTS(){
@@ -734,48 +901,70 @@ async function loadTS(){
   const from=document.getElementById('ts-f').value;
   const to=document.getElementById('ts-t').value;
   if(!empId){toast('Select an employee','err');return;}
-  const emp=_allStaff.find(s=>s.id===empId);
-  const rate=parseFloat(emp?.rate)||25;
+  const emp=_allStaff.find(s=>(s['Employee ID']||s.id||'')==empId);
+  const nm=emp?emp['Full Name']||emp.name||empId:empId;
+  const rate=parseFloat(emp?.rate||emp?.['Hourly Rate']||25);
   const el=document.getElementById('ts-r');
-  el.innerHTML='<div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);width:26px;height:26px;"></span></div>';
+  el.innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';
   try{
     const res=await apiGet('getHours',{employeeId:empId,from,to});
     const sessions=res.sessions||[];
     const totalH=res.totalHours||0;
     el.innerHTML=`<div class="tw" style="margin-top:16px;">
-      <div class="twt"><h3>${emp?.name||empId} · ${from} → ${to}</h3>
+      <div class="twt"><h3>${nm} · ${from} to ${to}</h3>
         <span style="font-weight:700;color:var(--green);">${totalH.toFixed(2)} hrs · $${(totalH*rate).toFixed(2)}</span>
       </div>
       ${sessions.length?`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
         ${sessions.map(s=>`<tr><td>${s.date}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td><strong>${s.hours} hrs</strong></td><td style="color:var(--green);font-weight:600;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}
-      </tbody></table>`:'<div class="empty"><p>No records for this period.</p></div>'}
+      </tbody></table>`:'<div class="empty"><p>No clock records found for this period.</p></div>'}
     </div>`;
   }catch(e){el.innerHTML='<div class="empty"><p>Error loading records.</p></div>';}
 }
 
+// INVOICES
 async function mInvoices(){
   const el=document.getElementById('pg-invoices');
-  el.innerHTML=`<div class="pgt">Invoice Generator</div><div class="pgs">Generate pay invoices from actual clock records</div>
+  el.innerHTML=`
+    <div class="pgt">Invoice Generator</div><div class="pgs">Generate pay invoices from clock records</div>
     <div class="fcard"><h3>Generate Invoice</h3>
       <div class="fgrid">
+        <div class="field"><label>Discipline</label>
+          <select id="inv-disc" onchange="loadInvEmps()">
+            <option value="">All</option>
+            <option value="RN">RN</option><option value="LPN">LPN</option>
+            <option value="CNA">CNA</option><option value="CMA">CMA</option>
+          </select>
+        </div>
         <div class="field"><label>Employee</label><select id="inv-e" onchange="autoRate()"><option value="">— Select —</option></select></div>
         <div class="field"><label>From Date</label><input type="date" id="inv-f" value="${weekStart()}"/></div>
         <div class="field"><label>To Date</label><input type="date" id="inv-t" value="${today()}"/></div>
         <div class="field"><label>Hourly Rate ($/hr)</label><input type="number" id="inv-r" value="25" min="1" step="0.5"/></div>
       </div>
-      <button class="sb sb-g mt16" onclick="genInv()">🧾 &nbsp;Generate Invoice</button>
+      <button class="sb sb-g mt16" onclick="genInv()">Generate Invoice</button>
     </div>
     <div id="inv-area"></div>
     <div id="saved-section" style="margin-top:24px;">
       <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:16px;">Saved Invoices</h3>
-      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading…</p></div></div></div>
+      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading...</p></div></div></div>
     </div>`;
-  try{
-    const res=await apiGet('getStaff'); _allStaff=res.staff||[];
-    const sel=document.getElementById('inv-e');
-    _allStaff.forEach(s=>sel.innerHTML+=`<option value="${s.id}" data-name="${s.name}" data-pos="${s.position||''}" data-rate="${s.rate||25}">${s.name} (${s.id})${s.position?' · '+s.position:''}</option>`);
-  }catch(e){}
+  await loadInvEmps();
   await loadSaved();
+}
+async function loadInvEmps(){
+  const disc=document.getElementById('inv-disc')?.value||'';
+  try{
+    const res=await apiGet('getStaff',disc?{discipline:disc}:{});
+    const staff=res.staff||[];
+    const sel=document.getElementById('inv-e');
+    if(!sel)return;
+    sel.innerHTML='<option value="">— Select employee —</option>';
+    staff.forEach(s=>{
+      const nm=s['Full Name']||s.name||'';
+      const id=s['Employee ID']||s.id||'';
+      const pos=s['Discipline']||s.position||'';
+      sel.innerHTML+=`<option value="${id}" data-name="${nm}" data-pos="${pos}" data-rate="${s.rate||25}">${nm} (${id})${pos?' · '+pos:''}</option>`;
+    });
+  }catch(e){}
 }
 function autoRate(){
   const sel=document.getElementById('inv-e');
@@ -793,10 +982,31 @@ async function genInv(){
   await buildInv('inv-area',sel.value,opt.dataset.name,opt.dataset.pos||'Staff',sel.value,from,to,rate,true);
 }
 
-// ══════════════════════════════════════════
+function editRate(id,name,cur){
+  const r=prompt('Set hourly rate for '+name+'\nCurrent: $'+cur+'/hr\n\nEnter new rate:',cur);
+  if(r===null||r==='')return;
+  const rate=parseFloat(r);
+  if(isNaN(rate)||rate<1){toast('Enter a valid rate','err');return;}
+  toast('Updating rate...');
+  apiGet('updateRate',{employeeId:id,rate:rate}).then(async res=>{
+    if(res.success){
+      toast(name+' rate updated to $'+rate+'/hr');
+      const emp=_allStaff.find(s=>s.id===id||(s['Employee ID']||'')==id);
+      if(emp){emp.rate=rate;emp['Hourly Rate']=rate;}
+      // Refresh current page
+      const invSel=document.getElementById('inv-e');
+      if(invSel){const opts=invSel.options;for(let i=0;i<opts.length;i++){if(opts[i].value===id){opts[i].dataset.rate=rate;if(invSel.value===id){const rf=document.getElementById('inv-r');if(rf)rf.value=rate;}break;}}}
+    }else{toast(res.error||'Failed to update rate','err');}
+  });
+}
+
 // EMPLOYEE DASHBOARD
-// ══════════════════════════════════════════
-const ENAV=[{id:'clock',icon:'⏰',label:'Clock In/Out'},{id:'myhours',icon:'📊',label:'My Hours'},{id:'myinv',icon:'🧾',label:'My Invoice'}];
+const ENAV=[
+  {id:'clock',    icon:'[C]', label:'Clock In/Out'},
+  {id:'myhours',  icon:'[H]', label:'My Hours'},
+  {id:'myinv',    icon:'[I]', label:'My Invoice'},
+  {id:'myprofile',icon:'[P]', label:'My Profile'},
+];
 function buildEmp(){
   document.getElementById('sidebar').innerHTML=ENAV.map(n=>`<div class="si" id="si-${n.id}" onclick="ePg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('');
   document.getElementById('dcontent').innerHTML=ENAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
@@ -807,16 +1017,17 @@ function ePg(id){
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));
   document.getElementById('si-'+id)?.classList.add('active');
   document.getElementById('pg-'+id)?.classList.add('on');
-  ({clock:eClock,myhours:eHours,myinv:eInv})[id]?.();
+  ({clock:eClock,myhours:eHours,myinv:eInv,myprofile:eProfile})[id]?.();
 }
 
 async function eClock(){
   const el=document.getElementById('pg-clock');
-  el.innerHTML=`<div class="pgt">Time Clock</div><div class="pgs">Clock in when you arrive. Clock out when you leave.</div>
+  el.innerHTML=`
+    <div class="pgt">Time Clock</div><div class="pgs">Clock in when you arrive. Clock out when you leave.</div>
     <div class="clk-hero">
       <div class="clk-t" id="ct"></div>
       <div class="clk-d" id="cd"></div>
-      <button class="clk-btn cb-in" id="cb" onclick="toggleClock()">Checking…</button>
+      <button class="clk-btn cb-in" id="cb" onclick="toggleClock()">Checking...</button>
       <div class="clk-s" id="cs"></div>
     </div>
     <div class="tw"><div class="twt"><h3>Today's Sessions</h3></div><div id="tr"></div></div>`;
@@ -866,7 +1077,8 @@ async function loadToday(){
 
 async function eHours(){
   const el=document.getElementById('pg-myhours');
-  el.innerHTML=`<div class="pgt">My Hours</div><div class="pgs">Your work records and earnings</div>
+  el.innerHTML=`
+    <div class="pgt">My Hours</div><div class="pgs">Your work records and earnings</div>
     <div class="gap8" style="margin-bottom:18px;">
       <input type="date" id="mf" value="${weekStart()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
       <input type="date" id="mt" value="${today()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
@@ -878,22 +1090,17 @@ async function eHours(){
 async function loadEmpHours(){
   const from=document.getElementById('mf').value;
   const to=document.getElementById('mt').value;
-  // Always fetch fresh rate from sheet so it reflects any manager updates
-  let rate = parseFloat(ME.rate)||25;
-  try{
-    const staffRes = await apiGet('getStaff');
-    const me = (staffRes.staff||[]).find(s=>s.id===ME.id);
-    if(me && me.rate){ rate = parseFloat(me.rate); ME.rate = rate; localStorage.setItem('cn_user', JSON.stringify(ME)); }
-  }catch(e){}
+  let rate=parseFloat(ME.rate)||25;
+  try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me&&me.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}
   try{
     const res=await apiGet('getHours',{employeeId:ME.id,from,to});
     const totalH=res.totalHours||0;
     const sessions=res.sessions||[];
     document.getElementById('hk').innerHTML=`
-      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${totalH.toFixed(2)}</div><div class="kpi-l">Total Hours</div></div>
-      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">$${(totalH*rate).toFixed(2)}</div><div class="kpi-l">Gross Earnings</div></div>
-      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${sessions.length}</div><div class="kpi-l">Sessions</div></div>
-      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">$${rate}</div><div class="kpi-l">Hourly Rate</div></div>`;
+      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Total Hours</span></div><div class="kpi-v">${totalH.toFixed(2)}</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Gross Earnings</span></div><div class="kpi-v">$${(totalH*rate).toFixed(2)}</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Sessions</span></div><div class="kpi-v">${sessions.length}</div></div>
+      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Hourly Rate</span></div><div class="kpi-v">$${rate}</div></div>`;
     const el=document.getElementById('hr2');
     if(!sessions.length){el.innerHTML='<div class="empty"><p>No sessions for this period.</p></div>';return;}
     el.innerHTML=`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
@@ -904,18 +1111,19 @@ async function loadEmpHours(){
 
 async function eInv(){
   const el=document.getElementById('pg-myinv');
-  el.innerHTML=`<div class="pgt">My Invoice</div><div class="pgs">Generate your pay invoice from clock records</div>
+  el.innerHTML=`
+    <div class="pgt">My Invoice</div><div class="pgs">Generate your pay invoice from clock records</div>
     <div class="fcard"><h3>Select Pay Period</h3>
       <div class="fgrid">
         <div class="field"><label>From Date</label><input type="date" id="ef" value="${weekStart()}"/></div>
         <div class="field"><label>To Date</label><input type="date" id="et" value="${today()}"/></div>
       </div>
-      <button class="sb sb-g mt16" onclick="genEmpInv()">🧾 &nbsp;Generate Invoice</button>
+      <button class="sb sb-g mt16" onclick="genEmpInv()">Generate Invoice</button>
     </div>
     <div id="inv-area"></div>
     <div id="saved-section" style="margin-top:24px;">
       <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:16px;">My Saved Invoices</h3>
-      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading…</p></div></div></div>
+      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading...</p></div></div></div>
     </div>`;
   await loadSaved(ME.id);
 }
@@ -923,22 +1131,40 @@ async function genEmpInv(){
   const from=document.getElementById('ef').value;
   const to=document.getElementById('et').value;
   if(!from||!to){toast('Select date range','err');return;}
-  // Fetch latest rate from sheet
-  let rate = parseFloat(ME.rate)||25;
-  try{
-    const sr = await apiGet('getStaff');
-    const me = (sr.staff||[]).find(s=>s.id===ME.id);
-    if(me && me.rate){ rate = parseFloat(me.rate); ME.rate = rate; localStorage.setItem('cn_user', JSON.stringify(ME)); }
-  }catch(e){}
+  let rate=parseFloat(ME.rate)||25;
+  try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me&&me.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}
   await buildInv('inv-area',ME.id,ME.name,ME.position||'Staff',ME.id,from,to,rate,false);
 }
 
-// ══════════════════════════════════════════
+async function eProfile(){
+  const el=document.getElementById('pg-myprofile');
+  el.innerHTML=`<div class="pgt">My Profile</div><div class="pgs">Your employee details</div><div class="empty"><span class="spin spin-d"></span></div>`;
+  try{
+    const res=await apiGet('getStaffById',{employeeId:ME.id});
+    if(!res.success){el.innerHTML+='<div class="empty"><p>Profile not found.</p></div>';return;}
+    const e=res.employee;
+    let html=`<div class="fcard">`;
+    // Basic info card at top
+    html+=`<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--navy);font-family:'Playfair Display',serif;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;">${(ME.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">${e['Full Name']||ME.name}</div>
+      <div style="color:var(--muted);font-size:14px;">${e['Employee ID']||ME.id} · ${e['Discipline']||ME.position||'Staff'}</div></div>
+    </div>`;
+    html+='<div class="emp-detail-grid">';
+    Object.entries(e).forEach(([k,v])=>{
+      if(!v||v.trim()==='') return;
+      const cls=isDateField(k)?credClass(v):'';
+      html+=`<div class="emp-detail-item"><div class="edl">${k}</div><div class="edv ${cls}">${v}</div></div>`;
+    });
+    html+='</div></div>';
+    el.innerHTML=`<div class="pgt">My Profile</div><div class="pgs">Your employee details from Central Nurses records</div>${html}`;
+  }catch(e){el.innerHTML+='<div class="empty"><p>Error loading profile.</p></div>';}
+}
+
 // INVOICE ENGINE
-// ══════════════════════════════════════════
 async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
   const area=document.getElementById(areaId);
-  area.innerHTML='<div class="empty"><span class="spin" style="border-color:var(--border);border-top-color:var(--navy);width:28px;height:28px;"></span></div>';
+  area.innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';
   try{
     const res=await apiGet('getHours',{employeeId:empId,from,to});
     const totalH=res.totalHours||0;
@@ -950,20 +1176,20 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
     const f=new Date(from+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     const t=new Date(to+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     area.innerHTML=`
-    <div class="inv-wrap">
+    <div class="inv-wrap" id="inv-wrap-tw">
       <div class="inv-tb">
         <div class="inv-info"><strong>${empName}</strong> &nbsp;·&nbsp; ${sessions.length} sessions &nbsp;·&nbsp; ${totalH.toFixed(2)} hrs &nbsp;·&nbsp; <strong>$${totalPay.toFixed(2)}</strong></div>
         <div class="inv-acts">
-          <button class="iab iab-c" onclick="document.getElementById('${areaId}').innerHTML='';_currentInv=null;">✕ Clear</button>
-          <button class="iab iab-s" onclick="saveInv()">💾 Save</button>
-          <button class="iab iab-p" onclick="printInvoice()">🖨️ Print / PDF</button>
+          <button class="iab iab-c" onclick="document.getElementById('${areaId}').innerHTML='';_currentInv=null;">Clear</button>
+          <button class="iab iab-s" onclick="saveInv()">Save</button>
+          <button class="iab iab-p" onclick="printInvoice()">Print / PDF</button>
         </div>
       </div>
       <div id="inv-doc">
         <div class="inv-lh">
           <div>
             <div style="display:flex;align-items:center;gap:11px;margin-bottom:8px;">
-              <div style="width:46px;height:46px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;"></div>
+              <div style="width:46px;height:46px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);">CN</div>
               <div><div class="inv-cn">Central Nurses LLC</div><div class="inv-cs">Staffing Agency · Wichita, Kansas</div></div>
             </div>
             <div class="inv-ca">629 S Longfellow Street, Wichita, KS 67207<br/>Info@Centralnurses.com · +1(316) 806-5951</div>
@@ -979,7 +1205,7 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
         <div class="inv-ig">
           <div class="inv-ic"><div class="iil">Employee</div><div class="iim">${empName}</div><div class="iis">${empPos}</div><div class="iid">${empCode}</div></div>
           <div class="inv-ic"><div class="iil">Issued By</div><div class="iim">Central Nurses LLC</div><div class="iis">629 S Longfellow Street<br/>Wichita, KS 67207</div></div>
-          <div class="inv-ic"><div class="iil">Pay Period</div><div class="iim" style="font-size:15px;">${f} – ${t}</div><div class="iis">${Math.round((new Date(to)-new Date(from))/86400000)+1} day period</div></div>
+          <div class="inv-ic"><div class="iil">Pay Period</div><div class="iim" style="font-size:15px;">${f} to ${t}</div><div class="iis">${Math.round((new Date(to)-new Date(from))/86400000)+1} day period</div></div>
         </div>
         <div class="inv-strip">
           <div class="iis2"><div class="iis2-l">Total Hours</div><div class="iis2-v">${totalH.toFixed(2)}</div></div>
@@ -998,7 +1224,7 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
           <div><div class="sigl">Employee Signature</div><div class="sigln"></div><div class="signm">${empName} / Date</div></div>
           <div><div class="sigl">Authorized By (Manager)</div><div class="sigln"></div><div class="signm">Central Nurses LLC · Management</div></div>
         </div>
-        <div class="inv-note"><strong>Note:</strong> Generated from verified clock records. Hours are calculated from actual clock-in and clock-out timestamps. Questions? Contact <strong>Info@Centralnurses.com</strong> or call <strong>+1(316) 806-5951</strong>.</div>
+        <div class="inv-note">Note: Generated from verified clock records. Hours are calculated from actual clock-in and clock-out timestamps. For questions contact Info@Centralnurses.com or call +1(316) 806-5951.</div>
       </div>
     </div>`;
     area.scrollIntoView({behavior:'smooth',block:'start'});
@@ -1019,6 +1245,56 @@ async function saveInv(){
   }catch(e){toast('Error saving','err');}
 }
 
+function printInvoice(){
+  const doc=document.getElementById('inv-doc');
+  if(!doc){toast('Generate an invoice first','err');return;}
+  const css=`<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:#fff;color:#0b1a2e;padding:32px 40px;}
+    .inv-lh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:22px;border-bottom:3px solid #0b1a2e;}
+    .inv-cn{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#0b1a2e;}
+    .inv-cs,.inv-ca{color:#64748b;font-size:12px;line-height:1.7;margin-top:3px;}
+    .inv-wd{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#0b1a2e;letter-spacing:-2px;text-align:right;}
+    .inv-mt{text-align:right;margin-top:8px;font-size:13px;color:#0b1a2e;}
+    .inv-mr{font-size:13px;margin-bottom:2px;}
+    .inv-ig{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
+    .inv-ic{padding:16px 18px;border-right:1px solid #e2e8f0;}
+    .inv-ic:last-child{border-right:none;}
+    .iil{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#64748b;margin-bottom:6px;}
+    .iim{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#0b1a2e;margin-bottom:2px;}
+    .iis{font-size:12px;color:#64748b;line-height:1.5;}
+    .iid{display:inline-block;background:#f0fdf4;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:50px;margin-top:4px;}
+    .inv-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
+    .iis2{padding:14px 16px;text-align:center;border-right:1px solid #e2e8f0;background:#fafaf8;}
+    .iis2:last-child{border-right:none;background:#0b1a2e;}
+    .iis2-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:4px;}
+    .iis2:last-child .iis2-l{color:rgba(255,255,255,.5);}
+    .iis2-v{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0b1a2e;}
+    .iis2:last-child .iis2-v{color:#c9a84c;}
+    .inv-tw{display:flex;justify-content:flex-end;margin:16px 0 28px;}
+    .inv-tb2{width:260px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;}
+    .itr{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #e2e8f0;font-size:13.5px;}
+    .itr:last-child{border-bottom:none;background:#0b1a2e;padding:13px 16px;}
+    .itrl{color:#64748b;font-size:13px;}
+    .itr:last-child .itrl{color:rgba(255,255,255,.55);}
+    .itrr{font-weight:700;color:#0b1a2e;}
+    .itr:last-child .itrr{font-family:'Playfair Display',serif;font-size:24px;color:#c9a84c;}
+    .inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:36px;padding-top:22px;border-top:1px solid #e2e8f0;}
+    .sigl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:6px;}
+    .sigln{height:1px;background:#0b1a2e;margin:28px 0 5px;}
+    .signm{font-size:12px;color:#64748b;}
+    .inv-note{font-size:11.5px;color:#64748b;line-height:1.65;padding:12px 16px;background:#f8f7f3;border-radius:8px;border:1px solid #e2e8f0;margin-top:20px;}
+    .inv-tb,.inv-acts,.iab{display:none!important;}
+  </style>`;
+  const win=window.open('','_blank','width=900,height=750');
+  win.document.write('<!DOCTYPE html><html><head><title>Central Nurses Invoice</title>'+css+'</head><body>');
+  win.document.write(doc.innerHTML);
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(()=>win.print(),1200);
+}
+
 async function loadSaved(empFilter=null){
   const el=document.getElementById('saved-rows');if(!el)return;
   try{
@@ -1027,39 +1303,57 @@ async function loadSaved(empFilter=null){
     const invs=res.invoices||[];
     const isMgr=ME.role==='manager'&&!empFilter;
     if(!invs.length){el.innerHTML='<div class="empty"><p>No saved invoices yet.</p></div>';return;}
-    el.innerHTML=`<table><thead><tr><th>Invoice #</th>${isMgr?'<th>Employee</th><th>ID</th>':''}<th>Period</th><th>Hours</th><th>Total</th></tr></thead><tbody>
-      ${invs.map(i=>`<tr><td><strong>${i.invoiceNumber}</strong></td>${isMgr?`<td>${i.name}</td><td><span class="badge bg">${i.employeeId}</span></td>`:''}<td style="font-size:12.5px;">${i.from} → ${i.to}</td><td>${parseFloat(i.totalHours||0).toFixed(2)} hrs</td><td style="font-weight:700;">$${parseFloat(i.totalAmount||0).toFixed(2)}</td></tr>`).join('')}
+    el.innerHTML=`<table><thead><tr>
+      <th>Invoice #</th>${isMgr?'<th>Employee</th><th>ID</th>':''}
+      <th>Period</th><th>Hours</th><th>Total</th>
+    </tr></thead><tbody>
+      ${invs.map(i=>`<tr>
+        <td><strong>${i.invoiceNumber}</strong></td>
+        ${isMgr?`<td>${i.name}</td><td><span class="badge bb">${i.employeeId}</span></td>`:''}
+        <td style="font-size:12.5px;">${i.from} to ${i.to}</td>
+        <td>${parseFloat(i.totalHours||0).toFixed(2)} hrs</td>
+        <td style="font-weight:700;">$${parseFloat(i.totalAmount||0).toFixed(2)}</td>
+      </tr>`).join('')}
     </tbody></table>`;
   }catch(e){el.innerHTML='<div class="empty"><p>Could not load invoices.</p></div>';}
 }
 
-// ══════════════════════════════════════════
-// CONTACT
-// ══════════════════════════════════════════
+async function addStaff(){
+  const nm=document.getElementById('as-nm').value.trim();
+  const em=document.getElementById('as-em').value.trim();
+  const pw=document.getElementById('as-pw').value;
+  const pos=document.getElementById('as-pos').value;
+  const ph=document.getElementById('as-ph').value.trim();
+  const rate=document.getElementById('as-rate').value;
+  if(!nm){toast('Name is required','err');return;}
+  try{
+    const res=await apiPost('addStaff',{name:nm,email:em,password:pw,position:pos,phone:ph,rate:parseFloat(rate)||25});
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast(nm+' added. ID: '+res.id,'ok');
+    closeOv('o-addstaff');
+    // Refresh current page
+    mOverview();
+  }catch(e){toast('Error adding staff','err');}
+}
+
 function sendContact(){
   const n=document.getElementById('cn').value.trim();
   const e=document.getElementById('ce').value.trim();
   const m=document.getElementById('cm').value.trim();
   if(!n||!e||!m){toast('Please fill all fields','err');return;}
-  window.location.href=`mailto:Info@Centralnurses.com?subject=${encodeURIComponent(document.getElementById('cs').value+' — '+n)}&body=${encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m)}`;
+  window.location.href='mailto:Info@Centralnurses.com?subject='+encodeURIComponent(document.getElementById('cs').value+' from '+n)+'&body='+encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m);
 }
 
-// ══════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════
 function today(){return new Date().toISOString().split('T')[0];}
 function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));return m.toISOString().split('T')[0];}
 
-// ══════════════════════════════════════════
 // SESSION RESTORE
 const _saved=localStorage.getItem('cn_user');
 if(_saved){
   try{
-    const _emp = JSON.parse(_saved);
-    // Re-apply owner check on restore in case role was wrong before
-    if(_emp.email && _emp.email.toLowerCase()==='kipkoechbethwel721@gmail.com'){
-      _emp.role='manager';
-    }
+    const _emp=JSON.parse(_saved);
+    const OWNER='kipkoechbethwel721@gmail.com';
+    if(_emp.email&&_emp.email.toLowerCase()===OWNER.toLowerCase()) _emp.role='manager';
     bootDash(_emp);
   }catch(e){localStorage.removeItem('cn_user');}
 }
