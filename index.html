@@ -582,6 +582,11 @@ function doSignOut(){
 // BOOT DASHBOARD
 // ══════════════════════════════════════════
 function bootDash(emp){
+  // Always force manager role for the owner email regardless of sheet value
+  const OWNER = 'kipkoechbethwel721@gmail.com';
+  if(emp.email && emp.email.toLowerCase() === OWNER.toLowerCase()){
+    emp.role = 'manager';
+  }
   ME=emp; localStorage.setItem('cn_user',JSON.stringify(emp));
   const ini=(emp.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('u-av').textContent=ini;
@@ -1048,7 +1053,16 @@ function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.g
 // ══════════════════════════════════════════
 // SESSION RESTORE
 const _saved=localStorage.getItem('cn_user');
-if(_saved){try{bootDash(JSON.parse(_saved));}catch(e){localStorage.removeItem('cn_user');}}
+if(_saved){
+  try{
+    const _emp = JSON.parse(_saved);
+    // Re-apply owner check on restore in case role was wrong before
+    if(_emp.email && _emp.email.toLowerCase()==='kipkoechbethwel721@gmail.com'){
+      _emp.role='manager';
+    }
+    bootDash(_emp);
+  }catch(e){localStorage.removeItem('cn_user');}
+}
 </script>
 </body>
 </html>
