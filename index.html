@@ -396,10 +396,10 @@ footer{background:var(--navy);padding:24px 5%;display:flex;align-items:center;ju
     <div class="sec-tag">What We Offer</div>
     <div class="sec-title">Our Staffing Services</div>
     <div class="card-grid">
-      <div class="card"><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments. IDs: RNCL####</p></div>
-      <div class="card"><h3>Licensed Practical Nurses</h3><p>LPNs for long-term care, rehab, and outpatient facilities. IDs: LPCL####</p></div>
-      <div class="card"><h3>Certified Nursing Assistants</h3><p>CNAs for daily patient care and support. IDs: CACL####</p></div>
-      <div class="card"><h3>Certified Medical Assistants</h3><p>CMAs for clinical and administrative support. IDs: CMCL####</p></div>
+      <div class="card"><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments across Wichita.</p></div>
+      <div class="card"><h3>Licensed Practical Nurses</h3><p>LPNs for long-term care, rehab, and outpatient facilities throughout Kansas.</p></div>
+      <div class="card"><h3>Certified Nursing Assistants</h3><p>CNAs for daily patient care and support in all healthcare settings.</p></div>
+      <div class="card"><h3>Certified Medical Assistants</h3><p>CMAs for clinical and administrative support in clinics and practices.</p></div>
       <div class="card"><h3>Per Diem Staffing</h3><p>Flexible per diem coverage for call-outs — same day available.</p></div>
       <div class="card"><h3>Travel Nursing</h3><p>Contract travel nurses for 8-26 week assignments in the region.</p></div>
     </div>
@@ -540,6 +540,7 @@ footer{background:var(--navy);padding:24px 5%;display:flex;align-items:center;ju
     <div style="padding:0 28px 22px;display:flex;gap:8px;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="genInvFromDetail()">Generate Invoice</button>
       <button class="btn btn-primary" id="ed-status-btn" onclick="">Toggle Status</button>
+      <button class="btn btn-teal" id="ed-waiver-btn" onclick="">Manage Waivers</button>
       <button class="btn btn-ghost" onclick="closeOv('ov-empdetail')">Close</button>
     </div>
   </div>
@@ -925,6 +926,16 @@ async function viewEmp(empId,disc){
     sb.textContent=isActive?'Mark Inactive':'Mark Active';
     sb.className='btn '+(isActive?'btn-red':'btn-green');
     sb.onclick=()=>toggleStatus(empId,curStatus,disc);
+    // Wire waiver button (only show for manager)
+    const wb=document.getElementById('ed-waiver-btn');
+    if(wb){
+      if(ME.role==='manager'){
+        wb.style.display='';
+        wb.onclick=()=>openWaiverPanel(empId, e['Full Name']||empId);
+      } else {
+        wb.style.display='none';
+      }
+    }
 
     // Date fields for coloring
     const DF=new Set(['License Expiry','License','Primary Source Verification','Nursys Verification',
@@ -994,6 +1005,66 @@ async function toggleStatus(empId,curStatus,disc){
     closeOv('ov-empdetail');
     if(disc) pgDisc(disc); else pgOverview();
   }catch(e){toast('Error updating status','err');}
+}
+
+// WAIVER MANAGEMENT
+async function openWaiverPanel(empId, empName){
+  const existing = document.getElementById('waiver-panel');
+  if(existing){ existing.remove(); return; }
+  const panel = document.createElement('div');
+  panel.id = 'waiver-panel';
+  panel.style.cssText = 'background:var(--cream);border-radius:10px;padding:16px;margin:0 28px 16px;border:1.5px solid var(--gold);';
+  const fields = ['License Expiry','BLS/CPR','TB Test/CXR','Drug Screen','Background Check Authorization',
+    'National Background Checks','OIG','Annual Core Mandatory Exams','Covid Requirement',
+    'Handbook Acknowledgement Form','ACLS','PALS','NRP','MMR','Varicella','Hep B','Tdap','Flu','Fit Test'];
+  panel.innerHTML = `<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gold);margin-bottom:10px;">Manage Waivers for ${empName}</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:12px;">A waiver exempts this employee from a required document for clock-in purposes.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <select id="waiver-field" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;flex:1;">
+        ${fields.map(f=>`<option value="${f}">${f}</option>`).join('')}
+      </select>
+      <button class="btn btn-gold btn-sm" onclick="applyWaiver('${empId}','${empName}')">Apply Waiver</button>
+    </div>
+    <div id="waiver-list"></div>`;
+  const modalActions = document.querySelector('#ov-empdetail > div:last-child');
+  if(modalActions) modalActions.parentNode.insertBefore(panel, modalActions);
+  await loadWaivers(empId);
+}
+
+async function applyWaiver(empId, empName){
+  const field = document.getElementById('waiver-field')?.value;
+  if(!field){ toast('Select a document to waive','err'); return; }
+  try{
+    const res = await apiGet('waiveDoc',{employeeId:empId,field,manager:ME.name||'Manager'});
+    if(!res.success){ toast(res.error||'Failed','err'); return; }
+    toast(field+' waived for '+empName,'ok');
+    await loadWaivers(empId);
+  }catch(e){ toast('Error applying waiver','err'); }
+}
+
+async function loadWaivers(empId){
+  const el = document.getElementById('waiver-list');
+  if(!el) return;
+  try{
+    const res = await apiGet('getWaivers',{employeeId:empId});
+    const waivers = res.waivers||[];
+    if(!waivers.length){ el.innerHTML='<div style="font-size:12.5px;color:var(--muted);">No active waivers.</div>'; return; }
+    el.innerHTML = '<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Active Waivers</div>'
+      + waivers.map(w=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#fff;border-radius:7px;margin-bottom:5px;border:1px solid var(--border);">
+        <div><span style="font-size:13px;font-weight:600;color:var(--navy);">${w.field}</span>
+        <span style="font-size:11.5px;color:var(--muted);margin-left:8px;">by ${w.waivedBy} on ${w.waivedOn}</span></div>
+        <button class="btn btn-red btn-sm" onclick="removeWaiverBtn('${empId}','${w.field}')">Remove</button>
+      </div>`).join('');
+  }catch(e){ el.innerHTML='<div style="color:var(--red);font-size:12.5px;">Error loading waivers.</div>'; }
+}
+
+async function removeWaiverBtn(empId, field){
+  try{
+    const res = await apiGet('removeWaiver',{employeeId:empId,field});
+    if(!res.success){ toast(res.error||'Failed','err'); return; }
+    toast('Waiver removed for '+field,'ok');
+    await loadWaivers(empId);
+  }catch(e){ toast('Error removing waiver','err'); }
 }
 
 function genInvFromDetail(){
@@ -1350,14 +1421,76 @@ async function refreshClock(){
   try{
     const res=await apiGet('getClockStatus',{employeeId:ME.id});
     _clocked=res.isClockedIn||false;
-    const btn=document.getElementById('cb');const st=document.getElementById('cs');
+    const btn=document.getElementById('cb');
+    const st=document.getElementById('cs');
     if(!btn) return;
-    if(_clocked){btn.textContent='Clock Out';btn.className='clock-btn clk-out';st.textContent='Clocked in since '+new Date(res.clockIn).toLocaleTimeString();}
-    else{btn.textContent='Clock In';btn.className='clock-btn clk-in';st.textContent='You are not currently clocked in';}
-  }catch(e){const st=document.getElementById('cs');if(st)st.textContent='Could not check status';}
+    if(_clocked){
+      btn.textContent='Clock Out';
+      btn.className='clock-btn clk-out';
+      btn.disabled=false;
+      if(st) st.textContent='Clocked in since '+new Date(res.clockIn).toLocaleTimeString();
+    } else {
+      // Check compliance
+      try{
+        const check=await apiGet('checkClockCompliance',{employeeId:ME.id});
+        if(!check.allowed){
+          btn.textContent='Clock In Blocked';
+          btn.className='clock-btn';
+          btn.style.background='#374151';
+          btn.style.color='#9ca3af';
+          btn.style.boxShadow='none';
+          btn.disabled=false;
+          if(st){
+            st.innerHTML='<span style="color:#fca5a5;font-weight:600;">Documents not yet approved:</span> '
+              + check.blocked.slice(0,3).join(', ')
+              + (check.blocked.length>3?' and '+(check.blocked.length-3)+' more...':'');
+          }
+        } else {
+          btn.textContent='Clock In';
+          btn.className='clock-btn clk-in';
+          btn.style='';
+          btn.disabled=false;
+          if(st) st.textContent='You are not currently clocked in';
+        }
+      }catch(e){
+        // compliance check error = allow
+        btn.textContent='Clock In';
+        btn.className='clock-btn clk-in';
+        btn.style='';
+        btn.disabled=false;
+        if(st) st.textContent='You are not currently clocked in';
+      }
+    }
+  }catch(e){
+    const st=document.getElementById('cs');
+    if(st) st.textContent='Could not check status';
+  }
 }
+
 async function toggleClock(){
   const btn=document.getElementById('cb');btn.disabled=true;
+  // Check document compliance before allowing clock-in
+  if(!_clocked){
+    btn.innerHTML='<span class="spin"></span> Checking...';
+    try{
+      const check = await apiGet('checkClockCompliance',{employeeId:ME.id});
+      if(!check.allowed){
+        btn.disabled=false;
+        btn.textContent='Clock In';
+        // Show compliance block message
+        const st=document.getElementById('cs');
+        if(st){
+          st.innerHTML='<span style="color:#fca5a5;font-weight:600;">Cannot clock in. The following documents are not yet approved:</span><br/>'
+            + check.blocked.map(d=>`<span style="color:#fca5a5;display:block;margin-top:4px;">- ${d}</span>`).join('')
+            + '<br/><span style="color:rgba(255,255,255,.4);font-size:12px;">Upload your documents in My Documents and wait for manager approval.</span>';
+        }
+        return;
+      }
+    }catch(e){
+      // If compliance check fails (e.g. new employee not yet in records), allow clock-in
+      console.log('Compliance check failed, allowing clock-in:', e);
+    }
+  }
   try{
     let res;
     if(!_clocked){
@@ -1372,6 +1505,7 @@ async function toggleClock(){
   }catch(e){toast('Connection error','err');}
   btn.disabled=false;await refreshClock();await loadToday();
 }
+
 async function loadToday(){
   const el=document.getElementById('today-r');if(!el)return;
   try{
@@ -1452,8 +1586,9 @@ async function pgMyDocs(){
   const el=document.getElementById('pg-mydocs');
   el.innerHTML=`
     <div class="pg-title">My Documents</div>
-    <div class="pg-sub">Upload required documents — they will be reviewed by the manager</div>
-    <div class="fcard"><h3>Submit a Document</h3>
+    <div class="pg-sub">Upload required documents. The manager will review and approve them.</div>
+    <div class="fcard">
+      <h3>Submit a Document</h3>
       <div class="fgrid">
         <div class="field"><label>Document Type</label>
           <select id="doc-type">
@@ -1474,31 +1609,140 @@ async function pgMyDocs(){
             <option>Other</option>
           </select>
         </div>
-        <div class="field"><label>Google Drive Link</label><input type="url" id="doc-url" placeholder="Paste your Google Drive share link here..."/></div>
-        <div class="field"><label>File Name / Description</label><input type="text" id="doc-name" placeholder="e.g. BLS_Card_2025.pdf"/></div>
       </div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Upload your document to Google Drive, set sharing to "Anyone with link can view", then paste the link above.</p>
-      <button class="btn btn-primary" onclick="submitMyDoc()">Submit Document</button>
+
+      <div style="margin:14px 0 8px;">
+        <div style="display:flex;gap:10px;margin-bottom:12px;">
+          <button class="btn btn-primary btn-sm" id="upload-tab-file" onclick="switchUploadTab('file')" style="opacity:1;">Upload PDF / Image</button>
+          <button class="btn btn-ghost btn-sm" id="upload-tab-link" onclick="switchUploadTab('link')" style="opacity:.6;">Paste Drive Link</button>
+        </div>
+
+        <div id="upload-panel-file">
+          <div class="doc-upload-area" onclick="document.getElementById('doc-file-input').click()" id="drop-zone"
+            ondragover="event.preventDefault();this.style.borderColor='var(--navy)'"
+            ondragleave="this.style.borderColor=''"
+            ondrop="handleFileDrop(event)">
+            <div style="font-size:32px;">+</div>
+            <p><strong>Click to upload</strong> or drag and drop here</p>
+            <p style="font-size:11.5px;margin-top:4px;">PDF, JPG, PNG, DOCX up to 10MB</p>
+          </div>
+          <input type="file" id="doc-file-input" accept=".pdf,.jpg,.jpeg,.png,.docx" style="display:none" onchange="handleFileSelect(this)"/>
+          <div id="file-preview" style="display:none;margin-top:10px;padding:10px 13px;background:var(--gbg);border:1px solid var(--green2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;">
+            <span id="file-preview-name" style="font-size:13px;font-weight:600;color:var(--green);">No file selected</span>
+            <button onclick="clearFile()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;">x</button>
+          </div>
+        </div>
+
+        <div id="upload-panel-link" style="display:none;">
+          <div class="field"><label>Google Drive Share Link</label>
+            <input type="url" id="doc-url" placeholder="https://drive.google.com/file/d/..."/>
+          </div>
+          <p style="font-size:11.5px;color:var(--muted);">Go to Google Drive, right-click your file, select Share, set to Anyone with link, then copy link.</p>
+        </div>
+      </div>
+
+      <div class="field"><label>File Name / Description (optional)</label>
+        <input type="text" id="doc-name" placeholder="e.g. BLS_Card_Jane_2025"/>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="submitMyDoc()">Submit Document</button>
     </div>
-    <div class="tw" style="margin-top:18px;"><div class="tw-head"><h3>My Submissions</h3></div><div id="my-doc-list"><div class="empty-state"><span class="spin spin-d"></span></div></div></div>`;
+    <div class="tw" style="margin-top:18px;">
+      <div class="tw-head"><h3>My Submissions</h3></div>
+      <div id="my-doc-list"><div class="empty-state"><span class="spin spin-d"></span></div></div>
+    </div>`;
   await loadMyDocs();
 }
-async function submitMyDoc(){
-  const type=document.getElementById('doc-type').value;
-  const url=document.getElementById('doc-url').value.trim();
-  const name=document.getElementById('doc-name').value.trim();
-  if(!type){toast('Select a document type','err');return;}
-  if(!url&&!name){toast('Add a Drive link or file name','err');return;}
-  try{
-    const res=await apiPost('submitDoc',{employeeId:ME.id,employeeName:ME.name,docType:type,driveUrl:url,fileName:name});
-    if(!res.success){toast(res.error||'Failed','err');return;}
-    toast('Document submitted. Awaiting manager review.','ok');
-    document.getElementById('doc-type').value='';
-    document.getElementById('doc-url').value='';
-    document.getElementById('doc-name').value='';
-    await loadMyDocs();
-  }catch(e){toast('Error submitting','err');}
+
+function switchUploadTab(tab){
+  document.getElementById('upload-panel-file').style.display = tab==='file'?'':'none';
+  document.getElementById('upload-panel-link').style.display = tab==='link'?'':'none';
+  document.getElementById('upload-tab-file').style.opacity = tab==='file'?'1':'.6';
+  document.getElementById('upload-tab-link').style.opacity = tab==='link'?'1':'.6';
+  document.getElementById('upload-tab-file').className = 'btn btn-sm '+(tab==='file'?'btn-primary':'btn-ghost');
+  document.getElementById('upload-tab-link').className = 'btn btn-sm '+(tab==='link'?'btn-primary':'btn-ghost');
 }
+
+let _selectedFile = null;
+function handleFileSelect(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 10 * 1024 * 1024){toast('File too large. Max size is 10MB.','err');input.value='';return;}
+  _selectedFile = file;
+  const preview = document.getElementById('file-preview');
+  const name = document.getElementById('file-preview-name');
+  preview.style.display='flex';
+  name.textContent = file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)';
+  if(!document.getElementById('doc-name').value) document.getElementById('doc-name').value = file.name.replace(/\.[^.]+$/,'');
+}
+function handleFileDrop(e){
+  e.preventDefault();
+  document.getElementById('drop-zone').style.borderColor='';
+  const file = e.dataTransfer.files[0];
+  if(!file) return;
+  const input = document.getElementById('doc-file-input');
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  handleFileSelect(input);
+}
+function clearFile(){
+  _selectedFile=null;
+  document.getElementById('doc-file-input').value='';
+  document.getElementById('file-preview').style.display='none';
+}
+
+async function submitMyDoc(){
+  const type=document.getElementById('doc-type')?.value;
+  const url=document.getElementById('doc-url')?.value.trim()||'';
+  const name=document.getElementById('doc-name')?.value.trim()||'';
+  if(!type){toast('Select a document type','err');return;}
+  const isFileTab=document.getElementById('upload-panel-file')?.style.display!=='none';
+  const btn=document.querySelector('#pg-mydocs .btn-primary.btn-full');
+  if(isFileTab&&_selectedFile){
+    if(btn){btn.innerHTML='<span class="spin"></span> Uploading...';btn.disabled=true;}
+    try{
+      const base64=await fileToBase64(_selectedFile);
+      const fileName=name||_selectedFile.name;
+      const fileSize=(_selectedFile.size/1024).toFixed(0)+' KB';
+      const res=await apiPost('submitDoc',{employeeId:ME.id,employeeName:ME.name,
+        docType:type,fileName:fileName,fileType:_selectedFile.type,
+        fileSize:fileSize,driveUrl:'',fileData:base64.substring(0,50000)});
+      if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}
+      if(!res.success){toast(res.error||'Upload failed','err');return;}
+      toast('Document submitted. Awaiting manager review.','ok');
+      clearFile();
+      document.getElementById('doc-type').value='';
+      document.getElementById('doc-name').value='';
+      await loadMyDocs();
+    }catch(e){
+      if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}
+      toast('Upload failed. Try a Drive link instead.','err');
+    }
+  }else if(!isFileTab&&url){
+    try{
+      const res=await apiPost('submitDoc',{employeeId:ME.id,employeeName:ME.name,
+        docType:type,driveUrl:url,fileName:name});
+      if(!res.success){toast(res.error||'Failed','err');return;}
+      toast('Document submitted. Awaiting manager review.','ok');
+      document.getElementById('doc-type').value='';
+      document.getElementById('doc-url').value='';
+      document.getElementById('doc-name').value='';
+      await loadMyDocs();
+    }catch(e){toast('Error submitting','err');}
+  }else{
+    toast('Upload a file or paste a Drive link','err');
+  }
+}
+
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>reject(new Error('Read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
 async function loadMyDocs(){
   const el=document.getElementById('my-doc-list');if(!el)return;
   try{
