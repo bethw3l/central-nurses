@@ -707,7 +707,7 @@ function editRate(id, name, cur){
 
 async function mTimesheets(){
   const el=document.getElementById('pg-timesheets');
-  el.innerHTML=`<div class="pgt">Timesheets</div><div class="pgs">Clock records saved in your Google Sheet</div>
+  el.innerHTML=`<div class="pgt">Timesheets</div><div class="pgs">View clock records by employee and date</div>
     <div class="fcard"><h3>Filter by Employee &amp; Period</h3>
       <div class="fgrid">
         <div class="field"><label>Employee</label><select id="ts-e"><option value="">— Select —</option></select></div>
@@ -750,7 +750,7 @@ async function loadTS(){
 
 async function mInvoices(){
   const el=document.getElementById('pg-invoices');
-  el.innerHTML=`<div class="pgt">Invoice Generator</div><div class="pgs">Generate pay invoices from Google Sheets clock records</div>
+  el.innerHTML=`<div class="pgt">Invoice Generator</div><div class="pgs">Generate pay invoices from actual clock records</div>
     <div class="fcard"><h3>Generate Invoice</h3>
       <div class="fgrid">
         <div class="field"><label>Employee</label><select id="inv-e" onchange="autoRate()"><option value="">— Select —</option></select></div>
@@ -807,7 +807,7 @@ function ePg(id){
 
 async function eClock(){
   const el=document.getElementById('pg-clock');
-  el.innerHTML=`<div class="pgt">Time Clock</div><div class="pgs">Clock in when you arrive · Clock out when you leave · Saved to Google Sheets</div>
+  el.innerHTML=`<div class="pgt">Time Clock</div><div class="pgs">Clock in when you arrive. Clock out when you leave.</div>
     <div class="clk-hero">
       <div class="clk-t" id="ct"></div>
       <div class="clk-d" id="cd"></div>
@@ -861,7 +861,7 @@ async function loadToday(){
 
 async function eHours(){
   const el=document.getElementById('pg-myhours');
-  el.innerHTML=`<div class="pgt">My Hours</div><div class="pgs">Your records from Google Sheets</div>
+  el.innerHTML=`<div class="pgt">My Hours</div><div class="pgs">Your work records and earnings</div>
     <div class="gap8" style="margin-bottom:18px;">
       <input type="date" id="mf" value="${weekStart()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
       <input type="date" id="mt" value="${today()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
@@ -993,7 +993,7 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
           <div><div class="sigl">Employee Signature</div><div class="sigln"></div><div class="signm">${empName} / Date</div></div>
           <div><div class="sigl">Authorized By (Manager)</div><div class="sigln"></div><div class="signm">Central Nurses LLC · Management</div></div>
         </div>
-        <div class="inv-note"><strong>Note:</strong> Generated from verified clock records in Google Sheets. Hours calculated from actual clock-in/out timestamps. Questions? Contact <strong>Info@Centralnurses.com</strong> or call <strong>+1(316) 806-5951</strong>.</div>
+        <div class="inv-note"><strong>Note:</strong> Generated from verified clock records. Hours are calculated from actual clock-in and clock-out timestamps. Questions? Contact <strong>Info@Centralnurses.com</strong> or call <strong>+1(316) 806-5951</strong>.</div>
       </div>
     </div>`;
     area.scrollIntoView({behavior:'smooth',block:'start'});
