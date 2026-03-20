@@ -2,497 +2,586 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Central Nurses LLC — Staff Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --navy:#0b1a2e;--navy2:#122040;--navy3:#1a3260;
-  --gold:#c9a84c;--gold2:#e8c96a;--teal:#007ea7;
-  --white:#fff;--cream:#f6f4ee;--muted:#64748b;--border:#e2e8f0;
-  --green:#15803d;--gbg:#f0fdf4;--red:#dc2626;--rbg:#fef2f2;
-  --orange:#c2410c;--obg:#fff7ed;--blue:#1d4ed8;--bbg:#eff6ff;
-  --rn:#1e3a5f;--lpn:#1a4731;--cna:#4a1942;--cma:#7c3205;
-  --shadow:0 2px 16px rgba(11,26,46,.08);--shadow-lg:0 12px 48px rgba(11,26,46,.18);--r:13px;
+  --navy:#0b1a2e;--navy2:#112038;--navy3:#1a3260;
+  --gold:#c9a84c;--gold2:#e8c96a;--gold3:#f5e099;
+  --teal:#0891b2;--teal2:#06b6d4;
+  --cream:#f8f7f3;--white:#ffffff;
+  --muted:#64748b;--border:#e2e8f0;--border2:#f1f5f9;
+  --green:#16a34a;--gbg:#f0fdf4;--green2:#dcfce7;
+  --red:#dc2626;--rbg:#fef2f2;--red2:#fee2e2;
+  --orange:#ea580c;--obg:#fff7ed;--orange2:#fed7aa;
+  --blue:#2563eb;--bbg:#eff6ff;
+  --rn:#1e3a5f;--lpn:#166534;--cna:#581c87;--cma:#7c2d12;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(11,26,46,.06);
+  --shadow-md:0 4px 20px rgba(11,26,46,.12);
+  --shadow-lg:0 12px 48px rgba(11,26,46,.2);
+  --r:10px;--r2:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
 html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);}
-#toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
-.t{padding:11px 18px;border-radius:9px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:var(--shadow-lg);animation:tf .3s ease;max-width:300px;line-height:1.4;}
-.tok{background:var(--green);}.terr{background:var(--red);}.tinfo{background:var(--navy);}
-@keyframes tf{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-#site{display:block;}#dash{display:none;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);font-size:14px;line-height:1.5;}
 
-/* NAV */
-.nav{background:var(--navy);height:68px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(11,26,46,.4);}
-.nav-logo{display:flex;align-items:center;gap:10px;}
-.nli{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;}
-.nlt{font-family:'Playfair Display',serif;color:var(--gold);font-size:21px;font-weight:700;}
-.nav-links{display:flex;align-items:center;gap:28px;}
-.nav-links a{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;}
-.nav-links a:hover{color:#fff;}
-.nav-cta{background:var(--gold);color:var(--navy);border:none;padding:9px 22px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;}
-.nav-cta:hover{background:var(--gold2);}
+/* ── TOASTS ── */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;color:#fff;box-shadow:var(--shadow-lg);animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);max-width:300px;line-height:1.45;pointer-events:all;}
+.toast.ok{background:var(--green);}.toast.err{background:var(--red);}.toast.info{background:var(--navy);}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
 
-/* HERO */
-.hero{background:var(--navy);padding:90px 5% 76px;position:relative;overflow:hidden;}
-.hero::after{content:'';position:absolute;right:-80px;top:-80px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 70%);}
-.hi{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 370px;gap:60px;align-items:center;position:relative;z-index:1;}
-.hero-ey{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);padding:5px 14px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(38px,5.5vw,68px);color:#fff;line-height:1.06;margin-bottom:20px;}
-.hero h1 em{color:var(--gold);font-style:normal;}
-.hero-sub{color:rgba(255,255,255,.6);font-size:16px;line-height:1.8;margin-bottom:36px;max-width:500px;}
-.hbtns{display:flex;gap:14px;flex-wrap:wrap;}
-.btn{padding:13px 28px;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14.5px;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
-.btn-g{background:var(--gold);color:var(--navy);}.btn-g:hover{background:var(--gold2);}
-.btn-o{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);}.btn-o:hover{border-color:#fff;}
-.wcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;}
-.wc-t{color:rgba(255,255,255,.45);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
-.wci{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);}
-.wci:last-of-type{border-bottom:none;}
-.wci span{color:rgba(255,255,255,.75);font-size:13.5px;line-height:1.5;}
-.wc-btn{margin-top:20px;width:100%;padding:12px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s;}
-.wc-btn:hover{background:var(--gold2);}
-.sbar{background:var(--gold);display:grid;grid-template-columns:repeat(4,1fr);}
-.sbi{padding:26px 20px;text-align:center;border-right:1px solid rgba(11,26,46,.12);}
-.sbi:last-child{border-right:none;}
-.sbn{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--navy);line-height:1;}
-.sbl{font-size:11.5px;font-weight:600;color:rgba(11,26,46,.55);margin-top:4px;text-transform:uppercase;letter-spacing:.7px;}
-section{padding:80px 5%;}
-.sec{max-width:1100px;margin:0 auto;}
-.ey{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
-.st{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,46px);color:var(--navy);margin-bottom:14px;line-height:1.15;}
-.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:44px;}
-.sc{background:#fff;border-radius:var(--r);padding:28px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
-.sc:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
-.sc-i{font-size:30px;margin-bottom:16px;}
-.sc h3{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:8px;}
-.sc p{color:var(--muted);font-size:13.5px;line-height:1.7;}
-.join{background:linear-gradient(135deg,var(--navy),var(--navy3));padding:80px 5%;}
-.ji{max-width:680px;margin:0 auto;text-align:center;}
-.ji h2{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,50px);color:#fff;margin-bottom:14px;}
-.ji p{color:rgba(255,255,255,.6);font-size:15.5px;line-height:1.75;margin-bottom:34px;}
-.cg{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:44px;}
-.ci{display:flex;align-items:center;gap:12px;margin-bottom:14px;color:var(--muted);font-size:14px;}
-.ci-i{width:36px;height:36px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.ff{margin-bottom:14px;}
-.ff label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;}
-.ff input,.ff select,.ff textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);background:#fff;outline:none;transition:border .2s;}
-.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--navy);}
-.ff textarea{min-height:108px;resize:vertical;}
-.subbtn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;}
-.subbtn:hover{background:var(--navy3);}
-footer{background:var(--navy);padding:28px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.fb{font-family:'Playfair Display',serif;color:var(--gold);font-size:18px;font-weight:700;}
-.fc2{color:rgba(255,255,255,.3);font-size:12.5px;}
-
-/* MODALS */
-.ov{position:fixed;inset:0;background:rgba(11,26,46,.7);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+/* ── OVERLAYS ── */
+.ov{position:fixed;inset:0;background:rgba(11,26,46,.65);backdrop-filter:blur(6px);z-index:800;display:none;align-items:center;justify-content:center;padding:16px;}
 .ov.open{display:flex;}
-.modal{background:#fff;border-radius:18px;padding:40px 36px;width:100%;max-width:440px;box-shadow:var(--shadow-lg);position:relative;animation:mf .25s ease;max-height:90vh;overflow-y:auto;}
-.modal-wide{max-width:860px;}
-@keyframes mf{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
-.mx{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;}
-.modal h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--navy);margin-bottom:4px;}
-.msub{color:var(--muted);font-size:13px;margin-bottom:26px;}
-.mf{margin-bottom:16px;}
-.mf label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
-.mf input,.mf select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;transition:border .2s;}
-.mf input:focus,.mf select:focus{border-color:var(--navy);}
-.mbtn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.mbtn:hover{background:var(--navy3);}
-.mbtn:disabled{opacity:.55;cursor:not-allowed;}
-.msw{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
-.msw a{color:var(--teal);cursor:pointer;font-weight:600;}
+.modal{background:#fff;border-radius:20px;width:100%;max-width:460px;box-shadow:var(--shadow-lg);position:relative;animation:modalIn .25s cubic-bezier(.34,1.56,.64,1);max-height:92vh;overflow-y:auto;}
+.modal-wide{max-width:780px;}
+.modal-xl{max-width:1060px;}
+@keyframes modalIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+.modal-header{padding:28px 28px 0;position:sticky;top:0;background:#fff;z-index:1;border-radius:20px 20px 0 0;}
+.modal-header h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.modal-header p{color:var(--muted);font-size:13px;}
+.modal-body{padding:20px 28px 28px;}
+.modal-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;border:none;background:var(--border2);color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.modal-close:hover{background:var(--border);color:var(--navy);}
 
-/* EMPLOYEE DETAIL MODAL */
-.emp-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.emp-detail-item{background:#f8f7f3;border-radius:8px;padding:10px 14px;}
-.edl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px;}
-.edv{font-size:13.5px;color:var(--navy);font-weight:500;}
-.edv.exp-ok{color:var(--green);font-weight:700;}
-.edv.exp-warn{color:var(--orange);font-weight:700;}
-.edv.exp-bad{color:var(--red);font-weight:700;}
-.section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.emp-detail-full{grid-column:1/-1;}
-.emp-detail-full .edv{white-space:pre-wrap;font-size:12.5px;line-height:1.6;max-height:120px;overflow-y:auto;}
+/* ── FORMS ── */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
+.field input,.field select,.field textarea{padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--navy);outline:none;transition:border-color .15s,box-shadow .15s;background:#fff;width:100%;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,26,46,.07);}
+.field input.err-field{border-color:var(--red);}
+.field-hint{font-size:11px;color:var(--muted);margin-top:2px;}
+.field-err{font-size:11px;color:var(--red);margin-top:2px;display:none;}
+.fgrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:42px;}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px;}
+.pw-strength{height:4px;border-radius:2px;margin-top:6px;background:var(--border);overflow:hidden;}
+.pw-strength-bar{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0;}
+.pw-strength-txt{font-size:11px;color:var(--muted);margin-top:3px;}
 
-/* DASHBOARD */
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;}
+.btn-primary{background:var(--navy);color:#fff;}.btn-primary:hover{background:var(--navy3);}
+.btn-gold{background:var(--gold);color:var(--navy);}.btn-gold:hover{background:var(--gold2);}
+.btn-teal{background:var(--teal);color:#fff;}.btn-teal:hover{background:var(--teal2);}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted);}.btn-ghost:hover{border-color:var(--navy);color:var(--navy);}
+.btn-red{background:var(--rbg);color:var(--red);border:1.5px solid var(--red2);}.btn-red:hover{background:var(--red);color:#fff;}
+.btn-green{background:var(--gbg);color:var(--green);border:1.5px solid var(--green2);}.btn-green:hover{background:var(--green);color:#fff;}
+.btn-sm{padding:6px 13px;font-size:12px;border-radius:7px;}
+.btn-lg{padding:13px 28px;font-size:15px;}
+.btn-full{width:100%;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;}
+.spin-d{border-color:var(--border);border-top-color:var(--navy);width:22px;height:22px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── PUBLIC SITE ── */
+#site{display:block;}#dash{display:none;}
+.nav{background:var(--navy);height:66px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:400;box-shadow:0 1px 0 rgba(255,255,255,.06);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.nav-logo-icon svg{width:18px;height:18px;}
+.nav-logo-text{font-family:'Playfair Display',serif;color:var(--gold);font-size:20px;font-weight:700;}
+.nav-links{display:flex;align-items:center;gap:24px;}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;font-size:13.5px;font-weight:500;transition:color .15s;}
+.nav-links a:hover{color:#fff;}
+.nav-btn{background:var(--gold);color:var(--navy);border:none;padding:8px 20px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13.5px;cursor:pointer;transition:all .15s;}
+.nav-btn:hover{background:var(--gold2);}
+.hero{background:var(--navy);padding:88px 5% 72px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 75% 40%,rgba(201,168,76,.08) 0%,transparent 55%),radial-gradient(ellipse at 20% 80%,rgba(8,145,178,.06) 0%,transparent 50%);pointer-events:none;}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:56px;align-items:center;position:relative;}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:var(--gold);padding:5px 13px;border-radius:50px;font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:20px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,64px);color:#fff;line-height:1.07;margin-bottom:18px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero-sub{color:rgba(255,255,255,.58);font-size:15.5px;line-height:1.75;margin-bottom:32px;max-width:480px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:26px;}
+.hero-card-title{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:18px;}
+.hero-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.hero-item:last-of-type{border-bottom:none;}
+.hero-item-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.hero-item span{color:rgba(255,255,255,.7);font-size:13px;line-height:1.4;}
+.hero-card-btn{margin-top:18px;width:100%;padding:11px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13.5px;cursor:pointer;transition:background .15s;}
+.hero-card-btn:hover{background:var(--gold2);}
+.stats{background:var(--gold);display:grid;grid-template-columns:repeat(4,1fr);}
+.stat{padding:24px 20px;text-align:center;border-right:1px solid rgba(11,26,46,.1);}
+.stat:last-child{border:none;}
+.stat-num{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--navy);}
+.stat-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:rgba(11,26,46,.5);margin-top:3px;}
+section{padding:76px 5%;}
+.sec{max-width:1100px;margin:0 auto;}
+.sec-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:9px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(26px,3.5vw,44px);color:var(--navy);line-height:1.15;margin-bottom:12px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:40px;}
+.card{background:#fff;border-radius:var(--r2);padding:26px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s;}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.card-icon{font-size:28px;margin-bottom:14px;}
+.card h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:7px;}
+.card p{color:var(--muted);font-size:13px;line-height:1.65;}
+.join-sec{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);padding:76px 5%;}
+.join-inner{max-width:640px;margin:0 auto;text-align:center;}
+.join-inner h2{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,48px);color:#fff;margin-bottom:14px;}
+.join-inner p{color:rgba(255,255,255,.58);font-size:15px;line-height:1.75;margin-bottom:30px;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;margin-top:40px;}
+.contact-item{display:flex;align-items:center;gap:11px;margin-bottom:13px;color:var(--muted);font-size:13.5px;}
+.contact-icon{width:34px;height:34px;background:var(--bbg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.contact-form .field input,.contact-form .field select,.contact-form .field textarea{font-size:13.5px;}
+site-footer{background:var(--navy);padding:24px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+footer{background:var(--navy);padding:24px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-brand{font-family:'Playfair Display',serif;color:var(--gold);font-size:17px;font-weight:700;}
+.footer-copy{color:rgba(255,255,255,.28);font-size:12px;}
+
+/* ── DASHBOARD ── */
 #dash{flex-direction:column;min-height:100vh;}
-.dbar{background:var(--navy);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(11,26,46,.3);}
-.dl{display:flex;align-items:center;gap:10px;}
-.dli{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
-.dln{font-family:'Playfair Display',serif;color:var(--gold);font-size:19px;font-weight:700;}
-.dr{display:flex;align-items:center;gap:14px;}
-.up{background:rgba(255,255,255,.08);border-radius:50px;padding:5px 14px 5px 6px;display:flex;align-items:center;gap:9px;}
-.uav{width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--navy);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;}
-.unm{color:#fff;font-size:13px;font-weight:500;}
-.uid{color:rgba(255,255,255,.4);font-size:11px;}
-.urole{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:50px;}
-.rm{background:rgba(201,168,76,.2);color:var(--gold);}
-.re{background:rgba(0,126,167,.2);color:#67e8f9;}
-.so{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:none;padding:7px 14px;border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;transition:background .2s;}
-.so:hover{background:rgba(255,255,255,.18);}
-.dlayout{display:flex;flex:1;min-height:calc(100vh - 62px);}
-.sidebar{width:215px;background:var(--navy2);padding:16px 0;flex-shrink:0;overflow-y:auto;}
-.si{display:flex;align-items:center;gap:11px;padding:11px 20px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;transition:all .2s;border-left:3px solid transparent;user-select:none;}
-.si:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.04);}
-.si.active{color:#fff;background:rgba(201,168,76,.12);border-left-color:var(--gold);}
-.si-ic{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
-.si-group{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.25);padding:14px 20px 6px;margin-top:4px;}
-.si-disc{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.dc{flex:1;padding:28px;overflow-y:auto;}
-.pg{display:none;}.pg.on{display:block;}
-.pgt{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:4px;}
-.pgs{color:var(--muted);font-size:14px;margin-bottom:24px;}
+.dbar{background:var(--navy);height:58px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 1px 0 rgba(255,255,255,.06);}
+.dbar-logo{display:flex;align-items:center;gap:9px;}
+.dbar-logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.dbar-logo-text{font-family:'Playfair Display',serif;color:var(--gold);font-size:17px;font-weight:700;}
+.dbar-right{display:flex;align-items:center;gap:12px;}
+.user-pill{background:rgba(255,255,255,.07);border-radius:50px;padding:4px 12px 4px 5px;display:flex;align-items:center;gap:8px;}
+.user-av{width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--navy);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;}
+.user-name{color:#fff;font-size:12.5px;font-weight:500;}
+.user-id{color:rgba(255,255,255,.35);font-size:10.5px;}
+.user-role{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:50px;}
+.role-mgr{background:rgba(201,168,76,.18);color:var(--gold);}
+.role-emp{background:rgba(8,145,178,.18);color:var(--teal2);}
+.signout-btn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65);border:none;padding:6px 13px;border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12.5px;transition:all .15s;}
+.signout-btn:hover{background:rgba(255,255,255,.15);color:#fff;}
+.dlayout{display:flex;flex:1;min-height:calc(100vh - 58px);}
+.sidebar{width:208px;background:var(--navy2);padding:12px 0;flex-shrink:0;overflow-y:auto;}
+.sb-group{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.22);padding:14px 18px 5px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;color:rgba(255,255,255,.48);font-size:13px;font-weight:500;transition:all .15s;border-left:2.5px solid transparent;}
+.sb-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.04);}
+.sb-item.active{color:#fff;background:rgba(201,168,76,.1);border-left-color:var(--gold);}
+.sb-item-ic{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.sb-disc{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dc{flex:1;padding:24px;overflow-y:auto;background:var(--cream);}
+.pg{display:none;}.pg.on{display:block;animation:pgIn .2s ease;}
+@keyframes pgIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.pg-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--navy);margin-bottom:3px;}
+.pg-sub{color:var(--muted);font-size:13px;margin-bottom:22px;}
 
-/* KPI */
-.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:22px;}
-.kpi{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.kpi-label{font-size:12px;color:var(--muted);font-weight:500;}
-.kpi-badge{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:50px;}
-.kpi-v{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--navy);line-height:1;}
+/* ── KPI ROW ── */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:20px;}
+.kpi{background:#fff;border-radius:var(--r2);padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.kpi-label{font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.kpi-val{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--navy);line-height:1;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;}
 
-/* TABLE */
-.tw{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
-.twt{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.twt h3{font-size:15px;font-weight:700;}
-table{width:100%;border-collapse:collapse;}
-th{background:#f8f7f3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:10px 16px;text-align:left;white-space:nowrap;}
-td{padding:11px 16px;border-top:1px solid var(--border);font-size:13.5px;vertical-align:middle;}
-tr:hover td{background:rgba(11,26,46,.018);}
-.badge{display:inline-block;padding:3px 9px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;}
-.bg{background:var(--gbg);color:var(--green);}
-.br{background:var(--rbg);color:var(--red);}
-.bo{background:var(--obg);color:var(--orange);}
-.bb{background:var(--bbg);color:var(--blue);}
-.bx{background:#f1f5f9;color:var(--muted);}
-.badge-rn{background:rgba(30,58,95,.15);color:var(--rn);}
-.badge-lpn{background:rgba(26,71,49,.15);color:var(--lpn);}
-.badge-cna{background:rgba(74,25,66,.15);color:var(--cna);}
-.badge-cma{background:rgba(124,50,5,.15);color:var(--cma);}
+/* ── TABLE ── */
+.tw{background:#fff;border-radius:var(--r2);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
+.tw-head{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.tw-head h3{font-size:14px;font-weight:700;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{background:#f8f7f3;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:9px 14px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--border);}
+.tbl td{padding:10px 14px;border-top:1px solid var(--border2);font-size:13px;vertical-align:middle;}
+.tbl tr:hover td{background:rgba(11,26,46,.016);}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:50px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+.badge-green{background:var(--gbg);color:var(--green);}
+.badge-red{background:var(--rbg);color:var(--red);}
+.badge-orange{background:var(--obg);color:var(--orange);}
+.badge-blue{background:var(--bbg);color:var(--blue);}
+.badge-gray{background:var(--border2);color:var(--muted);}
+.badge-navy{background:rgba(11,26,46,.08);color:var(--navy);}
+.badge-rn{background:rgba(30,58,95,.1);color:var(--rn);}
+.badge-lpn{background:rgba(22,101,52,.1);color:var(--lpn);}
+.badge-cna{background:rgba(88,28,135,.1);color:var(--cna);}
+.badge-cma{background:rgba(124,45,18,.1);color:var(--cma);}
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-state p{margin-top:8px;font-size:13.5px;}
 
-/* SPECIALTY TABS */
-.spec-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-.spec-tab{padding:9px 20px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;border:2px solid transparent;transition:all .2s;}
-.spec-tab.active,.spec-tab:hover{color:#fff;}
-.tab-rn{border-color:var(--rn);color:var(--rn);}
-.tab-rn.active,.tab-rn:hover{background:var(--rn);}
-.tab-lpn{border-color:var(--lpn);color:var(--lpn);}
-.tab-lpn.active,.tab-lpn:hover{background:var(--lpn);}
-.tab-cna{border-color:var(--cna);color:var(--cna);}
-.tab-cna.active,.tab-cna:hover{background:var(--cna);}
-.tab-cma{border-color:var(--cma);color:var(--cma);}
-.tab-cma.active,.tab-cma:hover{background:var(--cma);}
-.tab-all{border-color:var(--navy);color:var(--navy);}
-.tab-all.active,.tab-all:hover{background:var(--navy);color:#fff;}
+/* ── SEARCH BAR ── */
+.search-bar{position:relative;}
+.search-bar input{padding:8px 13px 8px 34px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--navy);outline:none;transition:border-color .15s;background:#fff;width:220px;}
+.search-bar input:focus{border-color:var(--navy);}
+.search-bar::before{content:'⌕';position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none;}
 
-/* DISCIPLINE HEADER BAR */
-.disc-header{border-radius:10px 10px 0 0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
-.disc-header h3{color:#fff;font-size:15px;font-weight:700;}
-.disc-header span{color:rgba(255,255,255,.65);font-size:13px;}
-.dh-rn{background:var(--rn);}
-.dh-lpn{background:var(--lpn);}
-.dh-cna{background:var(--cna);}
-.dh-cma{background:var(--cma);}
+/* ── FCARD ── */
+.fcard{background:#fff;border-radius:var(--r2);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:18px;}
+.fcard h3{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--navy);}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;}
+.gap{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 
-/* FORM CARD */
-.fcard{background:#fff;border-radius:var(--r);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
-.fcard h3{font-size:15px;font-weight:700;margin-bottom:16px;}
-.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;}
-.field{display:flex;flex-direction:column;gap:5px;}
-.field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
-.field input,.field select{padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--navy);outline:none;transition:border .2s;background:#fff;width:100%;}
-.field input:focus,.field select:focus{border-color:var(--navy);}
-.sb{padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
-.sb-n{background:var(--navy);color:#fff;}.sb-n:hover{background:var(--navy3);}
-.sb-g{background:var(--gold);color:var(--navy);}.sb-g:hover{background:var(--gold2);}
-.sb-r{background:var(--rbg);color:var(--red);}.sb-r:hover{background:var(--red);color:#fff;}
-.sb-teal{background:var(--teal);color:#fff;}.sb-teal:hover{opacity:.85;}
-.sb-sm{padding:5px 12px;font-size:12px;}
-.mt16{margin-top:16px;}
-.gap8{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.sbox{padding:8px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;transition:border .2s;width:240px;}
-.sbox:focus{border-color:var(--navy);}
-.empty{text-align:center;padding:44px;color:var(--muted);}
-.empty-icon{font-size:36px;margin-bottom:10px;}
+/* ── DISC HEADER ── */
+.disc-bar{border-radius:var(--r2) var(--r2) 0 0;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.disc-bar h3{color:#fff;font-size:14px;font-weight:700;}
+.disc-bar span{color:rgba(255,255,255,.6);font-size:12.5px;}
+.disc-rn{background:var(--rn);}.disc-lpn{background:var(--lpn);}
+.disc-cna{background:var(--cna);}.disc-cma{background:var(--cma);}
 
-/* CLOCK */
-.clk-hero{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:18px;padding:44px;text-align:center;margin-bottom:22px;position:relative;overflow:hidden;}
-.clk-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(201,168,76,.15) 0%,transparent 65%);}
-.clk-t{font-family:'Playfair Display',serif;font-size:76px;font-weight:700;color:var(--gold);letter-spacing:3px;line-height:1;position:relative;}
-.clk-d{color:rgba(255,255,255,.45);font-size:14px;margin:8px 0 30px;position:relative;}
-.clk-btn{position:relative;padding:15px 52px;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:16px;cursor:pointer;border:none;transition:all .25s;}
-.cb-in{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;box-shadow:0 4px 20px rgba(21,128,61,.4);}
-.cb-in:hover{box-shadow:0 6px 28px rgba(21,128,61,.6);transform:translateY(-2px);}
-.cb-out{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 20px rgba(220,38,38,.4);}
-.cb-out:hover{box-shadow:0 6px 28px rgba(220,38,38,.6);transform:translateY(-2px);}
-.clk-btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
-.clk-s{color:rgba(255,255,255,.5);font-size:13px;margin-top:14px;position:relative;}
+/* ── SPEC TABS ── */
+.spec-tabs{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;}
+.spec-tab{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid;transition:all .15s;}
+.tab-all{border-color:var(--navy);color:var(--navy);}.tab-all.active,.tab-all:hover{background:var(--navy);color:#fff;}
+.tab-rn{border-color:var(--rn);color:var(--rn);}.tab-rn.active,.tab-rn:hover{background:var(--rn);color:#fff;}
+.tab-lpn{border-color:var(--lpn);color:var(--lpn);}.tab-lpn.active,.tab-lpn:hover{background:var(--lpn);color:#fff;}
+.tab-cna{border-color:var(--cna);color:var(--cna);}.tab-cna.active,.tab-cna:hover{background:var(--cna);color:#fff;}
+.tab-cma{border-color:var(--cma);color:var(--cma);}.tab-cma.active,.tab-cma:hover{background:var(--cma);color:#fff;}
 
-/* INVOICE */
-.inv-wrap{background:#fff;border-radius:var(--r);box-shadow:var(--shadow-lg);border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
-.inv-tb{background:#f8f7f3;border-bottom:1px solid var(--border);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.inv-info{font-size:13px;color:var(--muted);font-weight:500;}
-.inv-info strong{color:var(--navy);}
-.inv-acts{display:flex;gap:9px;}
-.iab{padding:8px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
-.iab-c{background:#f1f5f9;color:var(--muted);border:1px solid var(--border);}.iab-c:hover{background:var(--border);}
-.iab-s{background:var(--gold);color:var(--navy);}.iab-s:hover{background:var(--gold2);}
-.iab-p{background:var(--navy);color:#fff;}.iab-p:hover{background:var(--teal);}
-#inv-doc{padding:48px 52px;}
-.inv-lh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:26px;border-bottom:3px solid var(--navy);}
-.inv-cn{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
-.inv-cs{color:var(--muted);font-size:12.5px;margin-top:3px;}
-.inv-ca{color:var(--muted);font-size:12px;line-height:1.7;margin-top:6px;}
-.inv-wd{font-family:'Playfair Display',serif;font-size:50px;font-weight:900;color:var(--navy);letter-spacing:-2px;line-height:1;text-align:right;}
-.inv-mt{text-align:right;margin-top:8px;}
-.inv-mr{font-size:13px;margin-bottom:2px;}
-.inv-ig{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:28px;}
-.inv-ic{padding:18px 20px;border-right:1px solid var(--border);}
-.inv-ic:last-child{border-right:none;}
-.iil{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:7px;}
-.iim{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:3px;}
-.iis{font-size:12.5px;color:var(--muted);line-height:1.55;}
-.iid{display:inline-block;background:var(--gbg);color:var(--green);font-size:11px;font-weight:700;padding:2px 9px;border-radius:50px;margin-top:4px;}
-.inv-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:28px;}
-.iis2{padding:15px 18px;text-align:center;border-right:1px solid var(--border);background:#fafaf8;}
-.iis2:last-child{border-right:none;background:var(--navy);}
-.iis2-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:5px;}
-.iis2:last-child .iis2-l{color:rgba(255,255,255,.5);}
-.iis2-v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
-.iis2:last-child .iis2-v{color:var(--gold);}
-.inv-tw{display:flex;justify-content:flex-end;margin:20px 0 32px;}
-.inv-tb2{width:280px;border:1px solid var(--border);border-radius:11px;overflow:hidden;}
-.itr{display:flex;justify-content:space-between;align-items:center;padding:11px 17px;border-bottom:1px solid var(--border);font-size:14px;}
-.itr:last-child{border-bottom:none;background:var(--navy);padding:14px 17px;}
-.itrl{color:var(--muted);font-size:13px;}
-.itr:last-child .itrl{color:rgba(255,255,255,.55);}
-.itrr{font-weight:700;color:var(--navy);}
-.itr:last-child .itrr{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);}
-.inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:26px;border-top:1px solid var(--border);}
-.sigl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;}
-.sigln{height:1px;background:var(--navy);margin:32px 0 6px;}
-.signm{font-size:12.5px;color:var(--muted);}
-.inv-note{font-size:12px;color:var(--muted);line-height:1.7;padding:14px 18px;background:#f8f7f3;border-radius:9px;border:1px solid var(--border);margin-top:22px;}
-.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .6s linear infinite;}
-.spin-d{border-color:var(--border);border-top-color:var(--navy);width:24px;height:24px;}
-@keyframes rot{to{transform:rotate(360deg);}}
+/* ── CLOCK PAGE ── */
+.clock-card{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:var(--r2);padding:40px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden;}
+.clock-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(201,168,76,.12) 0%,transparent 60%);}
+.clock-time{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:var(--gold);letter-spacing:2px;line-height:1;position:relative;z-index:1;}
+.clock-date{color:rgba(255,255,255,.4);font-size:13px;margin:7px 0 28px;position:relative;z-index:1;}
+.clock-btn{position:relative;z-index:1;padding:14px 50px;border-radius:11px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:all .22s;}
+.clk-in{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;box-shadow:0 4px 18px rgba(22,163,74,.35);}
+.clk-in:hover{box-shadow:0 6px 24px rgba(22,163,74,.55);transform:translateY(-2px);}
+.clk-out{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 18px rgba(220,38,38,.35);}
+.clk-out:hover{box-shadow:0 6px 24px rgba(220,38,38,.55);transform:translateY(-2px);}
+.clock-btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+.clock-status{color:rgba(255,255,255,.45);font-size:12.5px;margin-top:12px;position:relative;z-index:1;}
 
-/* CREDENTIAL EXPIRY COLORS */
-.cred-ok{color:var(--green);font-weight:700;}
-.cred-warn{color:var(--orange);font-weight:700;}
-.cred-bad{color:var(--red);font-weight:700;}
+/* ── CRED COLORS ── */
+.cred-ok{color:var(--green);font-weight:600;}
+.cred-warn{color:var(--orange);font-weight:600;}
+.cred-bad{color:var(--red);font-weight:600;}
 .cred-na{color:var(--muted);}
 
+/* ── EMPLOYEE DETAIL ── */
+.emp-hero{display:flex;align-items:center;gap:16px;padding:20px;background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:var(--r2);margin-bottom:18px;color:#fff;}
+.emp-av{width:54px;height:54px;border-radius:50%;background:var(--gold);color:var(--navy);font-family:'Playfair Display',serif;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.emp-av-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
+.emp-av-sub{color:rgba(255,255,255,.55);font-size:12.5px;margin-top:2px;}
+.detail-section{margin-bottom:14px;}
+.detail-section-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;}
+.detail-item{background:var(--cream);border-radius:8px;padding:9px 12px;border:1px solid var(--border);}
+.detail-item.full-width{grid-column:1/-1;}
+.detail-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px;}
+.detail-item span{font-size:13px;color:var(--navy);font-weight:500;line-height:1.4;word-break:break-word;}
+.detail-item span.notes-text{font-size:12.5px;white-space:pre-wrap;max-height:100px;overflow-y:auto;display:block;}
+
+/* ── INVOICE ── */
+.inv-wrap{background:#fff;border-radius:var(--r2);box-shadow:var(--shadow-md);border:1px solid var(--border);overflow:hidden;margin-bottom:18px;}
+.inv-toolbar{background:#f8f7f3;border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.inv-toolbar-info{font-size:12.5px;color:var(--muted);}
+.inv-toolbar-info strong{color:var(--navy);}
+.inv-actions{display:flex;gap:7px;}
+#inv-doc{padding:44px 48px;}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:22px;border-bottom:2.5px solid var(--navy);}
+.inv-co-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);}
+.inv-co-meta{color:var(--muted);font-size:11.5px;margin-top:3px;line-height:1.65;}
+.inv-word{font-family:'Playfair Display',serif;font-size:46px;font-weight:900;color:var(--navy);letter-spacing:-2px;text-align:right;line-height:1;}
+.inv-meta{text-align:right;margin-top:7px;font-size:12.5px;color:var(--muted);}
+.inv-meta strong{color:var(--navy);}
+.inv-info-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;}
+.inv-info-cell{padding:15px 18px;border-right:1px solid var(--border);}
+.inv-info-cell:last-child{border-right:none;}
+.inv-cell-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:5px;}
+.inv-cell-main{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+.inv-cell-sub{font-size:11.5px;color:var(--muted);line-height:1.5;}
+.inv-cell-id{display:inline-block;background:var(--gbg);color:var(--green);font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:50px;margin-top:3px;}
+.inv-summary{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;}
+.inv-sum-cell{padding:13px 16px;text-align:center;border-right:1px solid var(--border);background:#fafaf8;}
+.inv-sum-cell:last-child{border-right:none;background:var(--navy);}
+.inv-sum-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px;}
+.inv-sum-cell:last-child .inv-sum-label{color:rgba(255,255,255,.45);}
+.inv-sum-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);}
+.inv-sum-cell:last-child .inv-sum-val{color:var(--gold);}
+.inv-total-wrap{display:flex;justify-content:flex-end;margin:16px 0 26px;}
+.inv-total-box{width:260px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.inv-total-row{display:flex;justify-content:space-between;align-items:center;padding:9px 15px;border-bottom:1px solid var(--border);font-size:13px;}
+.inv-total-row:last-child{border-bottom:none;background:var(--navy);padding:12px 15px;}
+.inv-total-row span:first-child{color:var(--muted);font-size:12px;}
+.inv-total-row:last-child span:first-child{color:rgba(255,255,255,.5);}
+.inv-total-row span:last-child{font-weight:700;color:var(--navy);}
+.inv-total-row:last-child span:last-child{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);}
+.inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:36px;padding-top:22px;border-top:1px solid var(--border);}
+.sig-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;}
+.sig-line{height:1px;background:var(--navy);margin:26px 0 5px;}
+.sig-name{font-size:12px;color:var(--muted);}
+.inv-note{font-size:11.5px;color:var(--muted);line-height:1.65;padding:11px 15px;background:#f8f7f3;border-radius:8px;border:1px solid var(--border);margin-top:20px;}
+
+/* ── BULK INVOICE ── */
+.bulk-result{background:#fff;border-radius:var(--r2);border:1px solid var(--border);overflow:hidden;margin-bottom:14px;}
+.bulk-result-head{padding:12px 16px;background:#f8f7f3;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.bulk-result-head h4{font-size:13.5px;font-weight:700;}
+.bulk-result-head span{color:var(--green);font-weight:700;font-size:13px;}
+
+/* ── DOCUMENT UPLOAD ── */
+.doc-upload-area{border:2px dashed var(--border);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:#fff;}
+.doc-upload-area:hover{border-color:var(--navy);background:var(--cream);}
+.doc-upload-area p{color:var(--muted);font-size:13px;margin-top:8px;}
+.doc-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 13px;background:var(--cream);border-radius:8px;border:1px solid var(--border);margin-bottom:7px;}
+.doc-chip-name{font-size:13px;font-weight:500;color:var(--navy);}
+.doc-chip-status{font-size:11px;font-weight:700;text-transform:uppercase;}
+.doc-chip-status.pending{color:var(--orange);}
+.doc-chip-status.approved{color:var(--green);}
+.doc-chip-status.rejected{color:var(--red);}
+.doc-chip-actions{display:flex;gap:6px;}
+
+/* PRINT */
 @media print{
-  #site,#dash>.dbar,.sidebar,.fcard,.krow,.spec-tabs,.inv-tb,#toasts,#saved-section,.tw:not(#inv-wrap-tw){display:none!important;}
+  #site,#dash>.dbar,.sidebar,.fcard,.krow,.spec-tabs,.inv-toolbar,#toasts,#saved-section,.tw:not(.inv-print-ok){display:none!important;}
   #dash{display:block!important;}.pg{display:none!important;}
   #pg-invoices{display:block!important;}
   .inv-wrap{box-shadow:none;border:none;}
-  #inv-doc{padding:24px 32px;}
+  #inv-doc{padding:20px 28px;}
   body{background:#fff;}
 }
-@media(max-width:900px){
+@media(max-width:860px){
   .nav-links a{display:none;}
-  .hi{grid-template-columns:1fr;}
-  .wcard{display:none;}
-  .sbar{grid-template-columns:repeat(2,1fr);}
-  .cg{grid-template-columns:1fr;}
-  .sidebar{width:56px;}.si span,.si-group,.si-disc{display:none;}
-  .dc{padding:16px;}
-  #inv-doc{padding:24px 16px;}
-  .inv-lh{flex-direction:column;gap:16px;}
-  .inv-ig,.inv-strip{grid-template-columns:1fr;}
-  .inv-ic{border-right:none;border-bottom:1px solid var(--border);}
+  .hero-inner{grid-template-columns:1fr;}.hero-card{display:none;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .contact-grid{grid-template-columns:1fr;}
+  .sidebar{width:52px;}.sb-item span,.sb-group,.sb-item-ic+span{display:none;}
+  .dc{padding:14px;}
+  #inv-doc{padding:20px 16px;}
+  .inv-header{flex-direction:column;gap:14px;}
+  .inv-info-grid,.inv-summary{grid-template-columns:1fr;}
+  .inv-info-cell,.inv-sum-cell{border-right:none;border-bottom:1px solid var(--border);}
   .inv-sig{grid-template-columns:1fr;}
-  .emp-detail-grid{grid-template-columns:1fr;}
+  .detail-grid{grid-template-columns:1fr 1fr;}
+  .fgrid2{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 <div id="toasts"></div>
 
-<!-- PUBLIC SITE -->
+<!-- ════════════════════════════════════════════
+     PUBLIC SITE
+════════════════════════════════════════════ -->
 <div id="site">
 <nav class="nav">
-  <div class="nav-logo"><div class="nli">+</div><div class="nlt">Central Nurses LLC</div></div>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0b1a2e" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+    </div>
+    <div class="nav-logo-text">Central Nurses LLC</div>
+  </div>
   <div class="nav-links">
-    <a href="#services">Services</a><a href="#about">About</a><a href="#join">Careers</a><a href="#contact">Contact</a>
-    <button class="nav-cta" onclick="openOv('o-login')">Staff Portal</button>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#join">Careers</a>
+    <a href="#contact">Contact</a>
+    <button class="nav-btn" onclick="openOv('ov-login')">Staff Portal</button>
   </div>
 </nav>
+
 <div class="hero">
-  <div class="hi">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
     <div>
-      <div class="hero-ey">Wichita, Kansas · (316) 806-5951</div>
+      <div class="hero-tag">Wichita, Kansas &nbsp;·&nbsp; (316) 806-5951</div>
       <h1>Quality Nursing<br/>Care Starts With<br/><em>Great Staff</em></h1>
       <p class="hero-sub">Central Nurses Staffing Agency — Your most trusted staffing partner. Providing excellent care solutions to patients across the greater Wichita, Kansas area.</p>
-      <div class="hbtns">
-        <button class="btn btn-g" onclick="openOv('o-register')">Join Our Team</button>
-        <button class="btn btn-o" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
+      <div class="hero-btns">
+        <button class="btn btn-gold btn-lg" onclick="openOv('ov-register')">Join Our Team</button>
+        <button class="btn btn-lg" style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.2);" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
       </div>
     </div>
-    <div class="wcard">
-      <div class="wc-t">Why Choose Us</div>
-      <div class="wci"><span>Fully credentialed and background-checked staff</span></div>
-      <div class="wci"><span>Same-day and next-day placement available</span></div>
-      <div class="wci"><span>RNs, LPNs, CNAs and CMAs ready to deploy</span></div>
-      <div class="wci"><span>24/7 support for facilities and staff</span></div>
-      <div class="wci"><span>Serving 50+ healthcare facilities in Kansas</span></div>
-      <button class="wc-btn" onclick="openOv('o-register')">Join Our Team</button>
+    <div class="hero-card">
+      <div class="hero-card-title">Why Choose Us</div>
+      <div class="hero-item"><div class="hero-item-dot"></div><span>Fully credentialed and background-checked staff</span></div>
+      <div class="hero-item"><div class="hero-item-dot"></div><span>Same-day and next-day placement available</span></div>
+      <div class="hero-item"><div class="hero-item-dot"></div><span>RNs, LPNs, CNAs and CMAs ready to deploy</span></div>
+      <div class="hero-item"><div class="hero-item-dot"></div><span>24/7 support for facilities and staff</span></div>
+      <div class="hero-item"><div class="hero-item-dot"></div><span>Serving 50+ healthcare facilities in Kansas</span></div>
+      <button class="hero-card-btn" onclick="openOv('ov-register')">Join Our Team</button>
     </div>
   </div>
 </div>
-<div class="sbar">
-  <div class="sbi"><div class="sbn">200+</div><div class="sbl">Qualified Nurses</div></div>
-  <div class="sbi"><div class="sbn">50+</div><div class="sbl">Partner Facilities</div></div>
-  <div class="sbi"><div class="sbn">24/7</div><div class="sbl">Support Available</div></div>
-  <div class="sbi"><div class="sbn">10+</div><div class="sbl">Years Experience</div></div>
+<div class="stats">
+  <div class="stat"><div class="stat-num">62</div><div class="stat-lbl">Active Nurses</div></div>
+  <div class="stat"><div class="stat-num">50+</div><div class="stat-lbl">Partner Facilities</div></div>
+  <div class="stat"><div class="stat-num">24/7</div><div class="stat-lbl">Support Available</div></div>
+  <div class="stat"><div class="stat-num">10+</div><div class="stat-lbl">Years Experience</div></div>
 </div>
 <section id="services">
   <div class="sec">
-    <div class="ey">What We Offer</div><div class="st">Our Staffing Services</div>
-    <div class="g3">
-      <div class="sc"><div class="sc-i">+</div><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments. Employee IDs: RNCL####</p></div>
-      <div class="sc"><div class="sc-i">+</div><h3>LPN / LVN</h3><p>Licensed practical nurses for long-term care, rehab, and outpatient facilities. Employee IDs: LPCL####</p></div>
-      <div class="sc"><div class="sc-i">+</div><h3>CNA Services</h3><p>Certified nursing assistants for daily patient care and support. Employee IDs: CACL####</p></div>
-      <div class="sc"><div class="sc-i">+</div><h3>Per Diem Staffing</h3><p>Flexible per diem coverage for call-outs — same day available.</p></div>
-      <div class="sc"><div class="sc-i">+</div><h3>Travel Nursing</h3><p>Contract travel nurses for 8-26 week assignments in the region.</p></div>
-      <div class="sc"><div class="sc-i">+</div><h3>CMA Services</h3><p>Certified medical assistants for clinical and administrative support. Employee IDs: CMCL####</p></div>
+    <div class="sec-tag">What We Offer</div>
+    <div class="sec-title">Our Staffing Services</div>
+    <div class="card-grid">
+      <div class="card"><h3>Registered Nurses</h3><p>Board-certified RNs for ICU, ER, med-surg, and specialty departments. IDs: RNCL####</p></div>
+      <div class="card"><h3>Licensed Practical Nurses</h3><p>LPNs for long-term care, rehab, and outpatient facilities. IDs: LPCL####</p></div>
+      <div class="card"><h3>Certified Nursing Assistants</h3><p>CNAs for daily patient care and support. IDs: CACL####</p></div>
+      <div class="card"><h3>Certified Medical Assistants</h3><p>CMAs for clinical and administrative support. IDs: CMCL####</p></div>
+      <div class="card"><h3>Per Diem Staffing</h3><p>Flexible per diem coverage for call-outs — same day available.</p></div>
+      <div class="card"><h3>Travel Nursing</h3><p>Contract travel nurses for 8-26 week assignments in the region.</p></div>
     </div>
   </div>
 </section>
 <section id="about" style="background:#fff;">
-  <div class="sec" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+  <div class="sec" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;">
     <div>
-      <div class="ey">Who We Are</div><div class="st">Trusted Healthcare Staffing Partner</div>
-      <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:16px;">Central Nurses is the most reliable and trustworthy Staffing Agency in the greater Central Kansas area — providing excellent care solutions to patients and residents in all healthcare settings.</p>
-      <p style="color:var(--muted);font-size:15px;line-height:1.8;">We are looking for RNs, LPNs, CMAs and CNAs to join our growing team. We work with hospitals, home care, assisted living facilities, clinics, and many others across Wichita.</p>
+      <div class="sec-tag">Who We Are</div>
+      <div class="sec-title">Trusted Healthcare Staffing Partner</div>
+      <p style="color:var(--muted);font-size:14.5px;line-height:1.8;margin-bottom:14px;">Central Nurses is the most reliable and trustworthy Staffing Agency in the greater Central Kansas area — providing excellent care solutions to patients and residents in all healthcare settings.</p>
+      <p style="color:var(--muted);font-size:14.5px;line-height:1.8;">We are looking for RNs, LPNs, CMAs and CNAs to join our growing team across hospitals, home care, assisted living facilities, and clinics throughout Wichita.</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div class="sc"><h3>Fully Verified</h3><p>Every credential checked and tracked.</p></div>
-      <div class="sc"><h3>Fast Placement</h3><p>Same-day staffing available.</p></div>
-      <div class="sc"><h3>Compliant</h3><p>State licensed and fully insured.</p></div>
-      <div class="sc"><h3>Reliable</h3><p>Consistent, professional service.</p></div>
+    <div class="card-grid" style="margin-top:0;">
+      <div class="card"><h3>Fully Verified</h3><p>Every credential checked and tracked in real time.</p></div>
+      <div class="card"><h3>Fast Placement</h3><p>Same-day staffing solutions available.</p></div>
+      <div class="card"><h3>Compliant</h3><p>State licensed and fully insured operation.</p></div>
+      <div class="card"><h3>Reliable</h3><p>Consistent, professional service every time.</p></div>
     </div>
   </div>
 </section>
-<div class="join" id="join">
-  <div class="ji">
-    <div class="ey" style="color:#67e8f9;display:flex;justify-content:center;margin-bottom:10px;">Careers</div>
-    <h2>Ready to Join Central Nurses LLC?</h2>
-    <p>When you find the job that really suits you, it does not feel like work. We find opportunities that match your abilities, schedule and experience. Expect better pay, flexibility and great benefits.</p>
-    <button class="btn btn-g" onclick="openOv('o-register')">Create Your Free Account</button>
+<div class="join-sec" id="join">
+  <div class="join-inner">
+    <div class="sec-tag" style="color:#67e8f9;display:flex;justify-content:center;margin-bottom:10px;">Careers</div>
+    <h2>Ready to Join Central Nurses?</h2>
+    <p>When you find the job that really suits you, it does not feel like work. We match your abilities, schedule and experience with the best opportunities. Expect better pay, flexibility and great benefits.</p>
+    <button class="btn btn-gold btn-lg" onclick="openOv('ov-register')">Create Your Free Account</button>
   </div>
 </div>
 <section id="contact" style="background:#fff;">
   <div class="sec">
-    <div class="ey">Get In Touch</div><div class="st">Contact Us</div>
-    <div class="cg">
+    <div class="sec-tag">Get In Touch</div>
+    <div class="sec-title">Contact Us</div>
+    <div class="contact-grid">
       <div>
-        <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Reach out and we will respond within one business day.</p>
-        <div class="ci"><div class="ci-i">+</div>629 S Longfellow Street, Wichita, KS 67207</div>
-        <div class="ci"><div class="ci-i">+</div><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0c45626a634c4f6962787e6d6062797e7f697f226f6361">[email&#160;protected]</a></div>
-        <div class="ci"><div class="ci-i">+</div>+1(316) 806-5951</div>
-        <div class="ci"><div class="ci-i">+</div>Mon-Fri: 8:00 AM - 5:00 PM · Sat-Sun: Closed</div>
+        <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:20px;">Have a staffing need or want to join our team? Reach out and we will respond within one business day.</p>
+        <div class="contact-item"><div class="contact-icon">+</div>629 S Longfellow Street, Wichita, KS 67207</div>
+        <div class="contact-item"><div class="contact-icon">@</div>Info@Centralnurses.com</div>
+        <div class="contact-item"><div class="contact-icon">#</div>+1(316) 806-5951</div>
+        <div class="contact-item"><div class="contact-icon">T</div>Mon-Fri: 8:00 AM - 5:00 PM &nbsp;·&nbsp; Sat-Sun: Closed</div>
       </div>
-      <div>
-        <div class="ff"><label>Name</label><input type="text" id="cn" placeholder="Jane Doe"/></div>
-        <div class="ff"><label>Email</label><input type="email" id="ce" placeholder="you@example.com"/></div>
-        <div class="ff"><label>Subject</label><select id="cs"><option>I need nurses for my facility</option><option>I want to join as a nurse</option><option>General inquiry</option></select></div>
-        <div class="ff"><label>Message</label><textarea id="cm" placeholder="Your message..."></textarea></div>
-        <button class="subbtn" onclick="sendContact()">Send Message</button>
+      <div class="contact-form">
+        <div class="field"><label>Your Name</label><input type="text" id="cn" placeholder="Jane Doe"/></div>
+        <div class="field"><label>Email</label><input type="email" id="ce" placeholder="you@example.com"/></div>
+        <div class="field"><label>Subject</label><select id="cs"><option>I need nurses for my facility</option><option>I want to join as a nurse</option><option>General inquiry</option></select></div>
+        <div class="field"><label>Message</label><textarea id="cm" rows="4" placeholder="Your message..." style="resize:vertical;"></textarea></div>
+        <button class="btn btn-primary btn-full" onclick="sendContact()">Send Message</button>
       </div>
     </div>
   </div>
 </section>
-<footer><div class="fb">Central Nurses LLC</div><div class="fc2">2025 Central Nurses Staffing Agency · 629 S Longfellow Street, Wichita, KS 67207</div></footer>
+<footer>
+  <div class="footer-brand">Central Nurses LLC</div>
+  <div class="footer-copy">2025 Central Nurses Staffing Agency · 629 S Longfellow Street, Wichita, KS 67207</div>
+</footer>
 </div>
 
-<!-- AUTH MODALS -->
-<div class="ov" id="o-login">
+<!-- ════════════════════════════════════════════
+     AUTH MODALS
+════════════════════════════════════════════ -->
+<div class="ov" id="ov-login">
   <div class="modal">
-    <button class="mx" onclick="closeOv('o-login')">x</button>
-    <h2>Welcome Back</h2><p class="msub">Sign in to your staff account</p>
-    <div class="mf"><label>Email</label><input type="email" id="l-em" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-    <div class="mf"><label>Password</label><input type="password" id="l-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-    <button class="mbtn" id="lbtn" onclick="doLogin()">Sign In</button>
-    <div class="msw">No account? <a onclick="swOv('o-login','o-register')">Register here</a></div>
-  </div>
-</div>
-<div class="ov" id="o-register">
-  <div class="modal">
-    <button class="mx" onclick="closeOv('o-register')">x</button>
-    <h2>Create Account</h2><p class="msub">Join Central Nurses as a staff member</p>
-    <div class="mf"><label>Full Name</label><input type="text" id="r-nm" placeholder="Jane Doe"/></div>
-    <div class="mf"><label>Email</label><input type="email" id="r-em" placeholder="you@email.com"/></div>
-    <div class="mf"><label>Password</label><input type="password" id="r-pw" placeholder="Choose a password"/></div>
-    <div class="mf"><label>Phone (optional)</label><input type="text" id="r-ph" placeholder="(316) 555-0000"/></div>
-    <div class="mf"><label>Position / Discipline</label>
-      <select id="r-pos" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:#0b1a2e;outline:none;">
-        <option value="">Select your position...</option>
-        <option value="RN">RN - Registered Nurse</option>
-        <option value="LPN">LPN - Licensed Practical Nurse</option>
-        <option value="CNA">CNA - Certified Nursing Assistant</option>
-        <option value="CMA">CMA - Certified Medical Assistant</option>
-        <option value="LVN">LVN - Licensed Vocational Nurse</option>
-        <option value="Staff">Other / Staff</option>
-      </select>
-    </div>
-    <button class="mbtn" id="rbtn" onclick="doRegister()">Create Staff Account</button>
-    <div class="msw">Already registered? <a onclick="swOv('o-register','o-login')">Sign in</a></div>
-  </div>
-</div>
-<div class="ov" id="o-addstaff">
-  <div class="modal">
-    <button class="mx" onclick="closeOv('o-addstaff')">x</button>
-    <h2>Add Staff Member</h2><p class="msub">Add a new employee profile</p>
-    <div class="mf"><label>Full Name</label><input type="text" id="as-nm"/></div>
-    <div class="mf"><label>Email</label><input type="email" id="as-em"/></div>
-    <div class="mf"><label>Temporary Password</label><input type="password" id="as-pw"/></div>
-    <div class="mf"><label>Position</label>
-      <select id="as-pos">
-        <option value="RN">RN - Registered Nurse</option>
-        <option value="LPN">LPN - Licensed Practical Nurse</option>
-        <option value="CNA">CNA - Certified Nursing Assistant</option>
-        <option value="CMA">CMA - Certified Medical Assistant</option>
-        <option value="Staff">Other / Staff</option>
-      </select>
-    </div>
-    <div class="mf"><label>Phone</label><input type="text" id="as-ph"/></div>
-    <div class="mf"><label>Hourly Rate ($)</label><input type="number" id="as-rate" value="25" min="1"/></div>
-    <button class="mbtn" onclick="addStaff()">Add Employee</button>
-  </div>
-</div>
-
-<!-- EMPLOYEE DETAIL MODAL -->
-<div class="ov" id="o-empdetail">
-  <div class="modal modal-wide">
-    <button class="mx" onclick="closeOv('o-empdetail')">x</button>
-    <h2 id="ed-name">Employee Details</h2>
-    <p class="msub" id="ed-subtitle"></p>
-    <div id="ed-body"></div>
-    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
-      <button class="mbtn" style="flex:1;" onclick="genInvFromDetail()">Generate Invoice</button>
-      <button id="ed-status-btn" class="mbtn" style="flex:1;background:var(--rbg);color:var(--red);border:1.5px solid var(--red);">Toggle Status</button>
-      <button class="mbtn" style="flex:1;background:var(--teal);" onclick="closeOv('o-empdetail')">Close</button>
+    <button class="modal-close" onclick="closeOv('ov-login')">×</button>
+    <div class="modal-header"><h2>Welcome Back</h2><p>Sign in to your staff account</p></div>
+    <div class="modal-body">
+      <div class="field"><label>Email Address</label><input type="email" id="l-em" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="field"><label>Password</label>
+        <div class="pw-wrap"><input type="password" id="l-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <button class="pw-toggle" onclick="togglePw('l-pw',this)" type="button">show</button></div>
+      </div>
+      <button class="btn btn-primary btn-full" id="lbtn" onclick="doLogin()">Sign In</button>
+      <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted);">No account? <a style="color:var(--teal);cursor:pointer;font-weight:600;" onclick="swOv('ov-login','ov-register')">Register here</a></div>
     </div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
+<div class="ov" id="ov-register">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOv('ov-register')">×</button>
+    <div class="modal-header"><h2>Create Account</h2><p>Join Central Nurses as a staff member</p></div>
+    <div class="modal-body">
+      <div class="field"><label>Full Name</label><input type="text" id="r-nm" placeholder="Jane Doe"/></div>
+      <div class="field"><label>Email Address</label><input type="email" id="r-em" placeholder="you@email.com"/></div>
+      <div class="field"><label>Password</label>
+        <div class="pw-wrap"><input type="password" id="r-pw" placeholder="Min 6 chars, upper, lower, symbol" oninput="checkPwStrength(this.value)"/>
+        <button class="pw-toggle" onclick="togglePw('r-pw',this)" type="button">show</button></div>
+        <div class="pw-strength"><div class="pw-strength-bar" id="pw-bar"></div></div>
+        <div class="pw-strength-txt" id="pw-txt"></div>
+      </div>
+      <div class="field"><label>Phone (optional)</label><input type="text" id="r-ph" placeholder="(316) 555-0000"/></div>
+      <div class="field"><label>Position / Discipline</label>
+        <select id="r-pos">
+          <option value="">Select your position...</option>
+          <option value="RN">RN — Registered Nurse</option>
+          <option value="LPN">LPN — Licensed Practical Nurse</option>
+          <option value="CNA">CNA — Certified Nursing Assistant</option>
+          <option value="CMA">CMA — Certified Medical Assistant</option>
+          <option value="LVN">LVN — Licensed Vocational Nurse</option>
+          <option value="Staff">Other / Staff</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-full" id="rbtn" onclick="doRegister()">Create Account</button>
+      <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted);">Already registered? <a style="color:var(--teal);cursor:pointer;font-weight:600;" onclick="swOv('ov-register','ov-login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Staff Modal -->
+<div class="ov" id="ov-addstaff">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOv('ov-addstaff')">×</button>
+    <div class="modal-header"><h2>Add Staff Member</h2><p>Create a new employee profile</p></div>
+    <div class="modal-body">
+      <div class="fgrid2">
+        <div class="field"><label>Full Name</label><input type="text" id="as-nm" placeholder="Jane Doe"/></div>
+        <div class="field"><label>Email</label><input type="email" id="as-em" placeholder="jane@email.com"/></div>
+        <div class="field"><label>Temporary Password</label><input type="password" id="as-pw" placeholder="Min 6 chars"/></div>
+        <div class="field"><label>Phone</label><input type="text" id="as-ph" placeholder="(316) 555-0000"/></div>
+        <div class="field"><label>Position</label>
+          <select id="as-pos"><option value="RN">RN</option><option value="LPN">LPN</option><option value="CNA">CNA</option><option value="CMA">CMA</option><option value="Staff">Staff</option></select>
+        </div>
+        <div class="field"><label>Hourly Rate ($)</label><input type="number" id="as-rate" value="25" min="1" step="0.5"/></div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="addStaff()">Add Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- Employee Detail Modal -->
+<div class="ov" id="ov-empdetail">
+  <div class="modal modal-xl">
+    <button class="modal-close" onclick="closeOv('ov-empdetail')">×</button>
+    <div class="modal-header">
+      <h2 id="ed-title">Employee Details</h2>
+      <p id="ed-sub"></p>
+    </div>
+    <div class="modal-body" id="ed-body"><div class="empty-state"><span class="spin spin-d"></span></div></div>
+    <div style="padding:0 28px 22px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="genInvFromDetail()">Generate Invoice</button>
+      <button class="btn btn-primary" id="ed-status-btn" onclick="">Toggle Status</button>
+      <button class="btn btn-ghost" onclick="closeOv('ov-empdetail')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Document Review Modal (Manager) -->
+<div class="ov" id="ov-doc-review">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOv('ov-doc-review')">×</button>
+    <div class="modal-header"><h2>Review Document</h2><p id="dr-sub"></p></div>
+    <div class="modal-body">
+      <div id="dr-info" style="background:var(--cream);border-radius:9px;padding:13px;margin-bottom:16px;border:1px solid var(--border);font-size:13px;"></div>
+      <div class="field"><label>Decision</label>
+        <select id="dr-status"><option value="Approved">Approve</option><option value="Rejected">Reject</option></select>
+      </div>
+      <div class="field"><label>Notes (optional)</label><textarea id="dr-notes" rows="3" placeholder="Add any notes for the employee..."></textarea></div>
+      <button class="btn btn-primary btn-full" onclick="submitDocReview()">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     DASHBOARD
+════════════════════════════════════════════ -->
 <div id="dash">
   <div class="dbar">
-    <div class="dl"><div class="dli">+</div><div class="dln">Central Nurses LLC</div></div>
-    <div class="dr">
-      <div class="up">
-        <div class="uav" id="u-av"></div>
-        <div><div class="unm" id="u-nm"></div><div class="uid" id="u-id"></div><div class="urole" id="u-role"></div></div>
+    <div class="dbar-logo">
+      <div class="dbar-logo-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0b1a2e" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
       </div>
-      <button class="so" onclick="doSignOut()">Sign Out</button>
+      <div class="dbar-logo-text">Central Nurses</div>
+    </div>
+    <div class="dbar-right">
+      <div class="user-pill">
+        <div class="user-av" id="u-av"></div>
+        <div>
+          <div class="user-name" id="u-nm"></div>
+          <div class="user-id" id="u-id"></div>
+        </div>
+        <div class="user-role" id="u-role"></div>
+      </div>
+      <button class="signout-btn" onclick="doSignOut()">Sign Out</button>
     </div>
   </div>
   <div class="dlayout">
@@ -501,32 +590,81 @@ tr:hover td{background:rgba(11,26,46,.018);}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+// ════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════
 const API = 'https://script.google.com/macros/s/AKfycbxM2-Urxt_9Nml_HCEy4W471SIoDJLXNsaI1-JZSrfe7CbLCxQPsPRMTq20u7k5Gadk/exec';
+const OWNER = 'kipkoechbethwel721@gmail.com';
 
 async function apiGet(action, params={}){
-  const url = API+'?action='+action+'&'+new URLSearchParams(params);
-  const r = await fetch(url,{redirect:'follow'}); return r.json();
+  const r = await fetch(API+'?action='+action+'&'+new URLSearchParams(params),{redirect:'follow'});
+  return r.json();
 }
 async function apiPost(action, body={}){
-  const url = API+'?action='+action+'&'+new URLSearchParams(body);
-  const r = await fetch(url,{redirect:'follow'}); return r.json();
+  const r = await fetch(API+'?action='+action+'&'+new URLSearchParams(body),{redirect:'follow'});
+  return r.json();
 }
 
-let ME=null, _clockInt=null, _isClockedIn=false, _currentInv=null, _allStaff=[], _detailEmp=null;
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+let ME=null, _clockInt=null, _clocked=false, _currentInv=null, _allStaff=[], _detailEmp=null, _reviewDocId=null;
 
+// ════════════════════════════════════════════
 // TOAST
-function toast(msg,type='info'){
+// ════════════════════════════════════════════
+function toast(msg, type='info'){
   const w=document.getElementById('toasts');
   const d=document.createElement('div');
-  d.className='t t'+type; d.textContent=msg; w.appendChild(d);
-  setTimeout(()=>d.remove(),3800);
+  d.className='toast '+type; d.textContent=msg; w.appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(20px)';d.style.transition='all .3s';setTimeout(()=>d.remove(),300);},3500);
 }
+
+// ════════════════════════════════════════════
+// OVERLAYS
+// ════════════════════════════════════════════
 function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id){document.getElementById(id).classList.remove('open');}
 function swOv(a,b){closeOv(a);openOv(b);}
 
+// ════════════════════════════════════════════
+// PASSWORD
+// ════════════════════════════════════════════
+function togglePw(id,btn){
+  const inp=document.getElementById(id);
+  const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  btn.textContent=show?'hide':'show';
+}
+function validatePw(pw){
+  if(pw.length<6) return {ok:false,msg:'At least 6 characters required'};
+  if(!/[a-z]/.test(pw)) return {ok:false,msg:'At least one lowercase letter required'};
+  if(!/[A-Z]/.test(pw)) return {ok:false,msg:'At least one uppercase letter required'};
+  if(!/[^a-zA-Z0-9]/.test(pw)) return {ok:false,msg:'At least one symbol required (e.g. ! @ # $)'};
+  return {ok:true,msg:'Strong password'};
+}
+function checkPwStrength(pw){
+  const bar=document.getElementById('pw-bar');
+  const txt=document.getElementById('pw-txt');
+  if(!bar) return;
+  let score=0;
+  if(pw.length>=6) score++;
+  if(pw.length>=10) score++;
+  if(/[a-z]/.test(pw)&&/[A-Z]/.test(pw)) score++;
+  if(/[^a-zA-Z0-9]/.test(pw)) score++;
+  const labels=['Too short','Weak','Fair','Good','Strong'];
+  const colors=['#dc2626','#ea580c','#ca8a04','#16a34a','#16a34a'];
+  const widths=['20%','40%','60%','80%','100%'];
+  bar.style.width=pw?widths[score]:'0%';
+  bar.style.background=pw?colors[score]:'';
+  txt.textContent=pw?labels[score]:'';
+  txt.style.color=pw?colors[score]:var;
+}
+
+// ════════════════════════════════════════════
 // AUTH
+// ════════════════════════════════════════════
 async function doLogin(){
   const em=document.getElementById('l-em').value.trim();
   const pw=document.getElementById('l-pw').value;
@@ -537,8 +675,8 @@ async function doLogin(){
     const res=await apiPost('login',{email:em,password:pw});
     btn.innerHTML='Sign In';btn.disabled=false;
     if(!res.success){toast(res.error||'Login failed','err');return;}
-    closeOv('o-login');bootDash(res.employee);
-  }catch(e){btn.innerHTML='Sign In';btn.disabled=false;toast('Connection error - check Apps Script URL','err');}
+    closeOv('ov-login');bootDash(res.employee);
+  }catch(e){btn.innerHTML='Sign In';btn.disabled=false;toast('Connection error. Try again.','err');}
 }
 
 async function doRegister(){
@@ -546,19 +684,20 @@ async function doRegister(){
   const em=document.getElementById('r-em').value.trim();
   const pw=document.getElementById('r-pw').value;
   const ph=document.getElementById('r-ph').value.trim();
-  const pos=document.getElementById('r-pos')?.value||'Staff';
-  const OWNER='kipkoechbethwel721@gmail.com';
-  const isManager=em.toLowerCase()===OWNER.toLowerCase();
-  if(!nm||!em||!pw){toast('Name, email and password required','err');return;}
+  const pos=document.getElementById('r-pos').value||'Staff';
+  if(!nm||!em||!pw){toast('Name, email and password are required','err');return;}
+  const pwCheck=validatePw(pw);
+  if(!pwCheck.ok){toast(pwCheck.msg,'err');return;}
+  const isOwner=em.toLowerCase()===OWNER.toLowerCase();
   const btn=document.getElementById('rbtn');
   btn.innerHTML='<span class="spin"></span> Creating...';btn.disabled=true;
   try{
-    const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph,position:pos,role:isManager?'manager':'employee'});
-    btn.innerHTML='Create Staff Account';btn.disabled=false;
+    const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph,position:pos,role:isOwner?'manager':'employee'});
+    btn.innerHTML='Create Account';btn.disabled=false;
     if(!res.success){toast(res.error||'Registration failed','err');return;}
     toast('Account created successfully. Welcome to Central Nurses.','ok');
-    closeOv('o-register');bootDash(res.employee);
-  }catch(e){btn.innerHTML='Create Staff Account';btn.disabled=false;toast('Connection error','err');}
+    closeOv('ov-register');bootDash(res.employee);
+  }catch(e){btn.innerHTML='Create Account';btn.disabled=false;toast('Connection error. Try again.','err');}
 }
 
 function doSignOut(){
@@ -566,12 +705,13 @@ function doSignOut(){
   localStorage.removeItem('cn_user');
   document.getElementById('dash').style.display='none';
   document.getElementById('site').style.display='block';
-  toast('Signed out');
+  toast('Signed out successfully');
 }
 
+// ════════════════════════════════════════════
 // BOOT DASHBOARD
+// ════════════════════════════════════════════
 function bootDash(emp){
-  const OWNER='kipkoechbethwel721@gmail.com';
   if(emp.email&&emp.email.toLowerCase()===OWNER.toLowerCase()) emp.role='manager';
   ME=emp; localStorage.setItem('cn_user',JSON.stringify(emp));
   const ini=(emp.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -580,358 +720,345 @@ function bootDash(emp){
   document.getElementById('u-id').textContent=emp.id||'';
   const rt=document.getElementById('u-role');
   rt.textContent=emp.role==='manager'?'Manager':'Staff';
-  rt.className='urole '+(emp.role==='manager'?'rm':'re');
+  rt.className='user-role '+(emp.role==='manager'?'role-mgr':'role-emp');
   document.getElementById('site').style.display='none';
   document.getElementById('dash').style.display='flex';
   emp.role==='manager'?buildMgr():buildEmp();
 }
 
-// MANAGER NAV
+// ════════════════════════════════════════════
+// MANAGER DASHBOARD
+// ════════════════════════════════════════════
 const MNAV=[
-  {id:'overview', icon:'[O]', label:'Overview'},
-  {id:'rn',       icon:'[R]', label:'RN Staff',  disc:'RN',  cls:'badge-rn'},
-  {id:'lpn',      icon:'[L]', label:'LPN Staff', disc:'LPN', cls:'badge-lpn'},
-  {id:'cna',      icon:'[C]', label:'CNA Staff', disc:'CNA', cls:'badge-cna'},
-  {id:'cma',      icon:'[M]', label:'CMA Staff', disc:'CMA', cls:'badge-cma'},
-  {id:'timesheets',icon:'[T]',label:'Timesheets'},
-  {id:'invoices',  icon:'[I]',label:'Invoices'},
+  {id:'overview',   lbl:'Overview',      ic:'[O]'},
+  {id:'rn',         lbl:'RN Staff',      ic:'', disc:'RN'},
+  {id:'lpn',        lbl:'LPN Staff',     ic:'', disc:'LPN'},
+  {id:'cna',        lbl:'CNA Staff',     ic:'', disc:'CNA'},
+  {id:'cma',        lbl:'CMA Staff',     ic:'', disc:'CMA'},
+  {id:'timesheets', lbl:'Timesheets',    ic:'[T]'},
+  {id:'invoices',   lbl:'Invoices',      ic:'[I]'},
+  {id:'bulk',       lbl:'Bulk Invoice',  ic:'[B]'},
+  {id:'documents',  lbl:'Documents',     ic:'[D]'},
 ];
 function buildMgr(){
   document.getElementById('sidebar').innerHTML=`
-    <div class="si-group">Main</div>
-    ${MNAV.slice(0,1).map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('')}
-    <div class="si-group">By Specialty</div>
-    ${MNAV.slice(1,5).map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic" style="width:8px;height:8px;border-radius:50%;background:var(--${n.disc.toLowerCase()});display:inline-block;"></span><span>${n.label}</span></div>`).join('')}
-    <div class="si-group">Management</div>
-    ${MNAV.slice(5).map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('')}`;
-  document.getElementById('dcontent').innerHTML=MNAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
+    <div class="sb-group">Main</div>
+    <div class="sb-item" id="si-overview" onclick="mPg('overview')"><span class="sb-item-ic">[O]</span><span>Overview</span></div>
+    <div class="sb-group">By Specialty</div>
+    ${['RN','LPN','CNA','CMA'].map(d=>`<div class="sb-item" id="si-${d.toLowerCase()}" onclick="mPg('${d.toLowerCase()}')">
+      <span class="sb-disc" style="background:var(--${d.toLowerCase()});"></span><span>${d} Staff</span></div>`).join('')}
+    <div class="sb-group">Management</div>
+    <div class="sb-item" id="si-timesheets" onclick="mPg('timesheets')"><span class="sb-item-ic">[T]</span><span>Timesheets</span></div>
+    <div class="sb-item" id="si-invoices" onclick="mPg('invoices')"><span class="sb-item-ic">[I]</span><span>Invoices</span></div>
+    <div class="sb-item" id="si-bulk" onclick="mPg('bulk')"><span class="sb-item-ic">[B]</span><span>Bulk Invoice</span></div>
+    <div class="sb-item" id="si-documents" onclick="mPg('documents')"><span class="sb-item-ic">[D]</span><span>Documents</span></div>`;
+  const pages=['overview','rn','lpn','cna','cma','timesheets','invoices','bulk','documents'];
+  document.getElementById('dcontent').innerHTML=pages.map(p=>`<div class="pg" id="pg-${p}"></div>`).join('');
   mPg('overview');
 }
 function mPg(id){
-  document.querySelectorAll('.si').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));
   document.getElementById('si-'+id)?.classList.add('active');
   document.getElementById('pg-'+id)?.classList.add('on');
-  const map={overview:mOverview,rn:()=>mDisc('RN'),lpn:()=>mDisc('LPN'),cna:()=>mDisc('CNA'),cma:()=>mDisc('CMA'),timesheets:mTimesheets,invoices:mInvoices};
-  map[id]?.();
+  const fn={overview:pgOverview,rn:()=>pgDisc('RN'),lpn:()=>pgDisc('LPN'),cna:()=>pgDisc('CNA'),cma:()=>pgDisc('CMA'),timesheets:pgTimesheets,invoices:pgInvoices,bulk:pgBulk,documents:pgDocuments};
+  fn[id]?.();
 }
 
-// OVERVIEW
-async function mOverview(){
+// ── OVERVIEW ─────────────────────────────────
+async function pgOverview(){
   const el=document.getElementById('pg-overview');
-  el.innerHTML=`<div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div><div class="empty"><span class="spin spin-d"></span></div>`;
+  el.innerHTML=`<div class="pg-title">Overview</div><div class="pg-sub">Welcome back, ${ME.name}</div><div class="empty-state"><span class="spin spin-d"></span></div>`;
   try{
     const res=await apiGet('getStaff');
-    const all=res.staff||[];
-    const active=all.filter(s=>s.status&&s.status.toLowerCase()==='active').length;
-    const byDisc={RN:0,LPN:0,CNA:0,CMA:0};
-    all.forEach(s=>{
-      const d=(s.position||s.Discipline||'').toUpperCase().split('/')[0].trim();
-      if(byDisc[d]!==undefined) byDisc[d]++;
-    });
+    const all=res.staff||[]; _allStaff=all;
+    const active=all.filter(s=>(s.status||'').toLowerCase()==='active').length;
+    const byD={RN:0,LPN:0,CNA:0,CMA:0};
+    all.forEach(s=>{const d=(s.position||'').toUpperCase().split('/')[0].trim().split(' ')[0];if(byD[d]!==undefined)byD[d]++;});
     el.innerHTML=`
-      <div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div>
+      <div class="pg-title">Overview</div>
+      <div class="pg-sub">Welcome back, ${ME.name}</div>
       <div class="krow">
-        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Total Staff</span></div><div class="kpi-v">${all.length}</div></div>
-        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Active</span><span class="badge bg">Active</span></div><div class="kpi-v">${active}</div></div>
-        <div class="kpi"><div class="kpi-top"><span class="kpi-label">RN Staff</span><span class="badge badge-rn">RN</span></div><div class="kpi-v">${byDisc.RN}</div></div>
-        <div class="kpi"><div class="kpi-top"><span class="kpi-label">LPN Staff</span><span class="badge badge-lpn">LPN</span></div><div class="kpi-v">${byDisc.LPN}</div></div>
-        <div class="kpi"><div class="kpi-top"><span class="kpi-label">CNA Staff</span><span class="badge badge-cna">CNA</span></div><div class="kpi-v">${byDisc.CNA}</div></div>
-        <div class="kpi"><div class="kpi-top"><span class="kpi-label">CMA Staff</span><span class="badge badge-cma">CMA</span></div><div class="kpi-v">${byDisc.CMA}</div></div>
+        <div class="kpi"><div class="kpi-label">Total Staff</div><div class="kpi-val">${all.length}</div></div>
+        <div class="kpi"><div class="kpi-label">Active <span class="badge badge-green" style="float:right">Active</span></div><div class="kpi-val">${active}</div></div>
+        <div class="kpi"><div class="kpi-label">RNs <span class="badge badge-rn" style="float:right">RN</span></div><div class="kpi-val">${byD.RN}</div></div>
+        <div class="kpi"><div class="kpi-label">LPNs <span class="badge badge-lpn" style="float:right">LPN</span></div><div class="kpi-val">${byD.LPN}</div></div>
+        <div class="kpi"><div class="kpi-label">CNAs <span class="badge badge-cna" style="float:right">CNA</span></div><div class="kpi-val">${byD.CNA}</div></div>
+        <div class="kpi"><div class="kpi-label">CMAs <span class="badge badge-cma" style="float:right">CMA</span></div><div class="kpi-val">${byD.CMA}</div></div>
       </div>
       <div class="tw">
-        <div class="twt">
+        <div class="tw-head">
           <h3>All Staff Directory</h3>
-          <div class="gap8">
-            <input class="sbox" id="ov-search" placeholder="Search by name or ID..." oninput="filterOvTable()"/>
-            <button class="sb sb-n" onclick="openOv('o-addstaff')">+ Add Staff</button>
+          <div class="gap">
+            <div class="search-bar"><input placeholder="Search name or ID..." oninput="filterOv(this.value)"/></div>
+            <button class="btn btn-primary btn-sm" onclick="openOv('ov-addstaff')">+ Add Staff</button>
           </div>
         </div>
         <div id="ov-table"></div>
       </div>`;
-    _allStaff=all;
-    renderStaffTable(all,'ov-table',true);
-  }catch(e){el.innerHTML+='<div class="empty"><p>Error loading. Check Apps Script URL.</p></div>';}
+    renderAllStaff(all,'ov-table');
+  }catch(e){el.innerHTML+='<div class="empty-state"><p>Error loading. Check your Apps Script URL and redeploy.</p></div>';}
 }
-function filterOvTable(){
-  const q=(document.getElementById('ov-search')?.value||'').toLowerCase();
-  renderStaffTable(q?_allStaff.filter(s=>(s.name+s.id+(s.position||'')).toLowerCase().includes(q)):_allStaff,'ov-table',true);
+function filterOv(q){
+  const f=q.toLowerCase();
+  renderAllStaff(f?_allStaff.filter(s=>(s.name+s.id+(s.position||'')).toLowerCase().includes(f)):_allStaff,'ov-table');
+}
+function renderAllStaff(staff,elId){
+  const el=document.getElementById(elId);if(!el)return;
+  if(!staff.length){el.innerHTML='<div class="empty-state"><p>No staff found.</p></div>';return;}
+  el.innerHTML=`<table class="tbl"><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Rate/hr</th><th>Status</th><th></th></tr></thead><tbody>
+    ${staff.map(s=>{
+      const disc=(s.position||'').toUpperCase().split('/')[0].trim().split(' ')[0];
+      const bc=disc==='RN'?'badge-rn':disc==='LPN'?'badge-lpn':disc==='CNA'?'badge-cna':disc==='CMA'?'badge-cma':'badge-navy';
+      const active=(s.status||'').toLowerCase()==='active';
+      return `<tr>
+        <td><span class="badge ${bc}">${s.id}</span></td>
+        <td><strong>${s.name}</strong></td>
+        <td><span class="badge ${bc}">${s.position||'—'}</span></td>
+        <td style="color:var(--muted)">${s.email||'—'}</td>
+        <td>${s.rate?'$'+s.rate+'/hr':'—'}</td>
+        <td><span class="badge ${active?'badge-green':'badge-gray'}">${s.status||'—'}</span></td>
+        <td><div class="gap">
+          <button class="btn btn-teal btn-sm" onclick="viewEmp('${s.id}','${disc}')">View</button>
+          <button class="btn btn-ghost btn-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Rate</button>
+        </div></td>
+      </tr>`;
+    }).join('')}
+  </tbody></table>`;
 }
 
-// DISCIPLINE PAGE
-async function mDisc(disc){
-  const pgId='pg-'+disc.toLowerCase();
-  const el=document.getElementById(pgId);
-  const colors={RN:'--rn',LPN:'--lpn',CNA:'--cna',CMA:'--cma'};
-  const col=colors[disc]||'--navy';
+// ── DISCIPLINE PAGE ───────────────────────────
+async function pgDisc(disc){
+  const id=disc.toLowerCase();
+  const el=document.getElementById('pg-'+id);
+  const names={RN:'Registered Nurses',LPN:'Licensed Practical Nurses',CNA:'Certified Nursing Assistants',CMA:'Certified Medical Assistants'};
   el.innerHTML=`
-    <div class="pgt">${disc} Staff</div>
-    <div class="pgs">All ${disc} nurses and staff members</div>
-    <div class="tw" style="overflow:visible;">
-      <div class="disc-header dh-${disc.toLowerCase()}">
-        <h3>${disc} — ${disc==='RN'?'Registered Nurses':disc==='LPN'?'Licensed Practical Nurses':disc==='CNA'?'Certified Nursing Assistants':'Certified Medical Assistants'}</h3>
-        <span id="${disc.toLowerCase()}-count">Loading...</span>
+    <div class="pg-title">${disc} Staff</div>
+    <div class="pg-sub">${names[disc]}</div>
+    <div class="tw">
+      <div class="disc-bar disc-${id}">
+        <h3>${disc} — ${names[disc]}</h3>
+        <span id="${id}-count">Loading...</span>
       </div>
-      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;">
-        <input class="sbox" id="${disc.toLowerCase()}-search" placeholder="Search by name, ID or status..." oninput="filterDiscTable('${disc}')"/>
-        <select id="${disc.toLowerCase()}-status" onchange="filterDiscTable('${disc}')" style="padding:8px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+      <div style="padding:13px 16px;border-bottom:1px solid var(--border);display:flex;gap:9px;flex-wrap:wrap;align-items:center;">
+        <div class="search-bar"><input placeholder="Search name, ID, status..." oninput="filterDisc('${disc}',this.value)"/></div>
+        <select id="${id}-st" onchange="filterDisc('${disc}','')" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer;">
+          <option value="">All Status</option><option value="active">Active</option><option value="inactive">Inactive</option>
         </select>
       </div>
-      <div id="${disc.toLowerCase()}-table"><div class="empty"><span class="spin spin-d"></span></div></div>
+      <div id="${id}-table"><div class="empty-state"><span class="spin spin-d"></span></div></div>
     </div>`;
   try{
     const res=await apiGet('getStaff',{discipline:disc});
     const staff=res.staff||[];
-    document.getElementById(disc.toLowerCase()+'-count').textContent=staff.length+' staff members';
-    window['_'+disc.toLowerCase()+'Staff']=staff;
-    renderDiscTable(staff,disc.toLowerCase()+'-table',disc);
-  }catch(e){document.getElementById(disc.toLowerCase()+'-table').innerHTML='<div class="empty"><p>Error loading.</p></div>';}
+    window['_s'+id]=staff;
+    document.getElementById(id+'-count').textContent=staff.length+' employees';
+    renderDiscTable(staff,id+'-table',disc);
+  }catch(e){document.getElementById(id+'-table').innerHTML='<div class="empty-state"><p>Error loading.</p></div>';}
 }
-
-function filterDiscTable(disc){
-  const d=disc.toLowerCase();
-  const q=(document.getElementById(d+'-search')?.value||'').toLowerCase();
-  const st=(document.getElementById(d+'-status')?.value||'').toLowerCase();
-  let staff=window['_'+d+'Staff']||[];
-  if(q) staff=staff.filter(s=>(s['Full Name']||s.name||'').toLowerCase().includes(q)||(s['Employee ID']||s.id||'').toLowerCase().includes(q));
+function filterDisc(disc,q){
+  const id=disc.toLowerCase();
+  const st=(document.getElementById(id+'-st')?.value||'').toLowerCase();
+  let staff=window['_s'+id]||[];
+  if(q) staff=staff.filter(s=>((s['Full Name']||s.name||'')+(s['Employee ID']||s.id||'')).toLowerCase().includes(q.toLowerCase()));
   if(st) staff=staff.filter(s=>(s['Status']||s.status||'').toLowerCase()===st);
-  renderDiscTable(staff,d+'-table',disc);
+  renderDiscTable(staff,id+'-table',disc);
 }
-
 function renderDiscTable(staff,elId,disc){
-  const el=document.getElementById(elId);
-  if(!staff.length){el.innerHTML='<div class="empty"><div class="empty-icon">+</div><p>No staff found.</p></div>';return;}
-  el.innerHTML=`<table><thead><tr>
+  const el=document.getElementById(elId);if(!el)return;
+  if(!staff.length){el.innerHTML='<div class="empty-state"><p>No staff found.</p></div>';return;}
+  const id=disc.toLowerCase();
+  el.innerHTML=`<div style="overflow-x:auto"><table class="tbl"><thead><tr>
     <th>Employee ID</th><th>Name</th><th>Status</th><th>Hire Date</th>
-    <th>License Expiry</th><th>BLS/CPR</th><th>TB Test</th><th>Drug Screen</th><th>Notes</th><th></th>
+    <th>License Expiry</th><th>BLS/CPR</th><th>TB Test</th><th>Drug Screen</th>
+    <th>OIG</th><th>Notes</th><th>Actions</th>
   </tr></thead><tbody>
     ${staff.map(s=>{
-      const id=s['Employee ID']||s.id||'';
       const nm=s['Full Name']||s.name||'';
+      const sid=s['Employee ID']||s.id||'';
       const st=(s['Status']||s.status||'').toLowerCase();
-      const hd=s['Hire Date']||s.hireDate||'';
       const lic=s['License Expiry']||s['License']||'';
       const bls=s['BLS/CPR']||'';
       const tb=s['TB Test/CXR']||'';
       const drug=s['Drug Screen']||s['Drug  Screen']||'';
-      const notes=(s['Notes Section']||'').substring(0,40)+(s['Notes Section']?.length>40?'...':'');
+      const oig=s['OIG']||'';
+      const notes=(s['Notes Section']||'').substring(0,35);
       return `<tr>
-        <td><span class="badge badge-${disc.toLowerCase()}">${id}</span></td>
+        <td><span class="badge badge-${id}">${sid}</span></td>
         <td><strong>${nm}</strong></td>
-        <td><span class="badge ${st==='active'?'bg':'bx'}">${st}</span></td>
-        <td>${hd||'—'}</td>
-        <td class="${credClass(lic)}">${lic||'—'}</td>
-        <td class="${credClass(bls)}">${bls||'—'}</td>
-        <td class="${credClass(tb)}">${tb||'—'}</td>
-        <td class="${credClass(drug)}">${drug||'—'}</td>
-        <td style="font-size:12px;color:var(--muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${s['Notes Section']||''}">${notes||'—'}</td>
-        <td><div class="gap8">
-          <button class="sb sb-teal sb-sm" onclick="viewEmployee('${id}','${disc}')">View</button>
-          <button class="sb sb-g sb-sm" onclick="quickInvoice('${id}','${nm}','${disc}')">Invoice</button>
+        <td><span class="badge ${st==='active'?'badge-green':'badge-gray'}">${st}</span></td>
+        <td style="font-size:12px;">${s['Hire Date']||s.hireDate||'—'}</td>
+        <td class="${credCls(lic)}">${fmtDate(lic)||'—'}</td>
+        <td class="${credCls(bls)}">${fmtDate(bls)||'—'}</td>
+        <td class="${credCls(tb)}">${fmtDate(tb)||'—'}</td>
+        <td class="${credCls(drug)}">${fmtDate(drug)||'—'}</td>
+        <td class="${credCls(oig)}">${fmtDate(oig)||'—'}</td>
+        <td style="font-size:12px;color:var(--muted);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${s['Notes Section']||''}">${notes||'—'}</td>
+        <td><div class="gap">
+          <button class="btn btn-teal btn-sm" onclick="viewEmp('${sid}','${disc}')">View</button>
+          <button class="btn btn-gold btn-sm" onclick="quickInv('${sid}','${nm}','${disc}')">Invoice</button>
         </div></td>
       </tr>`;
     }).join('')}
-  </tbody></table>`;
+  </tbody></table></div>`;
 }
 
-function credClass(dateStr){
-  if(!dateStr||dateStr===''||dateStr.toLowerCase()==='n/a'||dateStr.toLowerCase()==='none') return 'cred-na';
-  // Handle MM/DD/YYYY format
-  let d;
-  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)){
-    const [m,day,y]=dateStr.split('/');
-    d=new Date(y,m-1,day);
-  } else {
-    d=new Date(dateStr);
-  }
-  if(isNaN(d.getTime())) return 'cred-na';
-  const days=Math.round((d-new Date())/86400000);
-  if(days<0) return 'cred-bad';      // expired - RED
-  if(days<=30) return 'cred-warn';   // within 30 days - ORANGE
-  return 'cred-ok';                  // ok - GREEN
-}
-
-function formatDate(dateStr){
-  if(!dateStr||dateStr===''||dateStr.toLowerCase()==='n/a'||dateStr.toLowerCase()==='none') return dateStr||'';
-  let d;
-  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)){
-    return dateStr; // already formatted
-  }
-  if(/^\d{4}-\d{2}-\d{2}/.test(dateStr)){
-    const parts=dateStr.split('T')[0].split('-');
-    return parts[1]+'/'+parts[2]+'/'+parts[0];
-  }
-  return dateStr;
-}
-
-// VIEW EMPLOYEE DETAIL
-async function viewEmployee(empId,disc){
-  document.getElementById('ed-name').textContent='Loading...';
-  document.getElementById('ed-subtitle').textContent='';
-  document.getElementById('ed-body').innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';
-  openOv('o-empdetail');
+// ── VIEW EMPLOYEE ──────────────────────────────
+async function viewEmp(empId,disc){
+  document.getElementById('ed-title').textContent='Loading...';
+  document.getElementById('ed-sub').textContent='';
+  document.getElementById('ed-body').innerHTML='<div class="empty-state"><span class="spin spin-d"></span></div>';
+  openOv('ov-empdetail');
   try{
     const res=await apiGet('getStaffById',{employeeId:empId});
-    if(!res.success){document.getElementById('ed-body').innerHTML='<div class="empty"><p>'+res.error+'</p></div>';return;}
+    if(!res.success){document.getElementById('ed-body').innerHTML='<div class="empty-state"><p>'+res.error+'</p></div>';return;}
     const e=res.employee;
-    const currentStatus=(e['Status']||e['status']||'active').toLowerCase();
-    _detailEmp={id:empId,name:e['Full Name']||e.name,position:e['Discipline']||e.position||disc,rate:parseFloat(e.rate)||25};
-    document.getElementById('ed-name').textContent=e['Full Name']||empId;
-    document.getElementById('ed-subtitle').textContent=(e['Employee ID']||empId)+' - '+(e['Discipline']||disc);
-    const DATE_FIELDS=new Set(['License Expiry','License','Primary Source Verification','Nursys Verification',
-      'BLS/CPR','ACLS','PALS','NRP','Annual Core Mandatory Exams','Skills Checklist','Specialty Exam',
-      'Skills  Checklist','Specialty  Exam','Background Check Authorization','National Background Checks',
+    const curStatus=(e['Status']||e.status||'active').toLowerCase();
+    _detailEmp={id:empId,name:e['Full Name']||e.name,position:e['Discipline']||e.position||disc,rate:parseFloat(e.rate)||25,disc};
+
+    document.getElementById('ed-title').textContent=e['Full Name']||empId;
+    document.getElementById('ed-sub').textContent=(e['Employee ID']||empId)+' · '+(e['Discipline']||disc)+' · '+(e['Status']||'');
+
+    // Update status button
+    const isActive=curStatus==='active';
+    const sb=document.getElementById('ed-status-btn');
+    sb.textContent=isActive?'Mark Inactive':'Mark Active';
+    sb.className='btn '+(isActive?'btn-red':'btn-green');
+    sb.onclick=()=>toggleStatus(empId,curStatus,disc);
+
+    // Date fields for coloring
+    const DF=new Set(['License Expiry','License','Primary Source Verification','Nursys Verification',
+      'BLS/CPR','ACLS','PALS','NRP','Annual Core Mandatory Exams','Skills Checklist','Skills  Checklist',
+      'Specialty Exam','Specialty   Exam','Background Check Authorization','National Background Checks',
       'OIG','NSOPW','SAM EPLS','TB Test/CXR','TB Questionnaire','TB  Questionnaire','MMR','Varicella',
       'Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen','Covid Requirement',
       'Handbook Acknowledgement Form','References','Hire Date','GDrive Hire Date','Final Hire Date']);
-    const sections=[
+
+    const SECTIONS=[
       {t:'Basic Information',f:['Employee ID','Full Name','Status','Discipline','Hire Date','GDrive Hire Date','Final Hire Date','Facility']},
-      {t:'Licenses and Certifications',f:['License Expiry','License','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP']},
-      {t:'Documentation',f:['Resume','CEU','Education Verification','Job Description','References','Annual Evaluation','Ongoing Evaluation']},
-      {t:'Compliance and Training',f:['Annual Core Mandatory Exams','Skills Checklist','Skills  Checklist','Specialty Exam','Specialty  Exam','Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS']},
-      {t:'Medical Records',f:['TB Test/CXR','TB Questionnaire','TB  Questionnaire','Physical','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen']},
-      {t:'Other',f:['Covid Requirement','Handbook Acknowledgement Form']},
+      {t:'Licenses & Certifications',f:['License Expiry','License','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP']},
+      {t:'Documentation & Training',f:['Resume','CEU','Education Verification','Job Description','References','Annual Evaluation','Ongoing Evaluation','Annual Core Mandatory Exams','Skills Checklist','Skills  Checklist','Specialty Exam','Specialty   Exam']},
+      {t:'Compliance & Background',f:['Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS','Handbook Acknowledgement Form']},
+      {t:'Medical Records',f:['TB Test/CXR','TB Questionnaire','TB  Questionnaire','Physical','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen','Covid Requirement']},
       {t:'Notes',f:['Notes Section','Team Notes']}
     ];
+
     const shown=new Set();
-    let html='';
-    sections.forEach(sec=>{
+    let html=`<div class="emp-hero">
+      <div class="emp-av">${(e['Full Name']||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div><div class="emp-av-name">${e['Full Name']||empId}</div>
+      <div class="emp-av-sub">${e['Employee ID']||empId} · ${e['Discipline']||disc} · ${e['Facility']||'No facility assigned'}</div>
+      ${e.email?`<div class="emp-av-sub">${e.email} ${e.phone?' · '+e.phone:''}</div>`:''}
+      ${e.rate?`<div class="emp-av-sub">Rate: $${e.rate}/hr</div>`:''}
+      </div></div>`;
+
+    SECTIONS.forEach(sec=>{
       let sh='';
       sec.f.forEach(f=>{
         shown.add(f);
-        const val=(e[f]||'').toString().trim();
-        if(!val||val.toLowerCase()==='undefined') return;
-        const isD=DATE_FIELDS.has(f);
-        const cls=isD?credClass(val):'';
-        const disp=isD?formatDate(val):val;
-        const full=f==='Notes Section'||f==='Team Notes';
-        sh+=`<div class="emp-detail-item${full?' emp-detail-full':''}"><div class="edl">${f}</div><div class="edv ${cls}">${disp||'N/A'}</div></div>`;
+        const raw=(e[f]||'').toString().trim();
+        if(!raw||raw.toLowerCase()==='undefined') return;
+        const isD=DF.has(f);
+        const cls=isD?credCls(raw):'';
+        const disp=isD?fmtDate(raw):raw;
+        const isNote=f==='Notes Section'||f==='Team Notes';
+        sh+=`<div class="detail-item${isNote?' full-width':''}">
+          <label>${f}</label>
+          <span class="${cls}${isNote?' notes-text':''}">${disp||'—'}</span>
+        </div>`;
       });
-      if(sh) html+=`<div class="section-divider">${sec.t}</div><div class="emp-detail-grid">${sh}</div>`;
+      if(sh){html+=`<div class="detail-section"><div class="detail-section-title">${sec.t}</div><div class="detail-grid">${sh}</div></div>`;}
     });
+
+    // Remaining fields
     const rem=Object.entries(e).filter(([k,v])=>!shown.has(k)&&v&&v.toString().trim()&&v.toString().trim().toLowerCase()!=='undefined');
     if(rem.length){
-      html+=`<div class="section-divider">Additional Fields</div><div class="emp-detail-grid">`;
+      html+=`<div class="detail-section"><div class="detail-section-title">Additional Fields</div><div class="detail-grid">`;
       rem.forEach(([k,v])=>{
-        const isD=DATE_FIELDS.has(k);
-        const cls=isD?credClass(v.toString()):'';
-        const disp=isD?formatDate(v.toString()):v.toString();
-        html+=`<div class="emp-detail-item"><div class="edl">${k}</div><div class="edv ${cls}">${disp}</div></div>`;
+        const isD=DF.has(k);
+        const cls=isD?credCls(v.toString()):'';
+        html+=`<div class="detail-item"><label>${k}</label><span class="${cls}">${isD?fmtDate(v.toString()):v.toString()}</span></div>`;
       });
-      html+='</div>';
+      html+='</div></div>';
     }
     document.getElementById('ed-body').innerHTML=html;
-    const statusBtn=document.getElementById('ed-status-btn');
-    if(statusBtn){
-      const isActive=currentStatus==='active';
-      statusBtn.textContent=isActive?'Mark as Inactive':'Mark as Active';
-      statusBtn.style.background=isActive?'var(--rbg)':'var(--gbg)';
-      statusBtn.style.color=isActive?'var(--red)':'var(--green)';
-      statusBtn.style.border=isActive?'1.5px solid var(--red)':'1.5px solid var(--green)';
-      statusBtn.onclick=()=>toggleEmpStatus(empId,currentStatus,disc);
-    }
-  }catch(err){document.getElementById('ed-body').innerHTML='<div class="empty"><p>Error: '+err+'</p></div>';}
+  }catch(err){document.getElementById('ed-body').innerHTML='<div class="empty-state"><p>Error loading details. Try again.</p></div>';}
 }
 
-async function toggleEmpStatus(empId,currentStatus,disc){
-  const newStatus=currentStatus==='active'?'Inactive':'Active';
-  toast('Updating status...');
+async function toggleStatus(empId,curStatus,disc){
+  const newSt=curStatus==='active'?'Inactive':'Active';
   try{
-    const res=await apiGet('updateStatus',{employeeId:empId,status:newStatus});
+    const res=await apiGet('updateStatus',{employeeId:empId,status:newSt});
     if(!res.success){toast(res.error||'Failed','err');return;}
-    toast('Status updated to '+newStatus,'ok');
-    closeOv('o-empdetail');
-    if(disc) mDisc(disc); else mOverview();
+    toast('Status updated to '+newSt,'ok');
+    closeOv('ov-empdetail');
+    if(disc) pgDisc(disc); else pgOverview();
   }catch(e){toast('Error updating status','err');}
-}
-
-function isDateField(f){
-  const dateFields=['License Expiry','BLS/CPR','TB Test/CXR','Drug Screen','ACLS','PALS','NRP','Primary Source Verification','Nursys Verification','Annual Core Mandatory Exams','Skills Checklist','Specialty Exam','OIG','NSOPW','SAM EPLS','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Covid Requirement','Handbook Acknowledgement Form'];
-  return dateFields.includes(f);
 }
 
 function genInvFromDetail(){
   if(!_detailEmp){toast('No employee selected','err');return;}
-  closeOv('o-empdetail');
+  closeOv('ov-empdetail');
   mPg('invoices');
   setTimeout(()=>{
     const sel=document.getElementById('inv-e');
-    if(sel){
-      for(let i=0;i<sel.options.length;i++){
-        if(sel.options[i].value===_detailEmp.id){
-          sel.selectedIndex=i;
-          autoRate();
-          break;
-        }
-      }
-    }
-  },300);
+    if(sel){for(let i=0;i<sel.options.length;i++){if(sel.options[i].value===_detailEmp.id){sel.selectedIndex=i;autoRate();break;}}}
+  },400);
 }
 
-function quickInvoice(empId,empName,disc){
+function quickInv(empId,empName,disc){
   mPg('invoices');
   setTimeout(()=>{
     const sel=document.getElementById('inv-e');
-    if(sel){
-      for(let i=0;i<sel.options.length;i++){
-        if(sel.options[i].value===empId){
-          sel.selectedIndex=i;
-          autoRate();
-          break;
-        }
-      }
-    }
-  },300);
+    if(sel){for(let i=0;i<sel.options.length;i++){if(sel.options[i].value===empId){sel.selectedIndex=i;autoRate();break;}}}
+  },400);
 }
 
-// RENDER GENERAL STAFF TABLE
-function renderStaffTable(staff,elId,showDisc){
-  const el=document.getElementById(elId);
-  if(!staff.length){el.innerHTML='<div class="empty"><div class="empty-icon">+</div><p>No staff found.</p></div>';return;}
-  el.innerHTML=`<table><thead><tr>
-    <th>ID</th><th>Name</th>${showDisc?'<th>Position</th>':''}<th>Email</th><th>Rate/hr</th><th>Status</th><th></th>
-  </tr></thead><tbody>
-    ${staff.map(s=>{
-      const disc=(s.position||'').toUpperCase().split('/')[0].trim();
-      const bc=disc==='RN'?'badge-rn':disc==='LPN'?'badge-lpn':disc==='CNA'?'badge-cna':disc==='CMA'?'badge-cma':'bb';
-      return `<tr>
-        <td><span class="badge ${bc}">${s.id}</span></td>
-        <td><strong>${s.name}</strong></td>
-        ${showDisc?`<td><span class="badge ${bc}">${s.position||'—'}</span></td>`:''}
-        <td>${s.email||'—'}</td>
-        <td>${s.rate?'$'+s.rate+'/hr':'—'}</td>
-        <td><span class="badge ${(s.status||'').toLowerCase()==='active'?'bg':'bx'}">${s.status||'—'}</span></td>
-        <td><div class="gap8">
-          <button class="sb sb-n sb-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Set Rate</button>
-          <button class="sb sb-teal sb-sm" onclick="mgrSetPass('${s.id}','${s.name}')">Set Password</button>
-        </div></td>
-      </tr>`;
-    }).join('')}
-  </tbody></table>`;
+function editRate(id,name,cur){
+  const r=prompt('Set hourly rate for '+name+'\nCurrent: $'+cur+'/hr\n\nEnter new rate ($):',cur);
+  if(r===null||r==='') return;
+  const rate=parseFloat(r);
+  if(isNaN(rate)||rate<1){toast('Enter a valid rate (minimum $1)','err');return;}
+  apiGet('updateRate',{employeeId:id,rate}).then(res=>{
+    if(res.success){
+      toast(name+' rate updated to $'+rate+'/hr','ok');
+      const emp=_allStaff.find(s=>s.id===id);if(emp) emp.rate=rate;
+      const sel=document.getElementById('inv-e');
+      if(sel){for(let i=0;i<sel.options.length;i++){if(sel.options[i].value===id){sel.options[i].dataset.rate=rate;if(sel.value===id){const rf=document.getElementById('inv-r');if(rf)rf.value=rate;}break;}}}
+    }else toast(res.error||'Failed','err');
+  });
 }
 
-// TIMESHEETS
-async function mTimesheets(){
+async function addStaff(){
+  const nm=document.getElementById('as-nm').value.trim();
+  const em=document.getElementById('as-em').value.trim();
+  const pw=document.getElementById('as-pw').value;
+  const pos=document.getElementById('as-pos').value;
+  const ph=document.getElementById('as-ph').value.trim();
+  const rate=document.getElementById('as-rate').value;
+  if(!nm){toast('Name is required','err');return;}
+  try{
+    const res=await apiPost('addStaff',{name:nm,email:em,password:pw,position:pos,phone:ph,rate:parseFloat(rate)||25});
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast(nm+' added. ID: '+res.id,'ok');
+    closeOv('ov-addstaff');pgOverview();
+  }catch(e){toast('Error adding staff','err');}
+}
+
+// ── TIMESHEETS ─────────────────────────────────
+async function pgTimesheets(){
   const el=document.getElementById('pg-timesheets');
   el.innerHTML=`
-    <div class="pgt">Timesheets</div><div class="pgs">View clock records by employee and date</div>
+    <div class="pg-title">Timesheets</div>
+    <div class="pg-sub">View clock records by employee and date range</div>
     <div class="fcard"><h3>Filter Records</h3>
       <div class="fgrid">
-        <div class="field"><label>Discipline</label>
-          <select id="ts-disc" onchange="loadTSEmps()">
-            <option value="">All</option>
-            <option value="RN">RN</option><option value="LPN">LPN</option>
-            <option value="CNA">CNA</option><option value="CMA">CMA</option>
-          </select>
-        </div>
-        <div class="field"><label>Employee</label><select id="ts-e"><option value="">— Select —</option></select></div>
-        <div class="field"><label>From</label><input type="date" id="ts-f" value="${weekStart()}"/></div>
-        <div class="field"><label>To</label><input type="date" id="ts-t" value="${today()}"/></div>
+        <div class="field"><label>Discipline</label><select id="ts-disc" onchange="loadTSEmps()"><option value="">All</option><option>RN</option><option>LPN</option><option>CNA</option><option>CMA</option></select></div>
+        <div class="field"><label>Employee</label><select id="ts-e"><option value="">— Select employee —</option></select></div>
+        <div class="field"><label>From Date</label><input type="date" id="ts-f" value="${weekStart()}"/></div>
+        <div class="field"><label>To Date</label><input type="date" id="ts-t" value="${today()}"/></div>
       </div>
-      <button class="sb sb-n mt16" onclick="loadTS()">Load Records</button>
+      <button class="btn btn-primary" style="margin-top:12px;" onclick="loadTS()">Load Records</button>
     </div>
     <div id="ts-r"></div>`;
   await loadTSEmps();
@@ -940,10 +1067,10 @@ async function loadTSEmps(){
   const disc=document.getElementById('ts-disc')?.value||'';
   try{
     const res=await apiGet('getStaff',disc?{discipline:disc}:{});
-    _allStaff=res.staff||[];
+    const staff=res.staff||[]; _allStaff=staff;
     const sel=document.getElementById('ts-e');
     sel.innerHTML='<option value="">— Select employee —</option>';
-    _allStaff.forEach(s=>{
+    staff.forEach(s=>{
       const nm=s['Full Name']||s.name||'';
       const id=s['Employee ID']||s.id||'';
       sel.innerHTML+=`<option value="${id}" data-rate="${s.rate||25}">${nm} (${id})</option>`;
@@ -953,54 +1080,47 @@ async function loadTSEmps(){
 async function loadTS(){
   const sel=document.getElementById('ts-e');
   const empId=sel.value;
+  if(!empId){toast('Select an employee','err');return;}
   const from=document.getElementById('ts-f').value;
   const to=document.getElementById('ts-t').value;
-  if(!empId){toast('Select an employee','err');return;}
   const emp=_allStaff.find(s=>(s['Employee ID']||s.id||'')==empId);
   const nm=emp?emp['Full Name']||emp.name||empId:empId;
-  const rate=parseFloat(emp?.rate||emp?.['Hourly Rate']||25);
+  const rate=parseFloat(emp?.rate||25);
   const el=document.getElementById('ts-r');
-  el.innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';
+  el.innerHTML='<div class="empty-state"><span class="spin spin-d"></span></div>';
   try{
     const res=await apiGet('getHours',{employeeId:empId,from,to});
-    const sessions=res.sessions||[];
-    const totalH=res.totalHours||0;
+    const sessions=res.sessions||[]; const totalH=res.totalHours||0;
     el.innerHTML=`<div class="tw" style="margin-top:16px;">
-      <div class="twt"><h3>${nm} · ${from} to ${to}</h3>
-        <span style="font-weight:700;color:var(--green);">${totalH.toFixed(2)} hrs · $${(totalH*rate).toFixed(2)}</span>
+      <div class="tw-head"><h3>${nm} · ${from} to ${to}</h3>
+        <span style="font-weight:700;color:var(--green)">${totalH.toFixed(2)} hrs · $${(totalH*rate).toFixed(2)}</span>
       </div>
-      ${sessions.length?`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
+      ${sessions.length?`<table class="tbl"><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
         ${sessions.map(s=>`<tr><td>${s.date}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td><strong>${s.hours} hrs</strong></td><td style="color:var(--green);font-weight:600;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}
-      </tbody></table>`:'<div class="empty"><p>No clock records found for this period.</p></div>'}
+      </tbody></table>`:`<div class="empty-state"><p>No clock records for this period.</p></div>`}
     </div>`;
-  }catch(e){el.innerHTML='<div class="empty"><p>Error loading records.</p></div>';}
+  }catch(e){el.innerHTML='<div class="empty-state"><p>Error loading.</p></div>';}
 }
 
-// INVOICES
-async function mInvoices(){
+// ── INVOICES ───────────────────────────────────
+async function pgInvoices(){
   const el=document.getElementById('pg-invoices');
   el.innerHTML=`
-    <div class="pgt">Invoice Generator</div><div class="pgs">Generate pay invoices from clock records</div>
+    <div class="pg-title">Invoice Generator</div>
+    <div class="pg-sub">Generate individual pay invoices from clock records</div>
     <div class="fcard"><h3>Generate Invoice</h3>
       <div class="fgrid">
-        <div class="field"><label>Discipline</label>
-          <select id="inv-disc" onchange="loadInvEmps()">
-            <option value="">All</option>
-            <option value="RN">RN</option><option value="LPN">LPN</option>
-            <option value="CNA">CNA</option><option value="CMA">CMA</option>
-          </select>
-        </div>
+        <div class="field"><label>Discipline</label><select id="inv-disc" onchange="loadInvEmps()"><option value="">All</option><option>RN</option><option>LPN</option><option>CNA</option><option>CMA</option></select></div>
         <div class="field"><label>Employee</label><select id="inv-e" onchange="autoRate()"><option value="">— Select —</option></select></div>
         <div class="field"><label>From Date</label><input type="date" id="inv-f" value="${weekStart()}"/></div>
         <div class="field"><label>To Date</label><input type="date" id="inv-t" value="${today()}"/></div>
         <div class="field"><label>Hourly Rate ($/hr)</label><input type="number" id="inv-r" value="25" min="1" step="0.5"/></div>
       </div>
-      <button class="sb sb-g mt16" onclick="genInv()">Generate Invoice</button>
+      <button class="btn btn-gold" style="margin-top:12px;" onclick="genInv()">Generate Invoice</button>
     </div>
     <div id="inv-area"></div>
-    <div id="saved-section" style="margin-top:24px;">
-      <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:16px;">Saved Invoices</h3>
-      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading...</p></div></div></div>
+    <div id="saved-section" style="margin-top:22px;">
+      <div class="tw"><div class="tw-head"><h3>Saved Invoices</h3></div><div id="saved-rows"><div class="empty-state"><span class="spin spin-d"></span></div></div></div>
     </div>`;
   await loadInvEmps();
   await loadSaved();
@@ -1009,11 +1129,9 @@ async function loadInvEmps(){
   const disc=document.getElementById('inv-disc')?.value||'';
   try{
     const res=await apiGet('getStaff',disc?{discipline:disc}:{});
-    const staff=res.staff||[];
-    const sel=document.getElementById('inv-e');
-    if(!sel)return;
-    sel.innerHTML='<option value="">— Select employee —</option>';
-    staff.forEach(s=>{
+    const sel=document.getElementById('inv-e');if(!sel)return;
+    sel.innerHTML='<option value="">— Select —</option>';
+    (res.staff||[]).forEach(s=>{
       const nm=s['Full Name']||s.name||'';
       const id=s['Employee ID']||s.id||'';
       const pos=s['Discipline']||s.position||'';
@@ -1033,198 +1151,410 @@ async function genInv(){
   const from=document.getElementById('inv-f').value;
   const to=document.getElementById('inv-t').value;
   const rate=parseFloat(document.getElementById('inv-r').value)||25;
-  if(!from||!to){toast('Select date range','err');return;}
+  if(!from||!to){toast('Select a date range','err');return;}
   await buildInv('inv-area',sel.value,opt.dataset.name,opt.dataset.pos||'Staff',sel.value,from,to,rate,true);
 }
 
-function editRate(id,name,cur){
-  const r=prompt('Set hourly rate for '+name+'\nCurrent: $'+cur+'/hr\n\nEnter new rate:',cur);
-  if(r===null||r==='')return;
-  const rate=parseFloat(r);
-  if(isNaN(rate)||rate<1){toast('Enter a valid rate','err');return;}
-  toast('Updating rate...');
-  apiGet('updateRate',{employeeId:id,rate:rate}).then(async res=>{
-    if(res.success){
-      toast(name+' rate updated to $'+rate+'/hr');
-      const emp=_allStaff.find(s=>s.id===id||(s['Employee ID']||'')==id);
-      if(emp){emp.rate=rate;emp['Hourly Rate']=rate;}
-      // Refresh current page
-      const invSel=document.getElementById('inv-e');
-      if(invSel){const opts=invSel.options;for(let i=0;i<opts.length;i++){if(opts[i].value===id){opts[i].dataset.rate=rate;if(invSel.value===id){const rf=document.getElementById('inv-r');if(rf)rf.value=rate;}break;}}}
-    }else{toast(res.error||'Failed to update rate','err');}
-  });
+// ── BULK INVOICE ────────────────────────────────
+async function pgBulk(){
+  const el=document.getElementById('pg-bulk');
+  el.innerHTML=`
+    <div class="pg-title">Bulk Invoice Generator</div>
+    <div class="pg-sub">Generate invoices for all staff who worked in a period — at once or individually</div>
+    <div class="fcard"><h3>Select Period & Discipline</h3>
+      <div class="fgrid">
+        <div class="field"><label>Discipline (optional)</label><select id="bk-disc"><option value="">All Disciplines</option><option>RN</option><option>LPN</option><option>CNA</option><option>CMA</option></select></div>
+        <div class="field"><label>From Date</label><input type="date" id="bk-f" value="${weekStart()}"/></div>
+        <div class="field"><label>To Date</label><input type="date" id="bk-t" value="${today()}"/></div>
+      </div>
+      <div class="gap" style="margin-top:12px;">
+        <button class="btn btn-primary" onclick="loadBulk()">Load Staff Who Worked</button>
+        <button class="btn btn-gold" id="bk-save-all" onclick="saveAllBulk()" style="display:none;">Save All Invoices</button>
+      </div>
+    </div>
+    <div id="bk-results"></div>`;
+}
+let _bulkResults=[];
+async function loadBulk(){
+  const from=document.getElementById('bk-f').value;
+  const to=document.getElementById('bk-t').value;
+  const disc=document.getElementById('bk-disc').value;
+  if(!from||!to){toast('Select a date range','err');return;}
+  const el=document.getElementById('bk-results');
+  el.innerHTML='<div class="empty-state"><span class="spin spin-d"></span></div>';
+  try{
+    const res=await apiGet('getBulkHours',{from,to,discipline:disc});
+    const results=res.results||[]; _bulkResults=results;
+    if(!results.length){el.innerHTML='<div class="empty-state"><p>No staff clocked in during this period.</p></div>';document.getElementById('bk-save-all').style.display='none';return;}
+    document.getElementById('bk-save-all').style.display='';
+    const total=results.reduce((a,r)=>a+(r.totalHours*r.rate),0);
+    el.innerHTML=`
+      <div class="krow" style="margin-bottom:16px;">
+        <div class="kpi"><div class="kpi-label">Staff Who Worked</div><div class="kpi-val">${results.length}</div></div>
+        <div class="kpi"><div class="kpi-label">Total Hours</div><div class="kpi-val">${results.reduce((a,r)=>a+r.totalHours,0).toFixed(1)}</div></div>
+        <div class="kpi"><div class="kpi-label">Total Payroll</div><div class="kpi-val">$${total.toFixed(0)}</div></div>
+      </div>
+      <div class="tw"><div class="tw-head"><h3>Staff Summary — ${from} to ${to}</h3></div>
+      <table class="tbl"><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Hours</th><th>Rate</th><th>Total</th><th>Action</th></tr></thead><tbody>
+        ${results.map((r,i)=>`<tr>
+          <td><span class="badge badge-navy">${r.id}</span></td>
+          <td><strong>${r.name}</strong></td>
+          <td>${r.position||'—'}</td>
+          <td><strong>${r.totalHours.toFixed(2)} hrs</strong></td>
+          <td>$${r.rate}/hr</td>
+          <td style="font-weight:700;color:var(--green);">$${(r.totalHours*r.rate).toFixed(2)}</td>
+          <td><div class="gap">
+            <button class="btn btn-gold btn-sm" onclick="genBulkSingle(${i})">Generate</button>
+            <button class="btn btn-primary btn-sm" onclick="saveBulkSingle(${i})">Save</button>
+          </div></td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <div id="bk-inv-area" style="margin-top:18px;"></div>`;
+  }catch(e){el.innerHTML='<div class="empty-state"><p>Error loading.</p></div>';}
+}
+async function genBulkSingle(i){
+  const r=_bulkResults[i];
+  const from=document.getElementById('bk-f').value;
+  const to=document.getElementById('bk-t').value;
+  await buildInv('bk-inv-area',r.id,r.name,r.position||'Staff',r.id,from,to,r.rate,true);
+}
+async function saveBulkSingle(i){
+  const r=_bulkResults[i];
+  const from=document.getElementById('bk-f').value;
+  const to=document.getElementById('bk-t').value;
+  const invNum='CNL-'+Date.now().toString().slice(-7);
+  try{
+    const res=await apiPost('saveInvoice',{invoiceNumber:invNum,employeeId:r.id,name:r.name,position:r.position||'',from,to,totalHours:r.totalHours,rate:r.rate,totalAmount:r.totalHours*r.rate});
+    if(res.success) toast('Invoice saved for '+r.name,'ok');
+    else toast(res.error||'Failed','err');
+  }catch(e){toast('Error','err');}
+}
+async function saveAllBulk(){
+  const from=document.getElementById('bk-f').value;
+  const to=document.getElementById('bk-t').value;
+  let saved=0;
+  for(const r of _bulkResults){
+    const invNum='CNL-'+Date.now().toString().slice(-7)+'-'+saved;
+    try{
+      const res=await apiPost('saveInvoice',{invoiceNumber:invNum,employeeId:r.id,name:r.name,position:r.position||'',from,to,totalHours:r.totalHours,rate:r.rate,totalAmount:r.totalHours*r.rate});
+      if(res.success) saved++;
+    }catch(e){}
+    await new Promise(r=>setTimeout(r,300));
+  }
+  toast(saved+' invoices saved successfully.','ok');
 }
 
+// ── DOCUMENTS (Manager) ─────────────────────────
+async function pgDocuments(){
+  const el=document.getElementById('pg-documents');
+  el.innerHTML=`
+    <div class="pg-title">Document Submissions</div>
+    <div class="pg-sub">Review employee document uploads — approve or reject pending submissions</div>
+    <div class="spec-tabs" style="margin-bottom:16px;">
+      <button class="spec-tab tab-all active" onclick="loadDocs('',this)">All</button>
+      <button class="spec-tab tab-rn" onclick="loadDocs('Pending',this)">Pending</button>
+      <button class="spec-tab tab-lpn" onclick="loadDocs('Approved',this)">Approved</button>
+      <button class="spec-tab tab-cna" onclick="loadDocs('Rejected',this)">Rejected</button>
+    </div>
+    <div id="doc-list"><div class="empty-state"><span class="spin spin-d"></span></div></div>`;
+  await loadDocs('');
+}
+async function loadDocs(status,btn){
+  if(btn){document.querySelectorAll('#pg-documents .spec-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  const el=document.getElementById('doc-list');
+  el.innerHTML='<div class="empty-state"><span class="spin spin-d"></span></div>';
+  try{
+    const res=await apiGet('getAllDocs',status?{status}:{});
+    const docs=res.docs||[];
+    if(!docs.length){el.innerHTML='<div class="empty-state"><p>No documents '+(status?'with status '+status:'')+' found.</p></div>';return;}
+    el.innerHTML=`<div class="tw"><div class="tw-head"><h3>${docs.length} Document${docs.length!==1?'s':''}</h3></div>
+    <table class="tbl"><thead><tr><th>Doc ID</th><th>Employee</th><th>Document Type</th><th>File</th><th>Uploaded</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      ${docs.map(d=>`<tr>
+        <td style="font-size:11.5px;">${d.docId}</td>
+        <td><strong>${d.employeeName}</strong><br/><span style="font-size:11px;color:var(--muted)">${d.employeeId}</span></td>
+        <td>${d.docType}</td>
+        <td>${d.driveUrl?`<a href="${d.driveUrl}" target="_blank" style="color:var(--teal);font-size:12px;">View File</a>`:(d.fileName||'No file')}</td>
+        <td style="font-size:12px;">${d.uploadedAt||'—'}</td>
+        <td><span class="badge ${d.status==='Approved'?'badge-green':d.status==='Rejected'?'badge-red':'badge-orange'}">${d.status||'Pending'}</span></td>
+        <td>${d.status==='Pending'?`<button class="btn btn-primary btn-sm" onclick="openDocReview('${d.docId}','${d.employeeName}','${d.docType}')">Review</button>`:`<span style="font-size:11.5px;color:var(--muted);">${d.reviewedBy||''}${d.reviewDate?' · '+d.reviewDate:''}</span>`}</td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+  }catch(e){el.innerHTML='<div class="empty-state"><p>Error loading.</p></div>';}
+}
+function openDocReview(docId,empName,docType){
+  _reviewDocId=docId;
+  document.getElementById('dr-sub').textContent=docType+' submitted by '+empName;
+  document.getElementById('dr-notes').value='';
+  openOv('ov-doc-review');
+}
+async function submitDocReview(){
+  if(!_reviewDocId){toast('No document selected','err');return;}
+  const status=document.getElementById('dr-status').value;
+  const notes=document.getElementById('dr-notes').value;
+  try{
+    const res=await apiGet('reviewDoc',{docId:_reviewDocId,status,notes,reviewer:ME.name||'Manager'});
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast('Document '+status.toLowerCase(),'ok');
+    closeOv('ov-doc-review');
+    _reviewDocId=null;
+    loadDocs('');
+  }catch(e){toast('Error','err');}
+}
+
+// ════════════════════════════════════════════
 // EMPLOYEE DASHBOARD
+// ════════════════════════════════════════════
 const ENAV=[
-  {id:'clock',    icon:'[C]', label:'Clock In/Out'},
-  {id:'myhours',  icon:'[H]', label:'My Hours'},
-  {id:'myinv',    icon:'[I]', label:'My Invoice'},
-  {id:'myprofile',icon:'[P]', label:'My Profile'},
-  {id:'changepass',icon:'[K]', label:'Change Password'},
+  {id:'clock',    lbl:'Clock In/Out', ic:'[C]'},
+  {id:'myhours',  lbl:'My Hours',     ic:'[H]'},
+  {id:'myinv',    lbl:'My Invoice',   ic:'[I]'},
+  {id:'mydocs',   lbl:'My Documents', ic:'[D]'},
+  {id:'myprofile',lbl:'My Profile',   ic:'[P]'},
 ];
 function buildEmp(){
-  document.getElementById('sidebar').innerHTML=ENAV.map(n=>`<div class="si" id="si-${n.id}" onclick="ePg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('');
+  document.getElementById('sidebar').innerHTML=ENAV.map(n=>`<div class="sb-item" id="si-${n.id}" onclick="ePg('${n.id}')"><span class="sb-item-ic">${n.ic}</span><span>${n.lbl}</span></div>`).join('');
   document.getElementById('dcontent').innerHTML=ENAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
   ePg('clock');
 }
 function ePg(id){
-  document.querySelectorAll('.si').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));
   document.getElementById('si-'+id)?.classList.add('active');
   document.getElementById('pg-'+id)?.classList.add('on');
-  ({clock:eClock,myhours:eHours,myinv:eInv,myprofile:eProfile,changepass:eChangePass})[id]?.();
+  ({clock:pgClock,myhours:pgMyHours,myinv:pgMyInv,mydocs:pgMyDocs,myprofile:pgMyProfile})[id]?.();
 }
 
-async function eClock(){
+async function pgClock(){
   const el=document.getElementById('pg-clock');
   el.innerHTML=`
-    <div class="pgt">Time Clock</div><div class="pgs">Clock in when you arrive. Clock out when you leave.</div>
-    <div class="clk-hero">
-      <div class="clk-t" id="ct"></div>
-      <div class="clk-d" id="cd"></div>
-      <button class="clk-btn cb-in" id="cb" onclick="toggleClock()">Checking...</button>
-      <div class="clk-s" id="cs"></div>
+    <div class="pg-title">Time Clock</div>
+    <div class="pg-sub">Clock in when you arrive. Clock out when you leave.</div>
+    <div class="clock-card">
+      <div class="clock-time" id="ct"></div>
+      <div class="clock-date" id="cd"></div>
+      <button class="clock-btn clk-in" id="cb" onclick="toggleClock()">Checking...</button>
+      <div class="clock-status" id="cs"></div>
     </div>
-    <div class="tw"><div class="twt"><h3>Today's Sessions</h3></div><div id="tr"></div></div>`;
+    <div class="tw"><div class="tw-head"><h3>Today's Sessions</h3></div><div id="today-r"></div></div>`;
   if(_clockInt)clearInterval(_clockInt);
-  const tick=()=>{const n=new Date();const ct=document.getElementById('ct');const cd=document.getElementById('cd');if(ct)ct.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});if(cd)cd.textContent=n.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});};
+  const tick=()=>{
+    const n=new Date();
+    const ct=document.getElementById('ct');const cd=document.getElementById('cd');
+    if(ct) ct.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    if(cd) cd.textContent=n.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  };
   tick();_clockInt=setInterval(tick,1000);
   await refreshClock();await loadToday();
 }
 async function refreshClock(){
   try{
     const res=await apiGet('getClockStatus',{employeeId:ME.id});
-    _isClockedIn=res.isClockedIn||false;
+    _clocked=res.isClockedIn||false;
     const btn=document.getElementById('cb');const st=document.getElementById('cs');
-    if(!btn)return;
-    if(_isClockedIn){btn.textContent='Clock Out';btn.className='clk-btn cb-out';st.textContent='Clocked in since '+new Date(res.clockIn).toLocaleTimeString();}
-    else{btn.textContent='Clock In';btn.className='clk-btn cb-in';st.textContent='You are not currently clocked in';}
+    if(!btn) return;
+    if(_clocked){btn.textContent='Clock Out';btn.className='clock-btn clk-out';st.textContent='Clocked in since '+new Date(res.clockIn).toLocaleTimeString();}
+    else{btn.textContent='Clock In';btn.className='clock-btn clk-in';st.textContent='You are not currently clocked in';}
   }catch(e){const st=document.getElementById('cs');if(st)st.textContent='Could not check status';}
 }
 async function toggleClock(){
   const btn=document.getElementById('cb');btn.disabled=true;
   try{
     let res;
-    if(!_isClockedIn){
+    if(!_clocked){
       res=await apiPost('clockIn',{employeeId:ME.id,name:ME.name,position:ME.position||''});
-      if(res.success){_isClockedIn=true;toast('Clocked in successfully. Have a great shift.','ok');}
+      if(res.success){_clocked=true;toast('Clocked in successfully. Have a great shift.','ok');}
       else toast(res.error||'Clock in failed','err');
     }else{
       res=await apiPost('clockOut',{employeeId:ME.id});
-      if(res.success){_isClockedIn=false;toast('Clocked out. '+res.hoursWorked+' hrs recorded.','ok');}
+      if(res.success){_clocked=false;toast('Clocked out. '+res.hoursWorked+' hrs recorded.','ok');}
       else toast(res.error||'Clock out failed','err');
     }
   }catch(e){toast('Connection error','err');}
   btn.disabled=false;await refreshClock();await loadToday();
 }
 async function loadToday(){
-  const el=document.getElementById('tr');if(!el)return;
+  const el=document.getElementById('today-r');if(!el)return;
   try{
     const res=await apiGet('getHours',{employeeId:ME.id,from:today(),to:today()});
     const sessions=res.sessions||[];
-    if(!sessions.length){el.innerHTML='<div class="empty"><p>No sessions today yet.</p></div>';return;}
-    let tot=0;sessions.forEach(s=>tot+=parseFloat(s.hours)||0);
-    el.innerHTML=`<table><thead><tr><th>Clock In</th><th>Clock Out</th><th>Hours</th></tr></thead><tbody>
-      ${sessions.map(s=>`<tr><td>${s.clockIn}</td><td>${s.clockOut||'—'}</td><td>${s.hours?s.hours+' hrs':'<span class="badge bo">Active</span>'}</td></tr>`).join('')}
-    </tbody></table><div style="padding:12px 16px;border-top:1px solid var(--border);font-weight:600;font-size:14px;">Today total: <span style="color:var(--teal);">${tot.toFixed(2)} hrs</span></div>`;
-  }catch(e){el.innerHTML='<div class="empty"><p>Could not load.</p></div>';}
+    if(!sessions.length){el.innerHTML='<div class="empty-state"><p>No sessions today yet.</p></div>';return;}
+    let tot=0;sessions.forEach(s=>tot+=s.hours||0);
+    el.innerHTML=`<table class="tbl"><thead><tr><th>Clock In</th><th>Clock Out</th><th>Hours</th></tr></thead><tbody>
+      ${sessions.map(s=>`<tr><td>${s.clockIn}</td><td>${s.clockOut||'—'}</td><td>${s.hours?s.hours+' hrs':'<span class="badge badge-orange">Active</span>'}</td></tr>`).join('')}
+    </tbody></table>
+    <div style="padding:10px 14px;border-top:1px solid var(--border);font-weight:600;font-size:13.5px;">Total today: <span style="color:var(--teal);">${tot.toFixed(2)} hrs</span></div>`;
+  }catch(e){el.innerHTML='<div class="empty-state"><p>Could not load.</p></div>';}
 }
 
-async function eHours(){
+async function pgMyHours(){
   const el=document.getElementById('pg-myhours');
   el.innerHTML=`
-    <div class="pgt">My Hours</div><div class="pgs">Your work records and earnings</div>
-    <div class="gap8" style="margin-bottom:18px;">
-      <input type="date" id="mf" value="${weekStart()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
-      <input type="date" id="mt" value="${today()}" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"/>
-      <button class="sb sb-n" onclick="loadEmpHours()">Load</button>
+    <div class="pg-title">My Hours</div>
+    <div class="pg-sub">Your work records and earnings</div>
+    <div class="gap" style="margin-bottom:16px;">
+      <input type="date" id="mf" value="${weekStart()}" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;"/>
+      <input type="date" id="mt" value="${today()}" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;"/>
+      <button class="btn btn-primary" onclick="loadMyHours()">Load</button>
     </div>
     <div class="krow" id="hk"></div>
-    <div class="tw"><div id="hr2"><div class="empty"><p>Select dates and click Load.</p></div></div></div>`;
+    <div class="tw"><div id="hr-table"><div class="empty-state"><p>Select dates and click Load.</p></div></div></div>`;
 }
-async function loadEmpHours(){
+async function loadMyHours(){
   const from=document.getElementById('mf').value;
   const to=document.getElementById('mt').value;
   let rate=parseFloat(ME.rate)||25;
-  try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me&&me.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}
+  try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me?.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}
   try{
     const res=await apiGet('getHours',{employeeId:ME.id,from,to});
-    const totalH=res.totalHours||0;
-    const sessions=res.sessions||[];
+    const totalH=res.totalHours||0; const sessions=res.sessions||[];
     document.getElementById('hk').innerHTML=`
-      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Total Hours</span></div><div class="kpi-v">${totalH.toFixed(2)}</div></div>
-      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Gross Earnings</span></div><div class="kpi-v">$${(totalH*rate).toFixed(2)}</div></div>
-      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Sessions</span></div><div class="kpi-v">${sessions.length}</div></div>
-      <div class="kpi"><div class="kpi-top"><span class="kpi-label">Hourly Rate</span></div><div class="kpi-v">$${rate}</div></div>`;
-    const el=document.getElementById('hr2');
-    if(!sessions.length){el.innerHTML='<div class="empty"><p>No sessions for this period.</p></div>';return;}
-    el.innerHTML=`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
+      <div class="kpi"><div class="kpi-label">Total Hours</div><div class="kpi-val">${totalH.toFixed(2)}</div></div>
+      <div class="kpi"><div class="kpi-label">Gross Earnings</div><div class="kpi-val">$${(totalH*rate).toFixed(2)}</div></div>
+      <div class="kpi"><div class="kpi-label">Sessions</div><div class="kpi-val">${sessions.length}</div></div>
+      <div class="kpi"><div class="kpi-label">Hourly Rate</div><div class="kpi-val">$${rate}</div></div>`;
+    const el=document.getElementById('hr-table');
+    if(!sessions.length){el.innerHTML='<div class="empty-state"><p>No sessions found for this period.</p></div>';return;}
+    el.innerHTML=`<table class="tbl"><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
       ${sessions.map(s=>`<tr><td>${s.date}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td>${s.hours} hrs</td><td style="color:var(--green);font-weight:600;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}
     </tbody></table>`;
   }catch(e){toast('Error loading hours','err');}
 }
 
-async function eInv(){
+async function pgMyInv(){
   const el=document.getElementById('pg-myinv');
   el.innerHTML=`
-    <div class="pgt">My Invoice</div><div class="pgs">Generate your pay invoice from clock records</div>
+    <div class="pg-title">My Invoice</div>
+    <div class="pg-sub">Generate your pay invoice from clock records</div>
     <div class="fcard"><h3>Select Pay Period</h3>
       <div class="fgrid">
-        <div class="field"><label>From Date</label><input type="date" id="ef" value="${weekStart()}"/></div>
-        <div class="field"><label>To Date</label><input type="date" id="et" value="${today()}"/></div>
+        <div class="field"><label>From Date</label><input type="date" id="ei-f" value="${weekStart()}"/></div>
+        <div class="field"><label>To Date</label><input type="date" id="ei-t" value="${today()}"/></div>
       </div>
-      <button class="sb sb-g mt16" onclick="genEmpInv()">Generate Invoice</button>
+      <button class="btn btn-gold" style="margin-top:12px;" onclick="genMyInv()">Generate Invoice</button>
     </div>
     <div id="inv-area"></div>
-    <div id="saved-section" style="margin-top:24px;">
-      <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:16px;">My Saved Invoices</h3>
-      <div class="tw"><div id="saved-rows"><div class="empty"><p>Loading...</p></div></div></div>
+    <div id="saved-section" style="margin-top:20px;">
+      <div class="tw"><div class="tw-head"><h3>My Saved Invoices</h3></div><div id="saved-rows"><div class="empty-state"><span class="spin spin-d"></span></div></div></div>
     </div>`;
   await loadSaved(ME.id);
 }
-async function genEmpInv(){
-  const from=document.getElementById('ef').value;
-  const to=document.getElementById('et').value;
-  if(!from||!to){toast('Select date range','err');return;}
+async function genMyInv(){
+  const from=document.getElementById('ei-f').value;
+  const to=document.getElementById('ei-t').value;
+  if(!from||!to){toast('Select a date range','err');return;}
   let rate=parseFloat(ME.rate)||25;
-  try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me&&me.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}
+  try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me?.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}
   await buildInv('inv-area',ME.id,ME.name,ME.position||'Staff',ME.id,from,to,rate,false);
 }
 
-async function eProfile(){
-  const el=document.getElementById('pg-myprofile');
-  el.innerHTML=`<div class="pgt">My Profile</div><div class="pgs">Your employee details</div><div class="empty"><span class="spin spin-d"></span></div>`;
+// ── MY DOCUMENTS ──────────────────────────────
+async function pgMyDocs(){
+  const el=document.getElementById('pg-mydocs');
+  el.innerHTML=`
+    <div class="pg-title">My Documents</div>
+    <div class="pg-sub">Upload required documents — they will be reviewed by the manager</div>
+    <div class="fcard"><h3>Submit a Document</h3>
+      <div class="fgrid">
+        <div class="field"><label>Document Type</label>
+          <select id="doc-type">
+            <option value="">Select document type...</option>
+            <option>License / Certification</option>
+            <option>BLS/CPR Card</option>
+            <option>ACLS Certificate</option>
+            <option>TB Test / CXR Results</option>
+            <option>Drug Screen Results</option>
+            <option>Background Check</option>
+            <option>MMR / Vaccination Record</option>
+            <option>Covid Vaccination Card</option>
+            <option>Flu Shot Record</option>
+            <option>Physical Exam</option>
+            <option>Resume / Application</option>
+            <option>OIG / NSOPW / SAM Check</option>
+            <option>Handbook Acknowledgement</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Google Drive Link</label><input type="url" id="doc-url" placeholder="Paste your Google Drive share link here..."/></div>
+        <div class="field"><label>File Name / Description</label><input type="text" id="doc-name" placeholder="e.g. BLS_Card_2025.pdf"/></div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Upload your document to Google Drive, set sharing to "Anyone with link can view", then paste the link above.</p>
+      <button class="btn btn-primary" onclick="submitMyDoc()">Submit Document</button>
+    </div>
+    <div class="tw" style="margin-top:18px;"><div class="tw-head"><h3>My Submissions</h3></div><div id="my-doc-list"><div class="empty-state"><span class="spin spin-d"></span></div></div></div>`;
+  await loadMyDocs();
+}
+async function submitMyDoc(){
+  const type=document.getElementById('doc-type').value;
+  const url=document.getElementById('doc-url').value.trim();
+  const name=document.getElementById('doc-name').value.trim();
+  if(!type){toast('Select a document type','err');return;}
+  if(!url&&!name){toast('Add a Drive link or file name','err');return;}
   try{
-    const res=await apiGet('getStaffById',{employeeId:ME.id});
-    if(!res.success){el.innerHTML+='<div class="empty"><p>Profile not found.</p></div>';return;}
-    const e=res.employee;
-    let html=`<div class="fcard">`;
-    // Basic info card at top
-    html+=`<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
-      <div style="width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--navy);font-family:'Playfair Display',serif;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;">${(ME.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
-      <div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">${e['Full Name']||ME.name}</div>
-      <div style="color:var(--muted);font-size:14px;">${e['Employee ID']||ME.id} · ${e['Discipline']||ME.position||'Staff'}</div></div>
-    </div>`;
-    html+='<div class="emp-detail-grid">';
-    Object.entries(e).forEach(([k,v])=>{
-      if(!v||v.trim()==='') return;
-      const cls=isDateField(k)?credClass(v):'';
-      html+=`<div class="emp-detail-item"><div class="edl">${k}</div><div class="edv ${cls}">${v}</div></div>`;
-    });
-    html+='</div></div>';
-    el.innerHTML=`<div class="pgt">My Profile</div><div class="pgs">Your employee details from Central Nurses records</div>${html}`;
-  }catch(e){el.innerHTML+='<div class="empty"><p>Error loading profile.</p></div>';}
+    const res=await apiPost('submitDoc',{employeeId:ME.id,employeeName:ME.name,docType:type,driveUrl:url,fileName:name});
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast('Document submitted. Awaiting manager review.','ok');
+    document.getElementById('doc-type').value='';
+    document.getElementById('doc-url').value='';
+    document.getElementById('doc-name').value='';
+    await loadMyDocs();
+  }catch(e){toast('Error submitting','err');}
+}
+async function loadMyDocs(){
+  const el=document.getElementById('my-doc-list');if(!el)return;
+  try{
+    const res=await apiGet('getDocs',{employeeId:ME.id});
+    const docs=res.docs||[];
+    if(!docs.length){el.innerHTML='<div class="empty-state"><p>No documents submitted yet.</p></div>';return;}
+    el.innerHTML=`<table class="tbl"><thead><tr><th>Document Type</th><th>File</th><th>Submitted</th><th>Status</th><th>Notes</th></tr></thead><tbody>
+      ${docs.map(d=>`<tr>
+        <td><strong>${d.docType}</strong></td>
+        <td>${d.driveUrl?`<a href="${d.driveUrl}" target="_blank" style="color:var(--teal);font-size:12px;">View File</a>`:(d.fileName||'—')}</td>
+        <td style="font-size:12px;">${d.uploadedAt||'—'}</td>
+        <td><span class="badge ${d.status==='Approved'?'badge-green':d.status==='Rejected'?'badge-red':'badge-orange'}">${d.status||'Pending'}</span></td>
+        <td style="font-size:12px;color:var(--muted);">${d.notes||'—'}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  }catch(e){el.innerHTML='<div class="empty-state"><p>Could not load documents.</p></div>';}
 }
 
+// ── MY PROFILE ──────────────────────────────────
+async function pgMyProfile(){
+  const el=document.getElementById('pg-myprofile');
+  el.innerHTML=`<div class="pg-title">My Profile</div><div class="pg-sub">Your employee details from Central Nurses records</div><div class="empty-state"><span class="spin spin-d"></span></div>`;
+  try{
+    const res=await apiGet('getStaffById',{employeeId:ME.id});
+    if(!res.success){el.innerHTML+=`<div class="empty-state"><p>Profile not found in specialty records. Your account is registered but detailed credentials are not yet linked.</p></div>`;return;}
+    const e=res.employee;
+    const DF=new Set(['License Expiry','License','BLS/CPR','ACLS','PALS','NRP','OIG','NSOPW','SAM EPLS','TB Test/CXR','Drug Screen','Drug  Screen','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Covid Requirement','Handbook Acknowledgement Form','Hire Date','GDrive Hire Date','Final Hire Date','Annual Core Mandatory Exams','Background Check Authorization','National Background Checks','References']);
+    let html=`<div class="emp-hero">
+      <div class="emp-av">${(ME.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div><div class="emp-av-name">${e['Full Name']||ME.name}</div>
+      <div class="emp-av-sub">${e['Employee ID']||ME.id} · ${e['Discipline']||ME.position||'Staff'}</div>
+      ${ME.email?`<div class="emp-av-sub">${ME.email}</div>`:''}
+      ${ME.rate?`<div class="emp-av-sub">Hourly Rate: $${ME.rate}/hr</div>`:''}
+      </div></div>
+      <div class="detail-section"><div class="detail-section-title">All Your Records</div><div class="detail-grid">`;
+    Object.entries(e).forEach(([k,v])=>{
+      if(!v||v.toString().trim()==='') return;
+      const isD=DF.has(k); const cls=isD?credCls(v.toString()):'';
+      const isNote=k==='Notes Section'||k==='Team Notes';
+      html+=`<div class="detail-item${isNote?' full-width':''}"><label>${k}</label><span class="${cls}${isNote?' notes-text':''}">${isD?fmtDate(v.toString()):v.toString()}</span></div>`;
+    });
+    html+='</div></div>';
+    el.innerHTML=`<div class="pg-title">My Profile</div><div class="pg-sub">Your employee details from Central Nurses records</div>${html}`;
+  }catch(e){el.innerHTML+=`<div class="empty-state"><p>Error loading profile.</p></div>`;}
+}
+
+// ════════════════════════════════════════════
 // INVOICE ENGINE
+// ════════════════════════════════════════════
 async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
   const area=document.getElementById(areaId);
-  area.innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';
+  if(!area) return;
+  area.innerHTML='<div class="empty-state"><span class="spin spin-d"></span></div>';
   try{
     const res=await apiGet('getHours',{employeeId:empId,from,to});
-    const totalH=res.totalHours||0;
-    const totalPay=totalH*rate;
+    const totalH=res.totalHours||0; const totalPay=totalH*rate;
     const sessions=res.sessions||[];
     const invNum='CNL-'+Date.now().toString().slice(-7);
     const issued=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
@@ -1232,53 +1562,50 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
     const f=new Date(from+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     const t=new Date(to+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     area.innerHTML=`
-    <div class="inv-wrap" id="inv-wrap-tw">
-      <div class="inv-tb">
-        <div class="inv-info"><strong>${empName}</strong> &nbsp;·&nbsp; ${sessions.length} sessions &nbsp;·&nbsp; ${totalH.toFixed(2)} hrs &nbsp;·&nbsp; <strong>$${totalPay.toFixed(2)}</strong></div>
-        <div class="inv-acts">
-          <button class="iab iab-c" onclick="document.getElementById('${areaId}').innerHTML='';_currentInv=null;">Clear</button>
-          <button class="iab iab-s" onclick="saveInv()">Save</button>
-          <button class="iab iab-p" onclick="printInvoice()">Print / PDF</button>
+    <div class="inv-wrap inv-print-ok">
+      <div class="inv-toolbar">
+        <div class="inv-toolbar-info"><strong>${empName}</strong> &nbsp;·&nbsp; ${sessions.length} sessions &nbsp;·&nbsp; ${totalH.toFixed(2)} hrs &nbsp;·&nbsp; <strong>$${totalPay.toFixed(2)}</strong></div>
+        <div class="inv-actions">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('${areaId}').innerHTML='';_currentInv=null;">Clear</button>
+          <button class="btn btn-gold btn-sm" onclick="saveInv()">Save Invoice</button>
+          <button class="btn btn-primary btn-sm" onclick="printInv()">Print / PDF</button>
         </div>
       </div>
       <div id="inv-doc">
-        <div class="inv-lh">
+        <div class="inv-header">
           <div>
-            <div style="display:flex;align-items:center;gap:11px;margin-bottom:8px;">
-              <div style="width:46px;height:46px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);">CN</div>
-              <div><div class="inv-cn">Central Nurses LLC</div><div class="inv-cs">Staffing Agency · Wichita, Kansas</div></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+              <div style="width:42px;height:42px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold);">CN</div>
+              <div><div class="inv-co-name">Central Nurses LLC</div><div style="color:var(--muted);font-size:12px;">Staffing Agency · Wichita, Kansas</div></div>
             </div>
-            <div class="inv-ca">629 S Longfellow Street, Wichita, KS 67207<br/>Info@Centralnurses.com · +1(316) 806-5951</div>
+            <div class="inv-co-meta">629 S Longfellow Street, Wichita, KS 67207<br/>Info@Centralnurses.com · +1(316) 806-5951</div>
           </div>
           <div>
-            <div class="inv-wd">INVOICE</div>
-            <div class="inv-mt">
-              <div class="inv-mr"><span>Invoice # </span><strong>${invNum}</strong></div>
-              <div class="inv-mr"><span>Issued: </span><strong>${issued}</strong></div>
-            </div>
+            <div class="inv-word">INVOICE</div>
+            <div class="inv-meta">Invoice # &nbsp;<strong>${invNum}</strong><br/>Issued: &nbsp;<strong>${issued}</strong></div>
           </div>
         </div>
-        <div class="inv-ig">
-          <div class="inv-ic"><div class="iil">Employee</div><div class="iim">${empName}</div><div class="iis">${empPos}</div><div class="iid">${empCode}</div></div>
-          <div class="inv-ic"><div class="iil">Issued By</div><div class="iim">Central Nurses LLC</div><div class="iis">629 S Longfellow Street<br/>Wichita, KS 67207</div></div>
-          <div class="inv-ic"><div class="iil">Pay Period</div><div class="iim" style="font-size:15px;">${f} to ${t}</div><div class="iis">${Math.round((new Date(to)-new Date(from))/86400000)+1} day period</div></div>
+        <div class="inv-info-grid">
+          <div class="inv-info-cell"><div class="inv-cell-label">Employee</div><div class="inv-cell-main">${empName}</div><div class="inv-cell-sub">${empPos}</div><div class="inv-cell-id">${empCode}</div></div>
+          <div class="inv-info-cell"><div class="inv-cell-label">Issued By</div><div class="inv-cell-main">Central Nurses LLC</div><div class="inv-cell-sub">629 S Longfellow Street<br/>Wichita, KS 67207</div></div>
+          <div class="inv-info-cell"><div class="inv-cell-label">Pay Period</div><div class="inv-cell-main" style="font-size:14px;">${f} – ${t}</div><div class="inv-cell-sub">${Math.round((new Date(to)-new Date(from))/86400000)+1}-day period</div></div>
         </div>
-        <div class="inv-strip">
-          <div class="iis2"><div class="iis2-l">Total Hours</div><div class="iis2-v">${totalH.toFixed(2)}</div></div>
-          <div class="iis2"><div class="iis2-l">Rate / Hour</div><div class="iis2-v">$${rate}</div></div>
-          <div class="iis2"><div class="iis2-l">Sessions</div><div class="iis2-v">${sessions.length}</div></div>
-          <div class="iis2"><div class="iis2-l">Total Due</div><div class="iis2-v">$${totalPay.toFixed(2)}</div></div>
+        <div class="inv-summary">
+          <div class="inv-sum-cell"><div class="inv-sum-label">Total Hours</div><div class="inv-sum-val">${totalH.toFixed(2)}</div></div>
+          <div class="inv-sum-cell"><div class="inv-sum-label">Rate / Hour</div><div class="inv-sum-val">$${rate}</div></div>
+          <div class="inv-sum-cell"><div class="inv-sum-label">Sessions</div><div class="inv-sum-val">${sessions.length}</div></div>
+          <div class="inv-sum-cell"><div class="inv-sum-label">Total Due</div><div class="inv-sum-val">$${totalPay.toFixed(2)}</div></div>
         </div>
-        <div class="inv-tw">
-          <div class="inv-tb2">
-            <div class="itr"><span class="itrl">Total Hours Worked</span><span class="itrr">${totalH.toFixed(2)} hrs</span></div>
-            <div class="itr"><span class="itrl">Hourly Rate</span><span class="itrr">$${rate.toFixed(2)}/hr</span></div>
-            <div class="itr"><span class="itrl">TOTAL AMOUNT DUE</span><span class="itrr">$${totalPay.toFixed(2)}</span></div>
+        <div class="inv-total-wrap">
+          <div class="inv-total-box">
+            <div class="inv-total-row"><span>Total Hours Worked</span><span>${totalH.toFixed(2)} hrs</span></div>
+            <div class="inv-total-row"><span>Hourly Rate</span><span>$${rate.toFixed(2)}/hr</span></div>
+            <div class="inv-total-row"><span>TOTAL AMOUNT DUE</span><span>$${totalPay.toFixed(2)}</span></div>
           </div>
         </div>
         <div class="inv-sig">
-          <div><div class="sigl">Employee Signature</div><div class="sigln"></div><div class="signm">${empName} / Date</div></div>
-          <div><div class="sigl">Authorized By (Manager)</div><div class="sigln"></div><div class="signm">Central Nurses LLC · Management</div></div>
+          <div><div class="sig-label">Employee Signature</div><div class="sig-line"></div><div class="sig-name">${empName} / Date</div></div>
+          <div><div class="sig-label">Authorized By</div><div class="sig-line"></div><div class="sig-name">Central Nurses LLC · Management</div></div>
         </div>
         <div class="inv-note">Note: Generated from verified clock records. Hours are calculated from actual clock-in and clock-out timestamps. For questions contact Info@Centralnurses.com or call +1(316) 806-5951.</div>
       </div>
@@ -1286,7 +1613,7 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
     area.scrollIntoView({behavior:'smooth',block:'start'});
     toast('Invoice generated.','ok');
     await loadSaved(isMgr?null:ME.id);
-  }catch(e){area.innerHTML='<div class="empty"><p>Error generating invoice.</p></div>';toast('Error','err');}
+  }catch(e){area.innerHTML='<div class="empty-state"><p>Error generating invoice.</p></div>';toast('Error','err');}
 }
 
 async function saveInv(){
@@ -1295,148 +1622,96 @@ async function saveInv(){
   try{
     const res=await apiPost('saveInvoice',{invoiceNumber:c.invNum,employeeId:c.empId,name:c.empName,position:c.position||'',from:c.from,to:c.to,totalHours:c.totalHours,rate:c.rate,totalAmount:c.totalAmount});
     if(!res.success){toast(res.error||'Save failed','err');return;}
-    toast('Invoice saved successfully.','ok');
-    _currentInv=null;
+    toast('Invoice saved successfully.','ok');_currentInv=null;
     await loadSaved(ME.role!=='manager'?ME.id:null);
   }catch(e){toast('Error saving','err');}
 }
 
-function printInvoice(){
+function printInv(){
   const doc=document.getElementById('inv-doc');
   if(!doc){toast('Generate an invoice first','err');return;}
   const css=`<style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;600&display=swap');
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'DM Sans',sans-serif;background:#fff;color:#0b1a2e;padding:32px 40px;}
-    .inv-lh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:22px;border-bottom:3px solid #0b1a2e;}
-    .inv-cn{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#0b1a2e;}
-    .inv-cs,.inv-ca{color:#64748b;font-size:12px;line-height:1.7;margin-top:3px;}
-    .inv-wd{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#0b1a2e;letter-spacing:-2px;text-align:right;}
-    .inv-mt{text-align:right;margin-top:8px;font-size:13px;color:#0b1a2e;}
-    .inv-mr{font-size:13px;margin-bottom:2px;}
-    .inv-ig{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
-    .inv-ic{padding:16px 18px;border-right:1px solid #e2e8f0;}
-    .inv-ic:last-child{border-right:none;}
-    .iil{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#64748b;margin-bottom:6px;}
-    .iim{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#0b1a2e;margin-bottom:2px;}
-    .iis{font-size:12px;color:#64748b;line-height:1.5;}
-    .iid{display:inline-block;background:#f0fdf4;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:50px;margin-top:4px;}
-    .inv-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
-    .iis2{padding:14px 16px;text-align:center;border-right:1px solid #e2e8f0;background:#fafaf8;}
-    .iis2:last-child{border-right:none;background:#0b1a2e;}
-    .iis2-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:4px;}
-    .iis2:last-child .iis2-l{color:rgba(255,255,255,.5);}
-    .iis2-v{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0b1a2e;}
-    .iis2:last-child .iis2-v{color:#c9a84c;}
-    .inv-tw{display:flex;justify-content:flex-end;margin:16px 0 28px;}
-    .inv-tb2{width:260px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;}
-    .itr{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #e2e8f0;font-size:13.5px;}
-    .itr:last-child{border-bottom:none;background:#0b1a2e;padding:13px 16px;}
-    .itrl{color:#64748b;font-size:13px;}
-    .itr:last-child .itrl{color:rgba(255,255,255,.55);}
-    .itrr{font-weight:700;color:#0b1a2e;}
-    .itr:last-child .itrr{font-family:'Playfair Display',serif;font-size:24px;color:#c9a84c;}
-    .inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:36px;padding-top:22px;border-top:1px solid #e2e8f0;}
-    .sigl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:6px;}
-    .sigln{height:1px;background:#0b1a2e;margin:28px 0 5px;}
-    .signm{font-size:12px;color:#64748b;}
-    .inv-note{font-size:11.5px;color:#64748b;line-height:1.65;padding:12px 16px;background:#f8f7f3;border-radius:8px;border:1px solid #e2e8f0;margin-top:20px;}
-    .inv-tb,.inv-acts,.iab{display:none!important;}
+    body{font-family:'DM Sans',sans-serif;background:#fff;color:#0b1a2e;padding:30px 38px;font-size:13px;}
+    .inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2.5px solid #0b1a2e;}
+    .inv-co-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0b1a2e;}
+    .inv-co-meta{color:#64748b;font-size:11.5px;line-height:1.65;margin-top:4px;}
+    .inv-word{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:#0b1a2e;letter-spacing:-2px;text-align:right;line-height:1;}
+    .inv-meta{text-align:right;margin-top:7px;font-size:12px;color:#64748b;}
+    .inv-meta strong{color:#0b1a2e;}
+    .inv-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #e2e8f0;border-radius:9px;overflow:hidden;margin-bottom:20px;}
+    .inv-info-cell{padding:13px 16px;border-right:1px solid #e2e8f0;}.inv-info-cell:last-child{border-right:none;}
+    .inv-cell-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#64748b;margin-bottom:5px;}
+    .inv-cell-main{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#0b1a2e;margin-bottom:2px;}
+    .inv-cell-sub{font-size:11px;color:#64748b;line-height:1.5;}
+    .inv-cell-id{display:inline-block;background:#f0fdf4;color:#16a34a;font-size:10px;font-weight:700;padding:2px 7px;border-radius:50px;margin-top:3px;}
+    .inv-summary{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e2e8f0;border-radius:9px;overflow:hidden;margin-bottom:20px;}
+    .inv-sum-cell{padding:12px 14px;text-align:center;border-right:1px solid #e2e8f0;background:#fafaf8;}.inv-sum-cell:last-child{border-right:none;background:#0b1a2e;}
+    .inv-sum-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:3px;}.inv-sum-cell:last-child .inv-sum-label{color:rgba(255,255,255,.45);}
+    .inv-sum-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#0b1a2e;}.inv-sum-cell:last-child .inv-sum-val{color:#c9a84c;}
+    .inv-total-wrap{display:flex;justify-content:flex-end;margin:14px 0 22px;}
+    .inv-total-box{width:250px;border:1px solid #e2e8f0;border-radius:9px;overflow:hidden;}
+    .inv-total-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid #e2e8f0;font-size:12.5px;}.inv-total-row:last-child{border-bottom:none;background:#0b1a2e;padding:11px 14px;}
+    .inv-total-row span:first-child{color:#64748b;font-size:11.5px;}.inv-total-row:last-child span:first-child{color:rgba(255,255,255,.5);}
+    .inv-total-row span:last-child{font-weight:700;color:#0b1a2e;}.inv-total-row:last-child span:last-child{font-family:'Playfair Display',serif;font-size:22px;color:#c9a84c;}
+    .inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:32px;padding-top:18px;border-top:1px solid #e2e8f0;}
+    .sig-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:5px;}
+    .sig-line{height:1px;background:#0b1a2e;margin:24px 0 4px;}
+    .sig-name{font-size:11.5px;color:#64748b;}
+    .inv-note{font-size:11px;color:#64748b;line-height:1.6;padding:10px 14px;background:#f8f7f3;border-radius:7px;border:1px solid #e2e8f0;margin-top:18px;}
+    .inv-toolbar{display:none!important;}
   </style>`;
-  const win=window.open('','_blank','width=900,height=750');
-  win.document.write('<!DOCTYPE html><html><head><title>Central Nurses Invoice</title>'+css+'</head><body>');
-  win.document.write(doc.innerHTML);
-  win.document.write('</body></html>');
+  const win=window.open('','_blank','width=880,height=700');
+  win.document.write('<!DOCTYPE html><html><head><title>Invoice — Central Nurses LLC</title>'+css+'</head><body>'+doc.innerHTML+'</body></html>');
   win.document.close();
-  setTimeout(()=>win.print(),1200);
+  setTimeout(()=>win.print(),1100);
 }
 
 async function loadSaved(empFilter=null){
   const el=document.getElementById('saved-rows');if(!el)return;
   try{
-    const params=empFilter?{employeeId:empFilter}:{};
-    const res=await apiGet('getSavedInvoices',params);
+    const res=await apiGet('getSavedInvoices',empFilter?{employeeId:empFilter}:{});
     const invs=res.invoices||[];
     const isMgr=ME.role==='manager'&&!empFilter;
-    if(!invs.length){el.innerHTML='<div class="empty"><p>No saved invoices yet.</p></div>';return;}
-    el.innerHTML=`<table><thead><tr>
+    if(!invs.length){el.innerHTML='<div class="empty-state"><p>No saved invoices yet.</p></div>';return;}
+    el.innerHTML=`<table class="tbl"><thead><tr>
       <th>Invoice #</th>${isMgr?'<th>Employee</th><th>ID</th>':''}
       <th>Period</th><th>Hours</th><th>Total</th>
     </tr></thead><tbody>
       ${invs.map(i=>`<tr>
         <td><strong>${i.invoiceNumber}</strong></td>
-        ${isMgr?`<td>${i.name}</td><td><span class="badge bb">${i.employeeId}</span></td>`:''}
-        <td style="font-size:12.5px;">${i.from} to ${i.to}</td>
+        ${isMgr?`<td>${i.name}</td><td><span class="badge badge-navy">${i.employeeId}</span></td>`:''}
+        <td style="font-size:12px;">${i.from} – ${i.to}</td>
         <td>${parseFloat(i.totalHours||0).toFixed(2)} hrs</td>
         <td style="font-weight:700;">$${parseFloat(i.totalAmount||0).toFixed(2)}</td>
       </tr>`).join('')}
     </tbody></table>`;
-  }catch(e){el.innerHTML='<div class="empty"><p>Could not load invoices.</p></div>';}
+  }catch(e){el.innerHTML='<div class="empty-state"><p>Could not load invoices.</p></div>';}
 }
 
-async function addStaff(){
-  const nm=document.getElementById('as-nm').value.trim();
-  const em=document.getElementById('as-em').value.trim();
-  const pw=document.getElementById('as-pw').value;
-  const pos=document.getElementById('as-pos').value;
-  const ph=document.getElementById('as-ph').value.trim();
-  const rate=document.getElementById('as-rate').value;
-  if(!nm){toast('Name is required','err');return;}
-  try{
-    const res=await apiPost('addStaff',{name:nm,email:em,password:pw,position:pos,phone:ph,rate:parseFloat(rate)||25});
-    if(!res.success){toast(res.error||'Failed','err');return;}
-    toast(nm+' added. ID: '+res.id,'ok');
-    closeOv('o-addstaff');
-    // Refresh current page
-    mOverview();
-  }catch(e){toast('Error adding staff','err');}
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+function credCls(v){
+  if(!v||v===''||['n/a','na','none','undefined'].includes(v.toLowerCase())) return 'cred-na';
+  let d;
+  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v)){const[m,dy,y]=v.split('/');d=new Date(+y,+m-1,+dy);}
+  else d=new Date(v);
+  if(isNaN(d.getTime())) return 'cred-na';
+  const days=Math.round((d-new Date())/86400000);
+  if(days<0) return 'cred-bad';
+  if(days<=30) return 'cred-warn';
+  return 'cred-ok';
 }
-
-
-async function eChangePass(){
-  const el=document.getElementById('pg-changepass');
-  el.innerHTML=`
-    <div class="pgt">Change Password</div>
-    <div class="pgs">Update your account password</div>
-    <div class="fcard" style="max-width:420px;">
-      <h3>Change Your Password</h3>
-      <div class="field" style="margin-bottom:14px;"><label>Current Password</label><input type="password" id="cp-old" placeholder="Your current password"/></div>
-      <div class="field" style="margin-bottom:14px;"><label>New Password</label><input type="password" id="cp-new" placeholder="Choose a new password"/></div>
-      <div class="field" style="margin-bottom:20px;"><label>Confirm New Password</label><input type="password" id="cp-con" placeholder="Confirm new password"/></div>
-      <button class="sb sb-n" style="width:100%;padding:12px;" onclick="doChangePass()">Update Password</button>
-      <div style="margin-top:12px;font-size:12.5px;color:var(--muted);line-height:1.6;">
-        If you just joined and have not set a password yet, your default password is your Employee ID (e.g. RNCL0001).
-      </div>
-    </div>`;
+function fmtDate(v){
+  if(!v||v===''||['n/a','na','none','undefined'].includes((v||'').toLowerCase())) return v;
+  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v)) return v;
+  if(/^\d{4}-\d{2}-\d{2}/.test(v)){const p=v.split('T')[0].split('-');return p[1]+'/'+p[2]+'/'+p[0];}
+  return v;
 }
-
-async function doChangePass(){
-  const oldP=document.getElementById('cp-old').value;
-  const newP=document.getElementById('cp-new').value;
-  const conP=document.getElementById('cp-con').value;
-  if(!oldP||!newP||!conP){toast('All fields required','err');return;}
-  if(newP!==conP){toast('New passwords do not match','err');return;}
-  if(newP.length<4){toast('Password must be at least 4 characters','err');return;}
-  try{
-    const res=await apiGet('changePassword',{employeeId:ME.id,oldPassword:oldP,newPassword:newP});
-    if(!res.success){toast(res.error||'Failed','err');return;}
-    toast('Password updated successfully.','ok');
-    document.getElementById('cp-old').value='';
-    document.getElementById('cp-new').value='';
-    document.getElementById('cp-con').value='';
-  }catch(e){toast('Connection error','err');}
-}
-
-function mgrSetPass(empId, empName){
-  const p=prompt('Set new password for '+empName+'\n\nLeave blank to reset to their Employee ID ('+empId+')');
-  if(p===null) return;
-  const newPass = p.trim() || empId;
-  apiGet('setPassword',{employeeId:empId,newPassword:newPass}).then(res=>{
-    if(res.success) toast(empName+' password set successfully.','ok');
-    else toast(res.error||'Failed','err');
-  });
-}
-
+function today(){return new Date().toISOString().split('T')[0];}
+function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));return m.toISOString().split('T')[0];}
 function sendContact(){
   const n=document.getElementById('cn').value.trim();
   const e=document.getElementById('ce').value.trim();
@@ -1445,11 +1720,17 @@ function sendContact(){
   window.location.href='mailto:Info@Centralnurses.com?subject='+encodeURIComponent(document.getElementById('cs').value+' from '+n)+'&body='+encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m);
 }
 
-function today(){return new Date().toISOString().split('T')[0];}
-function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));return m.toISOString().split('T')[0];}
-
+// ════════════════════════════════════════════
 // SESSION RESTORE
-const _saved=localStorage.getItem('cn_user');
-if(_saved){
+// ════════════════════════════════════════════
+const _sv=localStorage.getItem('cn_user');
+if(_sv){
   try{
-    const _emp=JSON.parse(_saved);
+    const _e=JSON.parse(_sv);
+    if(_e.email&&_e.email.toLowerCase()===OWNER.toLowerCase()) _e.role='manager';
+    bootDash(_e);
+  }catch(e){localStorage.removeItem('cn_user');}
+}
+</script>
+</body>
+</html>
