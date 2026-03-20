@@ -262,7 +262,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
 <!-- PUBLIC SITE -->
 <div id="site">
 <nav class="nav">
-  <div class="nav-logo"><div class="nli">🏥</div><div class="nlt">Central Nurses LLC</div></div>
+  <div class="nav-logo"><div class="nli"></div><div class="nlt">Central Nurses LLC</div></div>
   <div class="nav-links">
     <a href="#services">Services</a><a href="#about">About</a><a href="#join">Careers</a><a href="#contact">Contact</a>
     <button class="nav-cta" onclick="openOv('o-login')">Staff Portal</button>
@@ -283,9 +283,9 @@ tr:hover td{background:rgba(11,26,46,.018);}
       <div class="wc-t">Why Choose Us</div>
       <div class="wci"><span>✅ &nbsp;Fully credentialed &amp; background-checked staff</span></div>
       <div class="wci"><span>⚡ &nbsp;Same-day &amp; next-day placement available</span></div>
-      <div class="wci"><span>📋 &nbsp;RNs, LPNs, CNAs &amp; CMAs ready to deploy</span></div>
+      <div class="wci"><span> &nbsp;RNs, LPNs, CNAs &amp; CMAs ready to deploy</span></div>
       <div class="wci"><span>🕒 &nbsp;24/7 support for facilities &amp; staff</span></div>
-      <div class="wci"><span>🏥 &nbsp;Serving 50+ healthcare facilities in Kansas</span></div>
+      <div class="wci"><span> &nbsp;Serving 50+ healthcare facilities in Kansas</span></div>
       <button class="wc-btn" onclick="openOv('o-register')">Join Our Team →</button>
     </div>
   </div>
@@ -407,7 +407,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
 <!-- DASHBOARD -->
 <div id="dash">
   <div class="dbar">
-    <div class="dl"><div class="dli">🏥</div><div class="dln">Central Nurses LLC</div></div>
+    <div class="dl"><div class="dli"></div><div class="dln">Central Nurses LLC</div></div>
     <div class="dr">
       <div class="up">
         <div class="uav" id="u-av"></div>
@@ -492,7 +492,7 @@ async function doLogin(){
     btn.innerHTML='Sign In';btn.disabled=false;
     if(!res.success){toast(res.error||'Login failed','err');return;}
     closeOv('o-login');bootDash(res.employee);
-  }catch(e){btn.innerHTML='Sign In';btn.disabled=false;toast('Connection error — check Apps Script URL','err');}
+  }catch(e){btn.innerHTML='Sign In';btn.disabled=false;toast('Connection error - check Apps Script URL','err');}
 }
 
 async function doRegister(){
@@ -502,16 +502,72 @@ async function doRegister(){
   const pw=document.getElementById('r-pw').value;
   const ph=document.getElementById('r-ph').value.trim();
   const pos=document.getElementById('r-pos')?.value||'Staff';
+  const MANAGER_EMAIL='kipkoechbethwel721@gmail.com';
+  const isManager=em.toLowerCase()===MANAGER_EMAIL.toLowerCase();
   if(!nm||!em||!pw){toast('Name, email and password required','err');return;}
   const btn=document.getElementById('rbtn');
   btn.innerHTML='<span class="spin"></span> Creating…';btn.disabled=true;
   try{
-    const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph,position:pos});
+    const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph,position:pos,role:isManager?'manager':'employee'});
     btn.innerHTML='Create Staff Account';btn.disabled=false;
     if(!res.success){toast(res.error||'Registration failed','err');return;}
-    toast('Welcome to Central Nurses! 🎉','ok');
+    toast('Account created successfully. Welcome to Central Nurses.','ok');
     closeOv('o-register');bootDash(res.employee);
   }catch(e){btn.innerHTML='Create Staff Account';btn.disabled=false;toast('Connection error','err');}
+}
+
+
+function printInvoice(){
+  const doc = document.getElementById('inv-doc');
+  if(!doc){ toast('Generate an invoice first','err'); return; }
+
+  const css = `<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:#fff;color:#0b1a2e;padding:32px 40px;}
+    .inv-lh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:22px;border-bottom:3px solid #0b1a2e;}
+    .inv-cn{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#0b1a2e;}
+    .inv-cs,.inv-ca{color:#64748b;font-size:12px;line-height:1.7;margin-top:3px;}
+    .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+    .logo-box{width:44px;height:44px;background:linear-gradient(135deg,#0b1a2e,#007ea7);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;}
+    .inv-wd{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#0b1a2e;letter-spacing:-2px;text-align:right;}
+    .inv-mt{text-align:right;margin-top:8px;font-size:13px;color:#0b1a2e;}
+    .inv-ig{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
+    .inv-ic{padding:16px 18px;border-right:1px solid #e2e8f0;}
+    .inv-ic:last-child{border-right:none;}
+    .iil{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#64748b;margin-bottom:6px;}
+    .iim{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#0b1a2e;margin-bottom:2px;}
+    .iis{font-size:12px;color:#64748b;line-height:1.5;}
+    .iid{display:inline-block;background:#f0fdf4;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:50px;margin-top:4px;}
+    .inv-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;}
+    .iis2{padding:14px 16px;text-align:center;border-right:1px solid #e2e8f0;background:#fafaf8;}
+    .iis2:last-child{border-right:none;background:#0b1a2e;}
+    .iis2-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:4px;}
+    .iis2:last-child .iis2-l{color:rgba(255,255,255,.5);}
+    .iis2-v{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0b1a2e;}
+    .iis2:last-child .iis2-v{color:#c9a84c;}
+    .inv-tw{display:flex;justify-content:flex-end;margin:16px 0 28px;}
+    .inv-tb2{width:260px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;}
+    .itr{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #e2e8f0;font-size:13.5px;}
+    .itr:last-child{border-bottom:none;background:#0b1a2e;padding:13px 16px;}
+    .itrl{color:#64748b;font-size:13px;}
+    .itr:last-child .itrl{color:rgba(255,255,255,.55);}
+    .itrr{font-weight:700;color:#0b1a2e;}
+    .itr:last-child .itrr{font-family:'Playfair Display',serif;font-size:24px;color:#c9a84c;}
+    .inv-sig{display:grid;grid-template-columns:1fr 1fr;gap:36px;padding-top:22px;border-top:1px solid #e2e8f0;margin-top:4px;}
+    .sigl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:6px;}
+    .sigln{height:1px;background:#0b1a2e;margin:28px 0 5px;}
+    .signm{font-size:12px;color:#64748b;}
+    .inv-note{font-size:11.5px;color:#64748b;line-height:1.65;padding:12px 16px;background:#f8f7f3;border-radius:8px;border:1px solid #e2e8f0;margin-top:20px;}
+    .inv-tb,.inv-acts,.iab{display:none!important;}
+  </style>`;
+
+  const win = window.open('','_blank','width=900,height=750');
+  win.document.write('<!DOCTYPE html><html><head><title>Central Nurses Invoice</title>' + css + '</head><body>');
+  win.document.write(doc.innerHTML);
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 1200);
 }
 
 function doSignOut(){
@@ -542,7 +598,7 @@ function bootDash(emp){
 // ══════════════════════════════════════════
 // MANAGER DASHBOARD
 // ══════════════════════════════════════════
-const MNAV=[{id:'overview',icon:'📊',label:'Overview'},{id:'staff',icon:'👥',label:'Staff'},{id:'timesheets',icon:'⏱️',label:'Timesheets'},{id:'invoices',icon:'🧾',label:'Invoices'}];
+const MNAV=[{id:'overview',icon:'📊',label:'Overview'},{id:'staff',icon:'',label:'Staff'},{id:'timesheets',icon:'',label:'Timesheets'},{id:'invoices',icon:'🧾',label:'Invoices'}];
 function buildMgr(){
   document.getElementById('sidebar').innerHTML=MNAV.map(n=>`<div class="si" id="si-${n.id}" onclick="mPg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('');
   document.getElementById('dcontent').innerHTML=MNAV.map(n=>`<div class="pg" id="pg-${n.id}"></div>`).join('');
@@ -566,9 +622,9 @@ async function mOverview(){
     el.innerHTML=`
       <div class="pgt">Overview</div><div class="pgs">Welcome back, ${ME.name}</div>
       <div class="krow">
-        <div class="kpi"><div class="kpi-i">👥</div><div class="kpi-v">${active}</div><div class="kpi-l">Active Staff</div></div>
-        <div class="kpi"><div class="kpi-i">📋</div><div class="kpi-v">${staff.length}</div><div class="kpi-l">Total Employees</div></div>
-        <div class="kpi"><div class="kpi-i">🏥</div><div class="kpi-v">50+</div><div class="kpi-l">Partner Facilities</div></div>
+        <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${active}</div><div class="kpi-l">Active Staff</div></div>
+        <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${staff.length}</div><div class="kpi-l">Total Employees</div></div>
+        <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">50+</div><div class="kpi-l">Partner Facilities</div></div>
       </div>
       <div class="tw">
         <div class="twt"><h3>Staff Directory</h3></div>
@@ -607,19 +663,45 @@ async function addStaff(){
   try{
     const res=await apiPost('addStaff',{name:nm,email:em,password:pw,position:pos,phone:ph,rate:parseFloat(rate)||25});
     if(!res.success){toast(res.error||'Failed','err');return;}
-    toast(nm+' added! Employee ID: '+res.id,'ok');
+    toast(nm+' added. Employee ID: '+res.id,'ok');
     closeOv('o-addstaff');await loadStaff();
   }catch(e){toast('Error adding staff','err');}
 }
 
 function editRate(id, name, cur){
-  const r = prompt("Set hourly rate for " + name + "\nCurrent: $" + cur + "/hr\n\nEnter new rate:", cur);
+  const r = prompt("Set hourly rate for " + name + "\nCurrent: $" + cur + "/hr\n\nEnter new hourly rate ($):", cur);
   if(r===null||r==="") return;
   const rate = parseFloat(r);
   if(isNaN(rate)||rate<1){toast("Enter a valid rate","err");return;}
-  apiGet("updateRate",{employeeId:id, rate:rate}).then(res=>{
-    if(res.success){toast(name+" rate updated to $"+rate+"/hr","ok");loadStaff();}
-    else toast(res.error||"Failed","err");
+  toast("Updating rate...");
+  apiGet("updateRate",{employeeId:id, rate:rate}).then(async res=>{
+    if(res.success){
+      toast(name + " rate updated to $" + rate + "/hr");
+      // Reload staff list so table shows new rate
+      await loadStaff();
+      // If invoice panel is open, refresh the employee dropdown with new rate
+      const invSel = document.getElementById('inv-e');
+      if(invSel){
+        const opts = invSel.options;
+        for(let i=0;i<opts.length;i++){
+          if(opts[i].value===id){
+            opts[i].dataset.rate = rate;
+            opts[i].text = opts[i].text.replace(/\$[0-9.]+\/hr/,'').trim();
+            // Update the rate field if this employee is currently selected
+            if(invSel.value===id){
+              const rateField = document.getElementById('inv-r');
+              if(rateField) rateField.value = rate;
+            }
+            break;
+          }
+        }
+      }
+      // Update _allStaff cache
+      const emp = _allStaff.find(s=>s.id===id);
+      if(emp) emp.rate = rate;
+    } else {
+      toast(res.error||"Failed to update rate","err");
+    }
   });
 }
 
@@ -754,11 +836,11 @@ async function toggleClock(){
     let res;
     if(!_isClockedIn){
       res=await apiPost('clockIn',{employeeId:ME.id,name:ME.name,position:ME.position||''});
-      if(res.success){_isClockedIn=true;toast('Clocked in! ✅ Saved to Google Sheets','ok');}
+      if(res.success){_isClockedIn=true;toast('Clocked in successfully. Have a great shift.','ok');}
       else toast(res.error||'Clock in failed','err');
     }else{
       res=await apiPost('clockOut',{employeeId:ME.id});
-      if(res.success){_isClockedIn=false;toast('Clocked out! '+res.hoursWorked+' hrs recorded 👋','ok');}
+      if(res.success){_isClockedIn=false;toast('Clocked out. '+res.hoursWorked+' hrs recorded.','ok');}
       else toast(res.error||'Clock out failed','err');
     }
   }catch(e){toast('Connection error','err');}
@@ -791,16 +873,22 @@ async function eHours(){
 async function loadEmpHours(){
   const from=document.getElementById('mf').value;
   const to=document.getElementById('mt').value;
-  const rate=parseFloat(ME.rate)||25;
+  // Always fetch fresh rate from sheet so it reflects any manager updates
+  let rate = parseFloat(ME.rate)||25;
+  try{
+    const staffRes = await apiGet('getStaff');
+    const me = (staffRes.staff||[]).find(s=>s.id===ME.id);
+    if(me && me.rate){ rate = parseFloat(me.rate); ME.rate = rate; localStorage.setItem('cn_user', JSON.stringify(ME)); }
+  }catch(e){}
   try{
     const res=await apiGet('getHours',{employeeId:ME.id,from,to});
     const totalH=res.totalHours||0;
     const sessions=res.sessions||[];
     document.getElementById('hk').innerHTML=`
-      <div class="kpi"><div class="kpi-i">⏱️</div><div class="kpi-v">${totalH.toFixed(2)}</div><div class="kpi-l">Total Hours</div></div>
-      <div class="kpi"><div class="kpi-i">💵</div><div class="kpi-v">$${(totalH*rate).toFixed(2)}</div><div class="kpi-l">Gross Earnings</div></div>
-      <div class="kpi"><div class="kpi-i">📋</div><div class="kpi-v">${sessions.length}</div><div class="kpi-l">Sessions</div></div>
-      <div class="kpi"><div class="kpi-i">💰</div><div class="kpi-v">$${rate}</div><div class="kpi-l">Hourly Rate</div></div>`;
+      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${totalH.toFixed(2)}</div><div class="kpi-l">Total Hours</div></div>
+      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">$${(totalH*rate).toFixed(2)}</div><div class="kpi-l">Gross Earnings</div></div>
+      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">${sessions.length}</div><div class="kpi-l">Sessions</div></div>
+      <div class="kpi"><div class="kpi-i"></div><div class="kpi-v">$${rate}</div><div class="kpi-l">Hourly Rate</div></div>`;
     const el=document.getElementById('hr2');
     if(!sessions.length){el.innerHTML='<div class="empty"><p>No sessions for this period.</p></div>';return;}
     el.innerHTML=`<table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>
@@ -830,7 +918,13 @@ async function genEmpInv(){
   const from=document.getElementById('ef').value;
   const to=document.getElementById('et').value;
   if(!from||!to){toast('Select date range','err');return;}
-  const rate=parseFloat(ME.rate)||25;
+  // Fetch latest rate from sheet
+  let rate = parseFloat(ME.rate)||25;
+  try{
+    const sr = await apiGet('getStaff');
+    const me = (sr.staff||[]).find(s=>s.id===ME.id);
+    if(me && me.rate){ rate = parseFloat(me.rate); ME.rate = rate; localStorage.setItem('cn_user', JSON.stringify(ME)); }
+  }catch(e){}
   await buildInv('inv-area',ME.id,ME.name,ME.position||'Staff',ME.id,from,to,rate,false);
 }
 
@@ -857,14 +951,14 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
         <div class="inv-acts">
           <button class="iab iab-c" onclick="document.getElementById('${areaId}').innerHTML='';_currentInv=null;">✕ Clear</button>
           <button class="iab iab-s" onclick="saveInv()">💾 Save</button>
-          <button class="iab iab-p" onclick="window.print()">🖨️ Print / PDF</button>
+          <button class="iab iab-p" onclick="printInvoice()">🖨️ Print / PDF</button>
         </div>
       </div>
       <div id="inv-doc">
         <div class="inv-lh">
           <div>
             <div style="display:flex;align-items:center;gap:11px;margin-bottom:8px;">
-              <div style="width:46px;height:46px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">🏥</div>
+              <div style="width:46px;height:46px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;"></div>
               <div><div class="inv-cn">Central Nurses LLC</div><div class="inv-cs">Staffing Agency · Wichita, Kansas</div></div>
             </div>
             <div class="inv-ca">629 S Longfellow Street, Wichita, KS 67207<br/>Info@Centralnurses.com · +1(316) 806-5951</div>
@@ -903,7 +997,7 @@ async function buildInv(areaId,empId,empName,empPos,empCode,from,to,rate,isMgr){
       </div>
     </div>`;
     area.scrollIntoView({behavior:'smooth',block:'start'});
-    toast('Invoice generated!','ok');
+    toast('Invoice generated.','ok');
     await loadSaved(isMgr?null:ME.id);
   }catch(e){area.innerHTML='<div class="empty"><p>Error generating invoice.</p></div>';toast('Error','err');}
 }
@@ -914,7 +1008,7 @@ async function saveInv(){
   try{
     const res=await apiPost('saveInvoice',{invoiceNumber:c.invNum,employeeId:c.empId,name:c.empName,position:c.position||'',from:c.from,to:c.to,totalHours:c.totalHours,rate:c.rate,totalAmount:c.totalAmount});
     if(!res.success){toast(res.error||'Save failed','err');return;}
-    toast('Invoice saved to Google Sheets! ✅','ok');
+    toast('Invoice saved successfully.','ok');
     _currentInv=null;
     await loadSaved(ME.role!=='manager'?ME.id:null);
   }catch(e){toast('Error saving','err');}
