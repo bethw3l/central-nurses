@@ -115,6 +115,8 @@ footer{background:var(--navy);padding:28px 5%;display:flex;align-items:center;ju
 .edv.exp-warn{color:var(--orange);font-weight:700;}
 .edv.exp-bad{color:var(--red);font-weight:700;}
 .section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.emp-detail-full{grid-column:1/-1;}
+.emp-detail-full .edv{white-space:pre-wrap;font-size:12.5px;line-height:1.6;max-height:120px;overflow-y:auto;}
 
 /* DASHBOARD */
 #dash{flex-direction:column;min-height:100vh;}
@@ -393,7 +395,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
       <div>
         <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Reach out and we will respond within one business day.</p>
         <div class="ci"><div class="ci-i">+</div>629 S Longfellow Street, Wichita, KS 67207</div>
-        <div class="ci"><div class="ci-i">+</div>Info@Centralnurses.com</div>
+        <div class="ci"><div class="ci-i">+</div><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0c45626a634c4f6962787e6d6062797e7f697f226f6361">[email&#160;protected]</a></div>
         <div class="ci"><div class="ci-i">+</div>+1(316) 806-5951</div>
         <div class="ci"><div class="ci-i">+</div>Mon-Fri: 8:00 AM - 5:00 PM · Sat-Sun: Closed</div>
       </div>
@@ -475,6 +477,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
     <div id="ed-body"></div>
     <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
       <button class="mbtn" style="flex:1;" onclick="genInvFromDetail()">Generate Invoice</button>
+      <button id="ed-status-btn" class="mbtn" style="flex:1;background:var(--rbg);color:var(--red);border:1.5px solid var(--red);">Toggle Status</button>
       <button class="mbtn" style="flex:1;background:var(--teal);" onclick="closeOv('o-empdetail')">Close</button>
     </div>
   </div>
@@ -498,7 +501,7 @@ tr:hover td{background:rgba(11,26,46,.018);}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API = 'https://script.google.com/macros/s/AKfycbxM2-Urxt_9Nml_HCEy4W471SIoDJLXNsaI1-JZSrfe7CbLCxQPsPRMTq20u7k5Gadk/exec';
 
 async function apiGet(action, params={}){
@@ -735,12 +738,33 @@ function renderDiscTable(staff,elId,disc){
 }
 
 function credClass(dateStr){
-  if(!dateStr||dateStr==='N/A'||dateStr==='n/a') return 'cred-na';
-  const d=new Date(dateStr); if(isNaN(d)) return 'cred-na';
+  if(!dateStr||dateStr===''||dateStr.toLowerCase()==='n/a'||dateStr.toLowerCase()==='none') return 'cred-na';
+  // Handle MM/DD/YYYY format
+  let d;
+  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)){
+    const [m,day,y]=dateStr.split('/');
+    d=new Date(y,m-1,day);
+  } else {
+    d=new Date(dateStr);
+  }
+  if(isNaN(d.getTime())) return 'cred-na';
   const days=Math.round((d-new Date())/86400000);
-  if(days<0) return 'cred-bad';
-  if(days<=60) return 'cred-warn';
-  return 'cred-ok';
+  if(days<0) return 'cred-bad';      // expired - RED
+  if(days<=30) return 'cred-warn';   // within 30 days - ORANGE
+  return 'cred-ok';                  // ok - GREEN
+}
+
+function formatDate(dateStr){
+  if(!dateStr||dateStr===''||dateStr.toLowerCase()==='n/a'||dateStr.toLowerCase()==='none') return dateStr||'';
+  let d;
+  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)){
+    return dateStr; // already formatted
+  }
+  if(/^\d{4}-\d{2}-\d{2}/.test(dateStr)){
+    const parts=dateStr.split('T')[0].split('-');
+    return parts[1]+'/'+parts[2]+'/'+parts[0];
+  }
+  return dateStr;
 }
 
 // VIEW EMPLOYEE DETAIL
@@ -753,45 +777,75 @@ async function viewEmployee(empId,disc){
     const res=await apiGet('getStaffById',{employeeId:empId});
     if(!res.success){document.getElementById('ed-body').innerHTML='<div class="empty"><p>'+res.error+'</p></div>';return;}
     const e=res.employee;
-    _detailEmp={id:empId,name:e['Full Name']||e.name,position:e['Discipline']||e.position||disc,rate:e.rate||25};
+    const currentStatus=(e['Status']||e['status']||'active').toLowerCase();
+    _detailEmp={id:empId,name:e['Full Name']||e.name,position:e['Discipline']||e.position||disc,rate:parseFloat(e.rate)||25};
     document.getElementById('ed-name').textContent=e['Full Name']||empId;
-    document.getElementById('ed-subtitle').textContent=(e['Employee ID']||empId)+' · '+(e['Discipline']||disc)+' · '+(e['Status']||'');
-    
-    // Render all fields in organized sections
-    const sections={
-      'Basic Information':['Employee ID','Full Name','Status','Discipline','Hire Date','GDrive Hire Date','Final Hire Date','Facility'],
-      'Licenses & Certifications':['License Expiry','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP'],
-      'Documentation':['Resume','CEU','Education Verification','Job Description','References','Annual Evaluation','Ongoing Evaluation'],
-      'Compliance & Training':['Annual Core Mandatory Exams','Skills Checklist','Specialty Exam','Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS'],
-      'Medical':['TB Test/CXR','TB Questionnaire','Physical','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen'],
-      'Other':['Covid Requirement','Handbook Acknowledgement Form'],
-      'Notes':['Notes Section','Team Notes']
-    };
-    
+    document.getElementById('ed-subtitle').textContent=(e['Employee ID']||empId)+' - '+(e['Discipline']||disc);
+    const DATE_FIELDS=new Set(['License Expiry','License','Primary Source Verification','Nursys Verification',
+      'BLS/CPR','ACLS','PALS','NRP','Annual Core Mandatory Exams','Skills Checklist','Specialty Exam',
+      'Skills  Checklist','Specialty  Exam','Background Check Authorization','National Background Checks',
+      'OIG','NSOPW','SAM EPLS','TB Test/CXR','TB Questionnaire','TB  Questionnaire','MMR','Varicella',
+      'Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen','Covid Requirement',
+      'Handbook Acknowledgement Form','References','Hire Date','GDrive Hire Date','Final Hire Date']);
+    const sections=[
+      {t:'Basic Information',f:['Employee ID','Full Name','Status','Discipline','Hire Date','GDrive Hire Date','Final Hire Date','Facility']},
+      {t:'Licenses and Certifications',f:['License Expiry','License','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP']},
+      {t:'Documentation',f:['Resume','CEU','Education Verification','Job Description','References','Annual Evaluation','Ongoing Evaluation']},
+      {t:'Compliance and Training',f:['Annual Core Mandatory Exams','Skills Checklist','Skills  Checklist','Specialty Exam','Specialty  Exam','Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS']},
+      {t:'Medical Records',f:['TB Test/CXR','TB Questionnaire','TB  Questionnaire','Physical','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen']},
+      {t:'Other',f:['Covid Requirement','Handbook Acknowledgement Form']},
+      {t:'Notes',f:['Notes Section','Team Notes']}
+    ];
+    const shown=new Set();
     let html='';
-    for(const[sectionTitle,fields] of Object.entries(sections)){
-      const hasData=fields.some(f=>e[f]&&e[f].trim()&&e[f].trim()!=='');
-      if(!hasData) continue;
-      html+=`<div class="section-divider">${sectionTitle}</div><div class="emp-detail-grid">`;
-      fields.forEach(f=>{
-        const val=e[f]||'';
-        if(!val&&!['Employee ID','Full Name','Status','Discipline'].includes(f)) return;
-        const cls=isDateField(f)?credClass(val):'';
-        html+=`<div class="emp-detail-item"><div class="edl">${f}</div><div class="edv ${cls}">${val||'—'}</div></div>`;
+    sections.forEach(sec=>{
+      let sh='';
+      sec.f.forEach(f=>{
+        shown.add(f);
+        const val=(e[f]||'').toString().trim();
+        if(!val||val.toLowerCase()==='undefined') return;
+        const isD=DATE_FIELDS.has(f);
+        const cls=isD?credClass(val):'';
+        const disp=isD?formatDate(val):val;
+        const full=f==='Notes Section'||f==='Team Notes';
+        sh+=`<div class="emp-detail-item${full?' emp-detail-full':''}"><div class="edl">${f}</div><div class="edv ${cls}">${disp||'N/A'}</div></div>`;
+      });
+      if(sh) html+=`<div class="section-divider">${sec.t}</div><div class="emp-detail-grid">${sh}</div>`;
+    });
+    const rem=Object.entries(e).filter(([k,v])=>!shown.has(k)&&v&&v.toString().trim()&&v.toString().trim().toLowerCase()!=='undefined');
+    if(rem.length){
+      html+=`<div class="section-divider">Additional Fields</div><div class="emp-detail-grid">`;
+      rem.forEach(([k,v])=>{
+        const isD=DATE_FIELDS.has(k);
+        const cls=isD?credClass(v.toString()):'';
+        const disp=isD?formatDate(v.toString()):v.toString();
+        html+=`<div class="emp-detail-item"><div class="edl">${k}</div><div class="edv ${cls}">${disp}</div></div>`;
       });
       html+='</div>';
     }
-    
-    // Any remaining fields not in sections
-    html+=`<div class="section-divider">All Fields</div><div class="emp-detail-grid">`;
-    Object.entries(e).forEach(([k,v])=>{
-      if(!v||v.trim()==='') return;
-      html+=`<div class="emp-detail-item"><div class="edl">${k}</div><div class="edv">${v}</div></div>`;
-    });
-    html+='</div>';
-    
     document.getElementById('ed-body').innerHTML=html;
-  }catch(e){document.getElementById('ed-body').innerHTML='<div class="empty"><p>Error loading details.</p></div>';}
+    const statusBtn=document.getElementById('ed-status-btn');
+    if(statusBtn){
+      const isActive=currentStatus==='active';
+      statusBtn.textContent=isActive?'Mark as Inactive':'Mark as Active';
+      statusBtn.style.background=isActive?'var(--rbg)':'var(--gbg)';
+      statusBtn.style.color=isActive?'var(--red)':'var(--green)';
+      statusBtn.style.border=isActive?'1.5px solid var(--red)':'1.5px solid var(--green)';
+      statusBtn.onclick=()=>toggleEmpStatus(empId,currentStatus,disc);
+    }
+  }catch(err){document.getElementById('ed-body').innerHTML='<div class="empty"><p>Error: '+err+'</p></div>';}
+}
+
+async function toggleEmpStatus(empId,currentStatus,disc){
+  const newStatus=currentStatus==='active'?'Inactive':'Active';
+  toast('Updating status...');
+  try{
+    const res=await apiGet('updateStatus',{employeeId:empId,status:newStatus});
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast('Status updated to '+newStatus,'ok');
+    closeOv('o-empdetail');
+    if(disc) mDisc(disc); else mOverview();
+  }catch(e){toast('Error updating status','err');}
 }
 
 function isDateField(f){
@@ -852,6 +906,7 @@ function renderStaffTable(staff,elId,showDisc){
         <td><span class="badge ${(s.status||'').toLowerCase()==='active'?'bg':'bx'}">${s.status||'—'}</span></td>
         <td><div class="gap8">
           <button class="sb sb-n sb-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Set Rate</button>
+          <button class="sb sb-teal sb-sm" onclick="mgrSetPass('${s.id}','${s.name}')">Set Password</button>
         </div></td>
       </tr>`;
     }).join('')}
@@ -1006,6 +1061,7 @@ const ENAV=[
   {id:'myhours',  icon:'[H]', label:'My Hours'},
   {id:'myinv',    icon:'[I]', label:'My Invoice'},
   {id:'myprofile',icon:'[P]', label:'My Profile'},
+  {id:'changepass',icon:'[K]', label:'Change Password'},
 ];
 function buildEmp(){
   document.getElementById('sidebar').innerHTML=ENAV.map(n=>`<div class="si" id="si-${n.id}" onclick="ePg('${n.id}')"><span class="si-ic">${n.icon}</span><span>${n.label}</span></div>`).join('');
@@ -1017,7 +1073,7 @@ function ePg(id){
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('on'));
   document.getElementById('si-'+id)?.classList.add('active');
   document.getElementById('pg-'+id)?.classList.add('on');
-  ({clock:eClock,myhours:eHours,myinv:eInv,myprofile:eProfile})[id]?.();
+  ({clock:eClock,myhours:eHours,myinv:eInv,myprofile:eProfile,changepass:eChangePass})[id]?.();
 }
 
 async function eClock(){
@@ -1336,6 +1392,51 @@ async function addStaff(){
   }catch(e){toast('Error adding staff','err');}
 }
 
+
+async function eChangePass(){
+  const el=document.getElementById('pg-changepass');
+  el.innerHTML=`
+    <div class="pgt">Change Password</div>
+    <div class="pgs">Update your account password</div>
+    <div class="fcard" style="max-width:420px;">
+      <h3>Change Your Password</h3>
+      <div class="field" style="margin-bottom:14px;"><label>Current Password</label><input type="password" id="cp-old" placeholder="Your current password"/></div>
+      <div class="field" style="margin-bottom:14px;"><label>New Password</label><input type="password" id="cp-new" placeholder="Choose a new password"/></div>
+      <div class="field" style="margin-bottom:20px;"><label>Confirm New Password</label><input type="password" id="cp-con" placeholder="Confirm new password"/></div>
+      <button class="sb sb-n" style="width:100%;padding:12px;" onclick="doChangePass()">Update Password</button>
+      <div style="margin-top:12px;font-size:12.5px;color:var(--muted);line-height:1.6;">
+        If you just joined and have not set a password yet, your default password is your Employee ID (e.g. RNCL0001).
+      </div>
+    </div>`;
+}
+
+async function doChangePass(){
+  const oldP=document.getElementById('cp-old').value;
+  const newP=document.getElementById('cp-new').value;
+  const conP=document.getElementById('cp-con').value;
+  if(!oldP||!newP||!conP){toast('All fields required','err');return;}
+  if(newP!==conP){toast('New passwords do not match','err');return;}
+  if(newP.length<4){toast('Password must be at least 4 characters','err');return;}
+  try{
+    const res=await apiGet('changePassword',{employeeId:ME.id,oldPassword:oldP,newPassword:newP});
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast('Password updated successfully.','ok');
+    document.getElementById('cp-old').value='';
+    document.getElementById('cp-new').value='';
+    document.getElementById('cp-con').value='';
+  }catch(e){toast('Connection error','err');}
+}
+
+function mgrSetPass(empId, empName){
+  const p=prompt('Set new password for '+empName+'\n\nLeave blank to reset to their Employee ID ('+empId+')');
+  if(p===null) return;
+  const newPass = p.trim() || empId;
+  apiGet('setPassword',{employeeId:empId,newPassword:newPass}).then(res=>{
+    if(res.success) toast(empName+' password set successfully.','ok');
+    else toast(res.error||'Failed','err');
+  });
+}
+
 function sendContact(){
   const n=document.getElementById('cn').value.trim();
   const e=document.getElementById('ce').value.trim();
@@ -1352,11 +1453,3 @@ const _saved=localStorage.getItem('cn_user');
 if(_saved){
   try{
     const _emp=JSON.parse(_saved);
-    const OWNER='kipkoechbethwel721@gmail.com';
-    if(_emp.email&&_emp.email.toLowerCase()===OWNER.toLowerCase()) _emp.role='manager';
-    bootDash(_emp);
-  }catch(e){localStorage.removeItem('cn_user');}
-}
-</script>
-</body>
-</html>
