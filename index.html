@@ -527,9 +527,9 @@ tr:last-child td{border-bottom:none;}
 </div>
 
 <div class="stats-bar">
-  <div class="stat"><div class="stat-n" data-target="50">0</div><div class="stat-l">Partner Facilities</div></div>
+  <div class="stat"><div class="stat-n">50+</div><div class="stat-l">Partner Facilities</div></div>
   <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">Support Available</div></div>
-  <div class="stat"><div class="stat-n" data-target="10">0</div><div class="stat-l">Years Experience</div></div>
+  <div class="stat"><div class="stat-n">10+</div><div class="stat-l">Years Experience</div></div>
 </div>
 
 <!-- SERVICES -->
@@ -689,7 +689,7 @@ tr:last-child td{border-bottom:none;}
       <div class="reveal-left">
         <p style="color:var(--muted);font-size:14.5px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Our dedicated team is ready to assist you. Reach out today for prompt and personalized service.</p>
         <div class="ci"><div class="ci-ic">📍</div><span>629 S Longfellow Street, Wichita, KS 67207</span></div>
-        <div class="ci"><div class="ci-ic">✉</div><span><a href="mailto:Info@Centralnurses.com" style="color:inherit;text-decoration:none;">Info@Centralnurses.com</a></span></div>
+        <div class="ci"><div class="ci-ic">✉</div><span><a href="/cdn-cgi/l/email-protection#4a03242c250a092f243e382b26243f38392f3964292527" style="color:inherit;text-decoration:none;"><span class="__cf_email__" data-cfemail="95dcfbf3fad5d6f0fbe1e7f4f9fbe0e7e6f0e6bbf6faf8">[email&#160;protected]</span></a></span></div>
         <div class="ci"><div class="ci-ic">📞</div><span>+1(316) 806-5951</span></div>
         <div class="ci"><div class="ci-ic">🕐</div><span>Mon–Fri: 8:00 AM – 5:00 PM · Sat–Sun: Closed</span></div>
       </div>
@@ -723,7 +723,7 @@ tr:last-child td{border-bottom:none;}
       <div class="f-head">Contact</div>
       <div style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.9;">
         629 S Longfellow Street<br/>Wichita, KS 67207<br/>
-        <a href="mailto:Info@Centralnurses.com" style="color:rgba(255,255,255,.55);text-decoration:none;">Info@Centralnurses.com</a><br/>
+        <a href="/cdn-cgi/l/email-protection#88c1e6eee7c8cbede6fcfae9e4e6fdfafbedfba6ebe7e5" style="color:rgba(255,255,255,.55);text-decoration:none;"><span class="__cf_email__" data-cfemail="024b6c646d4241676c7670636e6c77707167712c616d6f">[email&#160;protected]</span></a><br/>
         +1(316) 806-5951<br/>
         Mon–Fri: 8:00–17:00
       </div>
@@ -819,7 +819,7 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API='https://script.google.com/macros/s/AKfycbxM2-Urxt_9Nml_HCEy4W471SIoDJLXNsaI1-JZSrfe7CbLCxQPsPRMTq20u7k5Gadk/exec';
 const OWNER='kipkoechbethwel721@gmail.com';
 async function apiGet(a,p={}){const r=await fetch(API+'?action='+a+'&'+new URLSearchParams(p),{redirect:'follow'});return r.json();}
@@ -865,7 +865,7 @@ async function sendResetCode(){
     btn.innerHTML='Send Reset Code';btn.disabled=false;
     if(!res.success){toast(res.error||'Email not found. Please check and try again.','err');return;}
     _resetEmail=em;
-    _resetCode=res.code; // stored in memory only
+    _resetCode=String(res.code);
     document.getElementById('fp-step1').style.display='none';
     document.getElementById('fp-step2').style.display='';
     toast('Reset code sent to your email!','ok');
@@ -876,7 +876,7 @@ async function confirmReset(){
   const pw=document.getElementById('fp-pw').value;
   const pw2=document.getElementById('fp-pw2').value;
   if(!code){toast('Enter the 6-digit code from your email','err');return;}
-  if(code!==String(_resetCode)&&code!==_resetCode){toast('Incorrect code. Check your email and try again.','err');return;}
+  if(code.trim()!==_resetCode){toast('Incorrect code. Check your email and try again.','err');return;}
   if(!pw){toast('Enter a new password','err');return;}
   const v=validatePw(pw);if(!v.ok){toast(v.msg,'err');return;}
   if(pw!==pw2){toast('Passwords do not match','err');return;}
@@ -1276,7 +1276,7 @@ function testiGo(idx){
 function testiNext(){testiGo((_testiIdx+1)%_testiTotal);}
 function testiPrev(){testiGo((_testiIdx-1+_testiTotal)%_testiTotal);}
 // Auto-slide every 5 seconds
-function startTestiAuto(){_testiAuto=setInterval(testiNext,5000);}
+function startTestiAuto(){_testiAuto=setInterval(testiNext,2500);}
 function stopTestiAuto(){clearInterval(_testiAuto);}
 const testiWrap=document.querySelector('.testi-slider-wrap');
 if(testiWrap){testiWrap.addEventListener('mouseenter',stopTestiAuto);testiWrap.addEventListener('mouseleave',startTestiAuto);}
