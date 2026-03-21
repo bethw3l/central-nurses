@@ -196,16 +196,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--white);color:va
 .feat h4{font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:3px;}
 .feat p{font-size:12px;color:var(--muted);line-height:1.55;}
 
-/* TESTIMONIALS */
-.testi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px;}
-.testi{background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:20px;box-shadow:var(--shadow);transition:all .2s;}
+/* TESTIMONIALS SLIDER */
+.testi-slider-wrap{position:relative;overflow:hidden;margin-top:36px;}
+.testi-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.testi-slide{min-width:100%;padding:0 6px;box-sizing:border-box;}
+.testi-inner{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+@media(max-width:700px){.testi-inner{grid-template-columns:1fr;}}
+.testi{background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:24px;box-shadow:var(--shadow);transition:all .2s;}
 .testi:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
-.testi-stars{color:var(--gold);font-size:13px;margin-bottom:10px;letter-spacing:1px;}
-.testi-text{color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:14px;font-style:italic;}
-.testi-author{display:flex;align-items:center;gap:10px;}
-.testi-av{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--gold2);flex-shrink:0;}
-.testi-name{font-size:13px;font-weight:700;color:var(--navy);}
-.testi-role{font-size:11.5px;color:var(--muted);}
+.testi-stars{color:var(--gold);font-size:15px;margin-bottom:12px;letter-spacing:2px;}
+.testi-text{color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:18px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
+.testi-name{font-size:14px;font-weight:700;color:var(--navy);}
+.testi-dots{display:flex;justify-content:center;gap:8px;margin-top:22px;}
+.testi-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);cursor:pointer;transition:all .2s;}
+.testi-dot.active{background:var(--navy);width:22px;border-radius:4px;}
+.testi-arrows{display:flex;justify-content:center;gap:10px;margin-top:14px;}
+.testi-arrow{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;color:var(--navy);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .16s;}
+.testi-arrow:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
 
 /* ABOUT SECTION */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
@@ -594,11 +603,60 @@ tr:last-child td{border-bottom:none;}
   <div class="sec-in">
     <div class="sec-tag reveal">What They Say</div>
     <div class="sec-title reveal delay1">Staff Reviews</div>
-    <div class="testi-grid">
-      <div class="testi reveal"><div class="testi-stars">★★★★★</div><p class="testi-text">"Your services are the best and I would recommend anyone to partner with you for quality services."</p><div class="testi-author"><div class="testi-av" style="background:#1e3a8a;">S</div><div><div class="testi-name">Sparkle</div><div class="testi-role">RN Staff</div></div></div></div>
-      <div class="testi reveal delay1"><div class="testi-stars">★★★★★</div><p class="testi-text">"I just wanted to let you know that you guys do a really good job. I'm glad I decided to work with you."</p><div class="testi-author"><div class="testi-av" style="background:#166534;">A</div><div><div class="testi-name">Allison</div><div class="testi-role">LPN Staff</div></div></div></div>
-      <div class="testi reveal delay2"><div class="testi-stars">★★★★★</div><p class="testi-text">"Currently working with Central Nurses — it is the best Staffing Agency. Join us to provide the best care!"</p><div class="testi-author"><div class="testi-av" style="background:#581c87;">P</div><div><div class="testi-name">Pruddy</div><div class="testi-role">CNA Staff</div></div></div></div>
-      <div class="testi reveal delay3"><div class="testi-stars">★★★★★</div><p class="testi-text">"From day one the recruiting team has been awesome people! The best job I've had in a very long time."</p><div class="testi-author"><div class="testi-av" style="background:#7c2d12;">A</div><div><div class="testi-name">Amanda</div><div class="testi-role">CMA Staff</div></div></div></div>
+    <div class="sec-sub reveal delay2">Real words from our healthcare professionals.</div>
+    <div class="testi-slider-wrap reveal">
+      <div class="testi-track" id="testi-track">
+        <!-- Slide 1: Sparkle + Allison -->
+        <div class="testi-slide">
+          <div class="testi-inner">
+            <div class="testi">
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-text">"Your services are the best and I would recommend anyone to partner with you for quality services."</p>
+              <div class="testi-author">
+                <div class="testi-av" style="background:#1e3a8a;">S</div>
+                <div><div class="testi-name">Sparkle</div></div>
+              </div>
+            </div>
+            <div class="testi">
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-text">"I just wanted to let you know that you guys do a really good job. I'm glad I decided to work with you."</p>
+              <div class="testi-author">
+                <div class="testi-av" style="background:#166534;">A</div>
+                <div><div class="testi-name">Allison</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2: Pruddy + Amanda -->
+        <div class="testi-slide">
+          <div class="testi-inner">
+            <div class="testi">
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-text">"Currently working with Central Nurses — it is the best Staffing Agency. Join us to provide the best care!"</p>
+              <div class="testi-author">
+                <div class="testi-av" style="background:#581c87;">P</div>
+                <div><div class="testi-name">Pruddy</div></div>
+              </div>
+            </div>
+            <div class="testi">
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-text">"From day one the recruiting team has been awesome people! The best job I've had in a very long time."</p>
+              <div class="testi-author">
+                <div class="testi-av" style="background:#7c2d12;">A</div>
+                <div><div class="testi-name">Amanda</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-arrows">
+        <button class="testi-arrow" onclick="testiPrev()">&#8592;</button>
+        <button class="testi-arrow" onclick="testiNext()">&#8594;</button>
+      </div>
+      <div class="testi-dots">
+        <div class="testi-dot active" onclick="testiGo(0)"></div>
+        <div class="testi-dot" onclick="testiGo(1)"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -631,7 +689,7 @@ tr:last-child td{border-bottom:none;}
       <div class="reveal-left">
         <p style="color:var(--muted);font-size:14.5px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Our dedicated team is ready to assist you. Reach out today for prompt and personalized service.</p>
         <div class="ci"><div class="ci-ic">📍</div><span>629 S Longfellow Street, Wichita, KS 67207</span></div>
-        <div class="ci"><div class="ci-ic">✉</div><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="460f282029060523283234272a2833343523356825292b">[email&#160;protected]</a></span></div>
+        <div class="ci"><div class="ci-ic">✉</div><span><a href="mailto:Info@Centralnurses.com" style="color:inherit;text-decoration:none;">Info@Centralnurses.com</a></span></div>
         <div class="ci"><div class="ci-ic">📞</div><span>+1(316) 806-5951</span></div>
         <div class="ci"><div class="ci-ic">🕐</div><span>Mon–Fri: 8:00 AM – 5:00 PM · Sat–Sun: Closed</span></div>
       </div>
@@ -665,7 +723,7 @@ tr:last-child td{border-bottom:none;}
       <div class="f-head">Contact</div>
       <div style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.9;">
         629 S Longfellow Street<br/>Wichita, KS 67207<br/>
-        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ac3e4ece5cac9efe4fef8ebe6e4fff8f9eff9a4e9e5e7">[email&#160;protected]</a><br/>
+        <a href="mailto:Info@Centralnurses.com" style="color:rgba(255,255,255,.55);text-decoration:none;">Info@Centralnurses.com</a><br/>
         +1(316) 806-5951<br/>
         Mon–Fri: 8:00–17:00
       </div>
@@ -705,7 +763,7 @@ tr:last-child td{border-bottom:none;}
         <div class="fi"><label>Date of Birth</label><input type="date" id="r-dob" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;width:100%;background:#fff;" max=""/></div>
         <div class="fi"><label>Phone (optional)</label><input type="text" id="r-ph" placeholder="(316) 555-0000"/></div>
       </div>
-      <div class="fi"><label>Position</label><select id="r-pos"><option value="">Select your position...</option><option value="RN">RN — Registered Nurse</option><option value="LPN">LPN — Licensed Practical Nurse</option><option value="CNA">CNA — Certified Nursing Assistant</option><option value="CMA">CMA — Certified Medical Assistant</option><option value="LVN">LVN — Licensed Vocational Nurse</option><option value="Staff">Other / Staff</option></select></div>
+      <div class="fi"><label>Position</label><select id="r-pos"><option value="">Select your position...</option><option value="RN">RN — Registered Nurse</option><option value="LPN">LPN — Licensed Practical Nurse</option><option value="CNA">CNA — Certified Nursing Assistant</option><option value="CMA">CMA — Certified Medical Assistant</option><option value="Staff">Other / Staff</option></select></div>
       <button class="btn btn-navy btn-full" id="rbtn" onclick="doRegister()">Create Account</button>
       <p style="text-align:center;margin-top:13px;font-size:13px;color:var(--muted);">Already registered? <a style="color:var(--navy);cursor:pointer;font-weight:700;" onclick="swOv('ov-register','ov-login')">Sign in</a></p>
     </div>
@@ -761,7 +819,7 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const API='https://script.google.com/macros/s/AKfycbxM2-Urxt_9Nml_HCEy4W471SIoDJLXNsaI1-JZSrfe7CbLCxQPsPRMTq20u7k5Gadk/exec';
 const OWNER='kipkoechbethwel721@gmail.com';
 async function apiGet(a,p={}){const r=await fetch(API+'?action='+a+'&'+new URLSearchParams(p),{redirect:'follow'});return r.json();}
@@ -818,7 +876,7 @@ async function confirmReset(){
   const pw=document.getElementById('fp-pw').value;
   const pw2=document.getElementById('fp-pw2').value;
   if(!code){toast('Enter the 6-digit code from your email','err');return;}
-  if(code!==String(_resetCode)){toast('Incorrect code. Check your email and try again.','err');return;}
+  if(code!==String(_resetCode)&&code!==_resetCode){toast('Incorrect code. Check your email and try again.','err');return;}
   if(!pw){toast('Enter a new password','err');return;}
   const v=validatePw(pw);if(!v.ok){toast(v.msg,'err');return;}
   if(pw!==pw2){toast('Passwords do not match','err');return;}
@@ -884,7 +942,7 @@ function filterOv(q){const f=q.toLowerCase();renderAllStaff(f?_staff.filter(s=>(
 function renderAllStaff(staff,elId){
   const el=document.getElementById(elId);if(!el)return;
   if(!staff.length){el.innerHTML='<div class="empty"><p>No staff found.</p></div>';return;}
-  el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Rate/hr</th><th>Status</th><th></th></tr></thead><tbody>${staff.map(s=>{const d=(s.position||'').toUpperCase().split('/')[0].trim().split(' ')[0];const bc=d==='RN'?'b-rn':d==='LPN'?'b-lpn':d==='CNA'?'b-cna':d==='CMA'?'b-cma':'b-admin';const act=(s.status||'').toLowerCase()==='active';return`<tr><td><span class="badge ${bc}">${s.id}</span></td><td><strong>${s.name}</strong></td><td><span class="badge ${bc}">${s.position||'—'}</span></td><td style="color:var(--muted)">${s.email||'—'}</td><td>${s.rate?'$'+s.rate+'/hr':'—'}</td><td><span class="badge ${act?'b-active':'b-inactive'}">${s.status||'—'}</span></td><td><div class="gap"><button class="btn btn-teal btn-sm" onclick="viewEmp('${s.id}','${d}')">View</button><button class="btn btn-light btn-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Rate</button></div></td></tr>`;}).join('')}</tbody></table>`;
+  el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th><th>Actions</th></tr></thead><tbody>${staff.map(s=>{const d=(s.position||'').toUpperCase().split('/')[0].trim().split(' ')[0];const bc=d==='RN'?'b-rn':d==='LPN'?'b-lpn':d==='CNA'?'b-cna':d==='CMA'?'b-cma':'b-admin';const act=(s.status||'active').toLowerCase()==='active';return`<tr><td><span class="badge ${bc}">${s.id||'—'}</span></td><td><strong>${s.name||'—'}</strong></td><td><span class="badge ${bc}">${s.position||'—'}</span></td><td style="color:var(--muted);font-size:12px;">${s.email||'—'}</td><td style="color:var(--muted);font-size:12px;">${s.phone||'—'}</td><td style="font-weight:700;">${s.rate?'$'+s.rate+'/hr':'—'}</td><td><span class="badge ${act?'b-active':'b-inactive'}">${act?'Active':'Inactive'}</span></td><td><div class="gap"><button class="btn btn-teal btn-sm" onclick="viewEmp('${s.id}','${d}')">View</button><button class="btn btn-light btn-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Rate</button></div></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 async function pgDisc(disc){
@@ -911,24 +969,79 @@ function renderDiscTbl(staff,elId,disc){
 }
 
 async function viewEmp(empId,disc){
-  document.getElementById('ed-title').textContent='Loading...';document.getElementById('ed-sub').textContent='';document.getElementById('ed-body').innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';openOv('ov-empdetail');
+  document.getElementById('ed-title').textContent='Loading...';
+  document.getElementById('ed-sub').textContent='Fetching employee details...';
+  document.getElementById('ed-body').innerHTML='<div class="empty" style="padding:40px;"><span class="spin spin-d"></span><p style="margin-top:12px;color:var(--muted);font-size:13px;">Loading employee details...</p></div>';
+  openOv('ov-empdetail');
   try{
-    const res=await apiGet('getStaffById',{employeeId:empId});if(!res.success){document.getElementById('ed-body').innerHTML='<div class="empty"><p>'+res.error+'</p></div>';return;}
-    const e=res.employee;const curSt=(e['Status']||e.status||'active').toLowerCase();
+    const res=await apiGet('getStaffById',{employeeId:empId});
+    if(!res.success){
+      document.getElementById('ed-body').innerHTML=`<div class="empty" style="padding:40px;"><p style="color:var(--red);font-weight:700;">Could not load employee details.</p><p style="margin-top:8px;color:var(--muted);font-size:12px;">Make sure Code.gs is deployed as a New Version in Apps Script.</p></div>`;
+      return;
+    }
+    const e=res.employee;
+    const curSt=(e['Status']||e.status||'active').toLowerCase();
     _detEmp={id:empId,name:e['Full Name']||e.name,position:e['Discipline']||e.position||disc,rate:parseFloat(e.rate)||25,disc};
-    document.getElementById('ed-title').textContent=e['Full Name']||empId;document.getElementById('ed-sub').textContent=(e['Employee ID']||empId)+' · '+(e['Discipline']||disc)+' · '+(e['Status']||'');
-    const isAct=curSt==='active';const sb=document.getElementById('ed-status-btn');
-    sb.textContent=isAct?'Mark Inactive':'Mark Active';sb.className='btn '+(isAct?'btn-danger':'btn-success');sb.onclick=()=>toggleStatus(empId,curSt,disc);
-    const wb=document.getElementById('ed-waiver-btn');if(wb&&ME.role==='admin'){wb.style.display='';wb.onclick=()=>openWaiverPanel(empId,e['Full Name']||empId);}
+    document.getElementById('ed-title').textContent=e['Full Name']||empId;
+    document.getElementById('ed-sub').textContent=(e['Employee ID']||empId)+' · '+(e['Discipline']||disc)+' · '+(curSt.charAt(0).toUpperCase()+curSt.slice(1));
+    const isAct=curSt==='active';
+    const sb=document.getElementById('ed-status-btn');
+    sb.textContent=isAct?'Mark Inactive':'Mark Active';
+    sb.className='btn '+(isAct?'btn-danger':'btn-success');
+    sb.onclick=()=>toggleStatus(empId,curSt,disc);
+    const wb=document.getElementById('ed-waiver-btn');
+    if(wb&&ME.role==='admin'){wb.style.display='';wb.onclick=()=>openWaiverPanel(empId,e['Full Name']||empId);}
     const DF=new Set(['License Expiry','License','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP','Annual Core Mandatory Exams','Skills Checklist','Skills  Checklist','Specialty Exam','Specialty   Exam','Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS','TB Test/CXR','TB Questionnaire','TB  Questionnaire','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen','Covid Requirement','Handbook Acknowledgement Form','References','Hire Date','GDrive Hire Date','Final Hire Date']);
-    const SECS=[{t:'Basic Information',f:['Employee ID','Full Name','Status','Discipline','Hire Date','GDrive Hire Date','Final Hire Date','Facility']},{t:'Licenses & Certifications',f:['License Expiry','License','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP']},{t:'Documentation & Training',f:['Resume','CEU','Education Verification','Job Description','References','Annual Evaluation','Ongoing Evaluation','Annual Core Mandatory Exams','Skills Checklist','Skills  Checklist','Specialty Exam','Specialty   Exam']},{t:'Compliance & Background',f:['Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS','Handbook Acknowledgement Form']},{t:'Medical Records',f:['TB Test/CXR','TB Questionnaire','TB  Questionnaire','Physical','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen','Covid Requirement']},{t:'Notes',f:['Notes Section','Team Notes']}];
+    const SECS=[
+      {t:'Basic Information',f:['Employee ID','Full Name','Status','Discipline','Hire Date','GDrive Hire Date','Final Hire Date','Facility']},
+      {t:'Licenses & Certifications',f:['License Expiry','License','Primary Source Verification','Nursys Verification','BLS/CPR','ACLS','PALS','NRP']},
+      {t:'Documentation & Training',f:['Resume','CEU','Education Verification','Job Description','References','Annual Evaluation','Ongoing Evaluation','Annual Core Mandatory Exams','Skills Checklist','Skills  Checklist','Specialty Exam','Specialty   Exam']},
+      {t:'Compliance & Background',f:['Background Check Authorization','National Background Checks','OIG','NSOPW','SAM EPLS','Handbook Acknowledgement Form']},
+      {t:'Medical Records',f:['TB Test/CXR','TB Questionnaire','TB  Questionnaire','Physical','MMR','Varicella','Hep B','Tdap','Flu','Fit Test','Drug Screen','Drug  Screen','Covid Requirement']},
+      {t:'Notes',f:['Notes Section','Team Notes']}
+    ];
     const shown=new Set();
-    let html=`<div class="emp-hero"><div class="emp-av">${(e['Full Name']||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div><div><div class="emp-av-name">${e['Full Name']||empId}</div><div class="emp-av-meta">${e['Employee ID']||empId} · ${e['Discipline']||disc}${e.email?' · '+e.email:''}</div><div class="emp-av-meta">${e['Facility']||'No facility'}${e.rate?' · $'+e.rate+'/hr':''}</div></div></div>`;
-    SECS.forEach(sec=>{let sh='';sec.f.forEach(f=>{shown.add(f);const raw=(e[f]||'').toString().trim();if(!raw||raw.toLowerCase()==='undefined')return;const isD=DF.has(f);const cls=isD?ccls(raw):'';const isNote=f==='Notes Section'||f==='Team Notes';sh+=`<div class="di${isNote?' full':''}"><label>${f}</label><span class="${cls}${isNote?' notes':''}">${isD?fmtD(raw):raw}</span></div>`;});if(sh)html+=`<div class="detail-sec"><div class="detail-sec-title">${sec.t}</div><div class="detail-grid">${sh}</div></div>`;});
-    const rem=Object.entries(e).filter(([k,v])=>!shown.has(k)&&v&&v.toString().trim()&&v.toString().toLowerCase()!=='undefined');
-    if(rem.length){html+=`<div class="detail-sec"><div class="detail-sec-title">Additional Fields</div><div class="detail-grid">`;rem.forEach(([k,v])=>{const isD=DF.has(k);html+=`<div class="di"><label>${k}</label><span class="${isD?ccls(v.toString()):''}${k==='Notes Section'||k==='Team Notes'?' notes':''}">${isD?fmtD(v.toString()):v.toString()}</span></div>`;});html+='</div></div>';}
+    let html=`<div class="emp-hero">
+      <div class="emp-av">${(e['Full Name']||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div>
+        <div class="emp-av-name">${e['Full Name']||empId}</div>
+        <div class="emp-av-meta">${e['Employee ID']||empId} · ${e['Discipline']||disc}</div>
+        ${e.email?`<div class="emp-av-meta">${e.email}</div>`:''}
+        ${e.phone?`<div class="emp-av-meta">📞 ${e.phone}</div>`:''}
+        ${e['Facility']?`<div class="emp-av-meta">🏥 ${e['Facility']}</div>`:''}
+        ${e.rate?`<div class="emp-av-meta">💰 $${e.rate}/hr</div>`:''}
+      </div>
+    </div>`;
+    SECS.forEach(sec=>{
+      let sh='';
+      sec.f.forEach(f=>{
+        shown.add(f);
+        const raw=(e[f]||'').toString().trim();
+        if(!raw||raw.toLowerCase()==='undefined')return;
+        const isD=DF.has(f);const cls=isD?ccls(raw):'';
+        const isNote=f==='Notes Section'||f==='Team Notes';
+        sh+=`<div class="di${isNote?' full':''}"><label>${f}</label><span class="${cls}${isNote?' notes':''}">${isD?fmtD(raw):raw}</span></div>`;
+      });
+      if(sh)html+=`<div class="detail-sec"><div class="detail-sec-title">${sec.t}</div><div class="detail-grid">${sh}</div></div>`;
+    });
+    // Show any remaining fields not already shown
+    const rem=Object.entries(e).filter(([k,v])=>!shown.has(k)&&k!=='_documents'&&k!=='_documentCount'&&v&&v.toString().trim()&&v.toString().toLowerCase()!=='undefined'&&!['id','name','status','position','email','phone','rate'].includes(k));
+    if(rem.length){
+      html+=`<div class="detail-sec"><div class="detail-sec-title">Additional Fields</div><div class="detail-grid">`;
+      rem.forEach(([k,v])=>{const isD=DF.has(k);html+=`<div class="di"><label>${k}</label><span class="${isD?ccls(v.toString()):''}${k==='Notes Section'||k==='Team Notes'?' notes':''}">${isD?fmtD(v.toString()):v.toString()}</span></div>`;});
+      html+='</div></div>';
+    }
+    // Show uploaded documents
+    const docs=e._documents||[];
+    if(docs.length){
+      html+=`<div class="detail-sec"><div class="detail-sec-title">Uploaded Documents (${docs.length})</div><div class="detail-grid">`;
+      docs.forEach(d=>{html+=`<div class="di"><label>${d.docType}</label><span>${d.driveUrl?`<a href="${d.driveUrl}" target="_blank" style="color:var(--teal);font-weight:700;">View File</a>`:(d.fileName||'—')} · <span class="badge ${d.status==='Approved'?'b-approved':d.status==='Rejected'?'b-rejected':'b-pending'}">${d.status||'Pending'}</span></span></div>`;});
+      html+='</div></div>';
+    }
     document.getElementById('ed-body').innerHTML=html;
-  }catch(err){document.getElementById('ed-body').innerHTML='<div class="empty"><p>Error loading details. Try again.</p></div>';}
+  }catch(err){
+    document.getElementById('ed-body').innerHTML='<div class="empty" style="padding:40px;"><p style="color:var(--red);font-weight:700;">Error loading details.</p><p style="margin-top:8px;color:var(--muted);font-size:12px;">'+err.message+'</p></div>';
+  }
 }
 async function toggleStatus(empId,curSt,disc){const newSt=curSt==='active'?'Inactive':'Active';try{const res=await apiGet('updateStatus',{employeeId:empId,status:newSt});if(!res.success){toast(res.error||'Failed','err');return;}toast('Status updated to '+newSt,'ok');closeOv('ov-empdetail');if(disc)pgDisc(disc);else pgOverview();}catch(e){toast('Error','err');}}
 function genInvFromDetail(){if(!_detEmp){toast('No employee selected','err');return;}closeOv('ov-empdetail');aPg('invoices');setTimeout(()=>{const s=document.getElementById('inv-e');if(s)for(let i=0;i<s.options.length;i++){if(s.options[i].value===_detEmp.id){s.selectedIndex=i;autoRate();break;}}},400);}
@@ -1151,6 +1264,23 @@ function fmtD(v){if(!v||v===''||['n/a','na','none','undefined'].includes((v||'')
 function today(){return new Date().toISOString().split('T')[0];}
 function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));return m.toISOString().split('T')[0];}
 function sendContact(){const n=document.getElementById('cn').value.trim();const e=document.getElementById('ce').value.trim();const m=document.getElementById('cm').value.trim();if(!n||!e||!m){toast('Please fill all fields','err');return;}window.location.href='mailto:Info@Centralnurses.com?subject='+encodeURIComponent(document.getElementById('cs').value+' from '+n)+'&body='+encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m);}
+
+// TESTIMONIAL SLIDER
+let _testiIdx=0,_testiTotal=2,_testiAuto=null;
+function testiGo(idx){
+  _testiIdx=idx;
+  const track=document.getElementById('testi-track');
+  if(track)track.style.transform=`translateX(-${idx*100}%)`;
+  document.querySelectorAll('.testi-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+}
+function testiNext(){testiGo((_testiIdx+1)%_testiTotal);}
+function testiPrev(){testiGo((_testiIdx-1+_testiTotal)%_testiTotal);}
+// Auto-slide every 5 seconds
+function startTestiAuto(){_testiAuto=setInterval(testiNext,5000);}
+function stopTestiAuto(){clearInterval(_testiAuto);}
+const testiWrap=document.querySelector('.testi-slider-wrap');
+if(testiWrap){testiWrap.addEventListener('mouseenter',stopTestiAuto);testiWrap.addEventListener('mouseleave',startTestiAuto);}
+startTestiAuto();
 
 // SCROLL ANIMATIONS
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});},{threshold:.12});
