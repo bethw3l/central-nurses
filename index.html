@@ -689,7 +689,7 @@ tr:last-child td{border-bottom:none;}
       <div class="reveal-left">
         <p style="color:var(--muted);font-size:14.5px;line-height:1.8;margin-bottom:22px;">Have a staffing need or want to join our team? Our dedicated team is ready to assist you. Reach out today for prompt and personalized service.</p>
         <div class="ci"><div class="ci-ic">📍</div><span>629 S Longfellow Street, Wichita, KS 67207</span></div>
-        <div class="ci"><div class="ci-ic">✉</div><span><a href="/cdn-cgi/l/email-protection#4a03242c250a092f243e382b26243f38392f3964292527" style="color:inherit;text-decoration:none;"><span class="__cf_email__" data-cfemail="95dcfbf3fad5d6f0fbe1e7f4f9fbe0e7e6f0e6bbf6faf8">[email&#160;protected]</span></a></span></div>
+        <div class="ci"><div class="ci-ic">✉</div><span><a id="em-contact" style="color:inherit;text-decoration:none;"></a></span></div>
         <div class="ci"><div class="ci-ic">📞</div><span>+1(316) 806-5951</span></div>
         <div class="ci"><div class="ci-ic">🕐</div><span>Mon–Fri: 8:00 AM – 5:00 PM · Sat–Sun: Closed</span></div>
       </div>
@@ -723,7 +723,7 @@ tr:last-child td{border-bottom:none;}
       <div class="f-head">Contact</div>
       <div style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.9;">
         629 S Longfellow Street<br/>Wichita, KS 67207<br/>
-        <a href="/cdn-cgi/l/email-protection#88c1e6eee7c8cbede6fcfae9e4e6fdfafbedfba6ebe7e5" style="color:rgba(255,255,255,.55);text-decoration:none;"><span class="__cf_email__" data-cfemail="024b6c646d4241676c7670636e6c77707167712c616d6f">[email&#160;protected]</span></a><br/>
+        <a id="em-footer" style="color:rgba(255,255,255,.55);text-decoration:none;"></a><br/>
         +1(316) 806-5951<br/>
         Mon–Fri: 8:00–17:00
       </div>
@@ -819,7 +819,21 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+// Write emails via JS so Cloudflare cannot obfuscate them
+(function(){
+  const em = ['Info','@','Centralnurses','.com'].join('');
+  const els = [
+    {id:'em-contact', href:'mailto:'+em, text:em},
+    {id:'em-footer',  href:'mailto:'+em, text:em}
+  ];
+  document.addEventListener('DOMContentLoaded', function(){
+    els.forEach(function(o){
+      const el = document.getElementById(o.id);
+      if(el){ el.href = o.href; el.textContent = o.text; }
+    });
+  });
+})();
 const API='https://script.google.com/macros/s/AKfycbxM2-Urxt_9Nml_HCEy4W471SIoDJLXNsaI1-JZSrfe7CbLCxQPsPRMTq20u7k5Gadk/exec';
 const OWNER='kipkoechbethwel721@gmail.com';
 async function apiGet(a,p={}){const r=await fetch(API+'?action='+a+'&'+new URLSearchParams(p),{redirect:'follow'});return r.json();}
@@ -838,19 +852,29 @@ async function doLogin(){
   const em=document.getElementById('l-em').value.trim(),pw=document.getElementById('l-pw').value;
   if(!em||!pw){toast('Enter email and password','err');return;}
   const btn=document.getElementById('lbtn');btn.innerHTML='<span class="spin"></span>';btn.disabled=true;
-  try{const res=await apiPost('login',{email:em,password:pw});btn.innerHTML='Sign In';btn.disabled=false;if(!res.success){toast(res.error||'Login failed','err');return;}closeOv('ov-login');bootDash(res.employee);}
-  catch(e){btn.innerHTML='Sign In';btn.disabled=false;toast('Connection error. Try again.','err');}
+  try{
+    const url=API+'?action=login&email='+encodeURIComponent(em)+'&password='+encodeURIComponent(pw);
+    const r=await fetch(url,{redirect:'follow'});const res=await r.json();
+    btn.innerHTML='Sign In';btn.disabled=false;
+    if(!res.success){toast(res.error||'Login failed','err');return;}
+    closeOv('ov-login');bootDash(res.employee);
+  }catch(e){btn.innerHTML='Sign In';btn.disabled=false;toast('Connection error. Try again.','err');}
 }
 async function doRegister(){
   const nm=document.getElementById('r-nm').value.trim(),em=document.getElementById('r-em').value.trim(),pw=document.getElementById('r-pw').value,ph=document.getElementById('r-ph').value.trim(),pos=document.getElementById('r-pos').value||'Staff',dob=document.getElementById('r-dob').value.trim();
   if(!nm||!em||!pw){toast('Name, email and password are required','err');return;}
   const v=validatePw(pw);if(!v.ok){toast(v.msg,'err');return;}
-  // Format DOB from YYYY-MM-DD (HTML date input) to MM/DD/YYYY
   let dobFmt='';
   if(dob){const[y,m,d]=dob.split('-');dobFmt=m+'/'+d+'/'+y;}
   const btn=document.getElementById('rbtn');btn.innerHTML='<span class="spin"></span>';btn.disabled=true;
-  try{const isOwner=em.toLowerCase()===OWNER.toLowerCase();const res=await apiPost('register',{name:nm,email:em,password:pw,phone:ph,position:pos,dob:dobFmt,role:isOwner?'admin':'employee'});btn.innerHTML='Create Account';btn.disabled=false;if(!res.success){toast(res.error||'Failed','err');return;}toast('Account created. Welcome to Central Nurses.','ok');closeOv('ov-register');bootDash(res.employee);}
-  catch(e){btn.innerHTML='Create Account';btn.disabled=false;toast('Connection error. Try again.','err');}
+  try{
+    const isOwner=em.toLowerCase()===OWNER.toLowerCase();
+    const url=API+'?action=register&name='+encodeURIComponent(nm)+'&email='+encodeURIComponent(em)+'&password='+encodeURIComponent(pw)+'&phone='+encodeURIComponent(ph)+'&position='+encodeURIComponent(pos)+'&dob='+encodeURIComponent(dobFmt)+'&role='+(isOwner?'admin':'employee');
+    const r=await fetch(url,{redirect:'follow'});const res=await r.json();
+    btn.innerHTML='Create Account';btn.disabled=false;
+    if(!res.success){toast(res.error||'Failed','err');return;}
+    toast('Account created. Welcome to Central Nurses.','ok');closeOv('ov-register');bootDash(res.employee);
+  }catch(e){btn.innerHTML='Create Account';btn.disabled=false;toast('Connection error. Try again.','err');}
 }
 
 // ── FORGOT PASSWORD ──────────────────────────────────────────
@@ -861,7 +885,10 @@ async function sendResetCode(){
   if(!em){toast('Enter your email address','err');return;}
   const btn=document.getElementById('fp-btn1');btn.innerHTML='<span class="spin"></span>';btn.disabled=true;
   try{
-    const res=await apiPost('sendResetCode',{email:em});
+    // Use direct fetch — NOT URLSearchParams — so @ is not encoded to %40
+    const url=API+'?action=sendResetCode&email='+encodeURIComponent(em);
+    const r=await fetch(url,{redirect:'follow'});
+    const res=await r.json();
     btn.innerHTML='Send Reset Code';btn.disabled=false;
     if(!res.success){toast(res.error||'Email not found. Please check and try again.','err');return;}
     _resetEmail=em;
@@ -882,7 +909,10 @@ async function confirmReset(){
   if(pw!==pw2){toast('Passwords do not match','err');return;}
   const btn=document.getElementById('fp-btn2');btn.innerHTML='<span class="spin"></span>';btn.disabled=true;
   try{
-    const res=await apiPost('resetPassword',{email:_resetEmail,password:pw});
+    // Use direct fetch so email @ symbol is not double-encoded
+    const url=API+'?action=resetPassword&email='+encodeURIComponent(_resetEmail)+'&password='+encodeURIComponent(pw);
+    const r=await fetch(url,{redirect:'follow'});
+    const res=await r.json();
     btn.innerHTML='Reset Password';btn.disabled=false;
     if(!res.success){toast(res.error||'Reset failed','err');return;}
     toast('Password reset! You can now sign in.','ok');
