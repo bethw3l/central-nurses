@@ -760,7 +760,7 @@ tr:last-child td{border-bottom:none;}
       <div class="fi"><label>Email Address</label><input type="email" id="r-em" placeholder="you@email.com"/></div>
       <div class="fi"><label>Password</label><div class="pw-w"><input type="password" id="r-pw" placeholder="Min 6 chars · Upper · Lower · Symbol" oninput="checkPw(this.value)"/><button class="pw-t" onclick="togglePw('r-pw',this)">show</button></div><div class="pw-bar"><div class="pw-fill" id="pwb"></div></div><div class="pw-txt" id="pwt"></div></div>
       <div class="fg2">
-        <div class="fi"><label>Date of Birth</label><input type="date" id="r-dob" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;width:100%;background:#fff;" max=""/></div>
+        <div class="fi"><label>Date of Birth <span style="color:var(--red);">*</span></label><input type="date" id="r-dob" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;width:100%;background:#fff;"/></div>
         <div class="fi"><label>Phone (optional)</label><input type="text" id="r-ph" placeholder="(316) 555-0000"/></div>
       </div>
       <div class="fi"><label>Position</label><select id="r-pos"><option value="">Select your position...</option><option value="RN">RN — Registered Nurse</option><option value="LPN">LPN — Licensed Practical Nurse</option><option value="CNA">CNA — Certified Nursing Assistant</option><option value="CMA">CMA — Certified Medical Assistant</option><option value="Staff">Other / Staff</option></select></div>
@@ -828,6 +828,9 @@ tr:last-child td{border-bottom:none;}
     {id:'em-footer',  href:'mailto:'+em, text:em}
   ];
   document.addEventListener('DOMContentLoaded', function(){
+    // Set DOB max to today so future dates can't be selected
+    const dobInput = document.getElementById('r-dob');
+    if(dobInput) dobInput.max = new Date().toISOString().split('T')[0];
     els.forEach(function(o){
       const el = document.getElementById(o.id);
       if(el){ el.href = o.href; el.textContent = o.text; }
@@ -863,6 +866,7 @@ async function doLogin(){
 async function doRegister(){
   const nm=document.getElementById('r-nm').value.trim(),em=document.getElementById('r-em').value.trim(),pw=document.getElementById('r-pw').value,ph=document.getElementById('r-ph').value.trim(),pos=document.getElementById('r-pos').value||'Staff',dob=document.getElementById('r-dob').value.trim();
   if(!nm||!em||!pw){toast('Name, email and password are required','err');return;}
+  if(!dob){toast('Date of birth is required','err');return;}
   const v=validatePw(pw);if(!v.ok){toast(v.msg,'err');return;}
   let dobFmt='';
   if(dob){const[y,m,d]=dob.split('-');dobFmt=m+'/'+d+'/'+y;}
