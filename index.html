@@ -420,8 +420,8 @@ tr:last-child td{border-bottom:none;}
 .inv-note{font-size:11px;color:#94a3b8;line-height:1.6;padding:10px 13px;background:#f8f7f3;border-radius:7px;border:1px solid #e2e8f0;margin-top:16px;}
 
 /* DOC UPLOAD */
-.doc-drop{border:2px dashed var(--border2);border-radius:var(--r);padding:26px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cream);}
-.doc-drop:hover{border-color:var(--navy);background:var(--light);}
+.doc-drop{border:2px dashed var(--border2);border-radius:var(--r2);padding:36px 26px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cream);}
+.doc-drop:hover,.doc-drop.drag-over{border-color:var(--navy);background:var(--light);transform:scale(1.01);}
 .doc-drop p{color:var(--muted);font-size:13px;margin-top:7px;}
 .doc-drop strong{color:var(--navy);}
 
@@ -869,11 +869,19 @@ async function doRegister(){
   const btn=document.getElementById('rbtn');btn.innerHTML='<span class="spin"></span>';btn.disabled=true;
   try{
     const isOwner=em.toLowerCase()===OWNER.toLowerCase();
-    const url=API+'?action=register&name='+encodeURIComponent(nm)+'&email='+encodeURIComponent(em)+'&password='+encodeURIComponent(pw)+'&phone='+encodeURIComponent(ph)+'&position='+encodeURIComponent(pos)+'&dob='+encodeURIComponent(dobFmt)+'&role='+(isOwner?'admin':'employee');
+    const url=API+'?action=register&name='+encodeURIComponent(nm)+'&email='+encodeURIComponent(em)+'&password='+encodeURIComponent(pw)+'&phone='+encodeURIComponent(ph)+'&position='+encodeURIComponent(pos)+'&dob='+encodeURIComponent(dobFmt)+'&role='+(isOwner?'admin':'employee')+'&status='+(isOwner?'active':'pending');
     const r=await fetch(url,{redirect:'follow'});const res=await r.json();
     btn.innerHTML='Create Account';btn.disabled=false;
     if(!res.success){toast(res.error||'Failed','err');return;}
-    toast('Account created. Welcome to Central Nurses.','ok');closeOv('ov-register');bootDash(res.employee);
+    if(isOwner){
+      toast('Welcome back, Admin!','ok');closeOv('ov-register');bootDash(res.employee);
+    }else{
+      toast('✅ Application submitted! Your account is pending admin approval.','ok');
+      closeOv('ov-register');
+      // Show pending message instead of entering dashboard
+      const emp=res.employee;
+      if(emp){emp.status='pending';bootDash(emp);}
+    }
   }catch(e){btn.innerHTML='Create Account';btn.disabled=false;toast('Connection error. Try again.','err');}
 }
 
@@ -955,24 +963,116 @@ async function pgOverview(){
     const res=await apiGet('getStaff');const all=res.staff||[];_staff=all;
     const active=all.filter(s=>(s.status||'').toLowerCase()==='active').length;
     const byD={RN:0,LPN:0,CNA:0,CMA:0};all.forEach(s=>{const d=(s.position||'').toUpperCase().split('/')[0].trim().split(' ')[0];if(byD[d]!==undefined)byD[d]++;});
-    el.innerHTML=`<div class="pg-title">Dashboard</div><div class="pg-sub">Welcome back, ${ME.name}</div>
-      <div class="krow">
-        <div class="kpi"><div class="kpi-label">Total Staff</div><div class="kpi-val">${all.length}</div><div class="kpi-bar" style="background:var(--navy)"></div></div>
-        <div class="kpi"><div class="kpi-label">Active</div><div class="kpi-val">${active}</div><div class="kpi-sub">${all.length-active} inactive</div><div class="kpi-bar" style="background:var(--green)"></div></div>
-        <div class="kpi"><div class="kpi-label">RNs</div><div class="kpi-val">${byD.RN}</div><div class="kpi-bar" style="background:var(--rn2)"></div></div>
-        <div class="kpi"><div class="kpi-label">LPNs</div><div class="kpi-val">${byD.LPN}</div><div class="kpi-bar" style="background:var(--lpn2)"></div></div>
-        <div class="kpi"><div class="kpi-label">CNAs</div><div class="kpi-val">${byD.CNA}</div><div class="kpi-bar" style="background:var(--cna2)"></div></div>
-        <div class="kpi"><div class="kpi-label">CMAs</div><div class="kpi-val">${byD.CMA}</div><div class="kpi-bar" style="background:var(--cma2)"></div></div>
+    const inactive=all.length-active;
+    el.innerHTML=`<div class="pg-title">Dashboard</div><div class="pg-sub">Welcome back, ${ME.name} · ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+
+    <!-- KPI STRIP -->
+    <div class="krow" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px;">
+      <div class="kpi" style="border-top:3px solid var(--navy);">
+        <div class="kpi-label">Total Staff</div><div class="kpi-val">${all.length}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${active} active · ${inactive} inactive</div>
       </div>
-      <div class="gc"><div class="gc-head"><h3>All Staff Directory</h3><div class="gap"><div class="sw"><input placeholder="Search name or ID..." oninput="filterOv(this.value)"/></div><button class="btn btn-navy btn-sm" onclick="openOv('ov-addstaff')">+ Add Staff</button></div></div><div class="tbl-wrap"><div id="ov-tbl"></div></div></div>`;
+      <div class="kpi" style="border-top:3px solid var(--rn2);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div class="kpi-label">RNs</div><span class="badge b-rn">RN</span>
+        </div>
+        <div class="kpi-val">${byD.RN}</div>
+      </div>
+      <div class="kpi" style="border-top:3px solid var(--lpn2);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div class="kpi-label">LPNs</div><span class="badge b-lpn">LPN</span>
+        </div>
+        <div class="kpi-val">${byD.LPN}</div>
+      </div>
+      <div class="kpi" style="border-top:3px solid var(--cna2);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div class="kpi-label">CNAs</div><span class="badge b-cna">CNA</span>
+        </div>
+        <div class="kpi-val">${byD.CNA}</div>
+      </div>
+      <div class="kpi" style="border-top:3px solid var(--cma2);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div class="kpi-label">CMAs</div><span class="badge b-cma">CMA</span>
+        </div>
+        <div class="kpi-val">${byD.CMA}</div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="gc" style="margin-bottom:16px;">
+      <div class="gc-head"><h3>⚡ Quick Actions</h3></div>
+      <div style="padding:14px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-navy btn-sm" onclick="openOv('ov-addstaff')">➕ Add Staff</button>
+        <button class="btn btn-teal btn-sm" onclick="aPg('documents')">📋 Review Documents</button>
+        <button class="btn btn-gold btn-sm" onclick="aPg('invoices')">🧾 Generate Invoice</button>
+        <button class="btn btn-light btn-sm" onclick="aPg('timesheets')">⏱ View Timesheets</button>
+        <button class="btn btn-light btn-sm" onclick="aPg('bulk')">📦 Bulk Invoice</button>
+      </div>
+    </div>
+
+    <!-- PENDING APPLICATIONS ALERT -->
+    <div id="pending-alert"></div>
+
+    <!-- STAFF DIRECTORY -->
+    <div class="gc">
+      <div class="gc-head">
+        <h3>👥 All Staff Directory</h3>
+        <div class="gap">
+          <div class="sw"><input placeholder="Search name, ID or position..." oninput="filterOv(this.value)" style="width:240px;"/></div>
+          <select onchange="filterOvStatus(this.value)" style="padding:7px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;outline:none;background:#fff;">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="tbl-wrap"><div id="ov-tbl"></div></div>
+    </div>`;
     renderAllStaff(all,'ov-tbl');
+    // Show pending applications alert
+    const pending=all.filter(s=>(s.status||'').toLowerCase()==='pending');
+    const palert=document.getElementById('pending-alert');
+    if(palert&&pending.length>0){
+      palert.innerHTML=`<div style="background:#fff7ed;border:2px solid var(--orange);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="filterOvStatus('pending')">
+        <div style="font-size:28px;">⚠️</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;color:var(--orange);font-size:14px;">${pending.length} Pending Application${pending.length!==1?'s':''}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">${pending.map(p=>p.name).join(', ')} · Click to review</div>
+        </div>
+        <span class="badge b-pending" style="font-size:12px;padding:4px 12px;">${pending.length} pending</span>
+      </div>`;
+    }else if(palert){palert.innerHTML='';}
   }catch(e){el.innerHTML+=`<div class="empty"><p>Error loading. Check Apps Script URL and redeploy as New Version.</p></div>`;}
 }
-function filterOv(q){const f=q.toLowerCase();renderAllStaff(f?_staff.filter(s=>(s.name+s.id+(s.position||'')).toLowerCase().includes(f)):_staff,'ov-tbl');}
+function filterOv(q){
+  const f=q.toLowerCase();
+  const st=(document.querySelector('#pg-overview select')?.value||'').toLowerCase();
+  let filtered=f?_staff.filter(s=>(s.name+s.id+(s.position||'')).toLowerCase().includes(f)):_staff;
+  if(st)filtered=filtered.filter(s=>(s.status||'').toLowerCase()===st);
+  renderAllStaff(filtered,'ov-tbl');
+}
+function filterOvStatus(st){
+  const q=(document.querySelector('#pg-overview .sw input')?.value||'').toLowerCase();
+  let filtered=q?_staff.filter(s=>(s.name+s.id+(s.position||'')).toLowerCase().includes(q)):_staff;
+  if(st)filtered=filtered.filter(s=>(s.status||'').toLowerCase()===st);
+  renderAllStaff(filtered,'ov-tbl');
+}
 function renderAllStaff(staff,elId){
   const el=document.getElementById(elId);if(!el)return;
   if(!staff.length){el.innerHTML='<div class="empty"><p>No staff found.</p></div>';return;}
-  el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th><th>Actions</th></tr></thead><tbody>${staff.map(s=>{const d=(s.position||'').toUpperCase().split('/')[0].trim().split(' ')[0];const bc=d==='RN'?'b-rn':d==='LPN'?'b-lpn':d==='CNA'?'b-cna':d==='CMA'?'b-cma':'b-admin';const act=(s.status||'active').toLowerCase()==='active';return`<tr><td><span class="badge ${bc}">${s.id||'—'}</span></td><td><strong>${s.name||'—'}</strong></td><td><span class="badge ${bc}">${s.position||'—'}</span></td><td style="color:var(--muted);font-size:12px;">${s.email||'—'}</td><td style="color:var(--muted);font-size:12px;">${s.phone||'—'}</td><td style="font-weight:700;">${s.rate?'$'+s.rate+'/hr':'—'}</td><td><span class="badge ${act?'b-active':'b-inactive'}">${act?'Active':'Inactive'}</span></td><td><div class="gap"><button class="btn btn-teal btn-sm" onclick="viewEmp('${s.id}','${d}')">View</button><button class="btn btn-light btn-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Rate</button></div></td></tr>`;}).join('')}</tbody></table>`;
+  el.innerHTML=`<table><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th><th>Actions</th></tr></thead><tbody>${staff.map(s=>{const d=(s.position||'').toUpperCase().split('/')[0].trim().split(' ')[0];const bc=d==='RN'?'b-rn':d==='LPN'?'b-lpn':d==='CNA'?'b-cna':d==='CMA'?'b-cma':'b-admin';const act=(s.status||'active').toLowerCase()==='active';const isPending=(s.status||'').toLowerCase()==='pending';
+return`<tr style="${isPending?'background:#fffbeb;':''}">`+
+`<td><span class="badge ${bc}">${s.id||'—'}</span></td>`+
+`<td><strong>${s.name||'—'}</strong></td>`+
+`<td><span class="badge ${bc}">${s.position||'—'}</span></td>`+
+`<td style="color:var(--muted);font-size:12px;">${s.email||'—'}</td>`+
+`<td style="color:var(--muted);font-size:12px;">${s.phone||'—'}</td>`+
+`<td style="font-weight:700;">${s.rate?'$'+s.rate+'/hr':'—'}</td>`+
+`<td>${isPending?'<span class="badge b-pending">Pending</span>':`<span class="badge ${act?'b-active':'b-inactive'}">${act?'Active':'Inactive'}</span>`}</td>`+
+`<td><div class="gap">`+
+`<button class="btn btn-teal btn-sm" onclick="viewEmp('${s.id}','${d}')">View</button>`+
+(isPending?`<button class="btn btn-success btn-sm" onclick="approveStaff('${s.id}','${s.name}')">✓ Approve</button><button class="btn btn-danger btn-sm" onclick="rejectStaff('${s.id}','${s.name}')">✗ Reject</button>`:`<button class="btn btn-light btn-sm" onclick="editRate('${s.id}','${s.name}',${s.rate||25})">Rate</button>`)+
+`</div></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 async function pgDisc(disc){
@@ -1076,6 +1176,14 @@ async function viewEmp(empId,disc){
 async function toggleStatus(empId,curSt,disc){const newSt=curSt==='active'?'Inactive':'Active';try{const res=await apiGet('updateStatus',{employeeId:empId,status:newSt});if(!res.success){toast(res.error||'Failed','err');return;}toast('Status updated to '+newSt,'ok');closeOv('ov-empdetail');if(disc)pgDisc(disc);else pgOverview();}catch(e){toast('Error','err');}}
 function genInvFromDetail(){if(!_detEmp){toast('No employee selected','err');return;}closeOv('ov-empdetail');aPg('invoices');setTimeout(()=>{const s=document.getElementById('inv-e');if(s)for(let i=0;i<s.options.length;i++){if(s.options[i].value===_detEmp.id){s.selectedIndex=i;autoRate();break;}}},400);}
 function quickInv(empId,empName,disc){aPg('invoices');setTimeout(()=>{const s=document.getElementById('inv-e');if(s)for(let i=0;i<s.options.length;i++){if(s.options[i].value===empId){s.selectedIndex=i;autoRate();break;}}},400);}
+async function approveStaff(id,name){
+  if(!confirm('Approve '+name+'? They will be able to clock in.'))return;
+  try{const res=await apiGet('updateStatus',{employeeId:id,status:'Active'});if(res.success){toast(name+' approved and activated.','ok');pgOverview();}else toast(res.error||'Failed','err');}catch(e){toast('Error','err');}
+}
+async function rejectStaff(id,name){
+  if(!confirm('Reject '+name+"'s application? This will mark them inactive."))return;
+  try{const res=await apiGet('updateStatus',{employeeId:id,status:'Inactive'});if(res.success){toast(name+"'s application rejected.",'info');pgOverview();}else toast(res.error||'Failed','err');}catch(e){toast('Error','err');}
+}
 function editRate(id,name,cur){const r=prompt('Set hourly rate for '+name+'\nCurrent: $'+cur+'/hr\n\nEnter new rate:',cur);if(r===null||r==='')return;const rate=parseFloat(r);if(isNaN(rate)||rate<1){toast('Enter a valid rate','err');return;}apiGet('updateRate',{employeeId:id,rate}).then(res=>{if(res.success){toast(name+' rate updated to $'+rate+'/hr','ok');const emp=_staff.find(s=>s.id===id);if(emp)emp.rate=rate;}else toast(res.error||'Failed','err');});}
 async function addStaff(){const nm=document.getElementById('as-nm').value.trim();const em=document.getElementById('as-em').value.trim();const pw=document.getElementById('as-pw').value;const pos=document.getElementById('as-pos').value;const ph=document.getElementById('as-ph').value.trim();const rate=document.getElementById('as-rate').value;if(!nm){toast('Name is required','err');return;}try{const res=await apiPost('addStaff',{name:nm,email:em,password:pw,position:pos,phone:ph,rate:parseFloat(rate)||25});if(!res.success){toast(res.error||'Failed','err');return;}toast(nm+' added. ID: '+res.id,'ok');closeOv('ov-addstaff');pgOverview();}catch(e){toast('Error adding staff','err');}}
 
@@ -1105,7 +1213,8 @@ async function pgTimesheets(){
   await loadTSEmps();
 }
 async function loadTSEmps(){const disc=document.getElementById('ts-disc')?.value||'';try{const res=await apiGet('getStaff',disc?{discipline:disc}:{});_staff=res.staff||[];const sel=document.getElementById('ts-e');sel.innerHTML='<option value="">— Select employee —</option>';_staff.forEach(s=>{const nm=s['Full Name']||s.name||'';const id=s['Employee ID']||s.id||'';sel.innerHTML+=`<option value="${id}" data-rate="${s.rate||25}">${nm} (${id})</option>`;});}catch(e){}}
-async function loadTS(){const sel=document.getElementById('ts-e');const empId=sel.value;if(!empId){toast('Select an employee','err');return;}const from=document.getElementById('ts-f').value;const to=document.getElementById('ts-t').value;const emp=_staff.find(s=>(s['Employee ID']||s.id||'')==empId);const nm=emp?emp['Full Name']||emp.name||empId:empId;const rate=parseFloat(emp?.rate||25);const el=document.getElementById('ts-r');el.innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';try{const res=await apiGet('getHours',{employeeId:empId,from,to});const sessions=res.sessions||[];const totalH=res.totalHours||0;el.innerHTML=`<div class="gc" style="margin-top:14px;"><div class="gc-head"><h3>${nm} · ${from} to ${to}</h3><span style="font-weight:700;color:var(--green);">${totalH.toFixed(2)} hrs · $${(totalH*rate).toFixed(2)}</span></div>${sessions.length?`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>${sessions.map(s=>`<tr><td>${s.date}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td><strong>${s.hours} hrs</strong></td><td style="color:var(--g2);font-weight:700;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty"><p>No records for this period.</p></div>'}</div>`;}catch(e){el.innerHTML='<div class="empty"><p>Error loading.</p></div>';}}
+async function loadTS(){const sel=document.getElementById('ts-e');const empId=sel.value;if(!empId){toast('Select an employee','err');return;}const from=document.getElementById('ts-f').value;const to=document.getElementById('ts-t').value;const emp=_staff.find(s=>(s['Employee ID']||s.id||'')==empId);const nm=emp?emp['Full Name']||emp.name||empId:empId;const rate=parseFloat(emp?.rate||25);const el=document.getElementById('ts-r');el.innerHTML='<div class="empty"><span class="spin spin-d"></span></div>';try{const res=await apiGet('getHours',{employeeId:empId,from,to});const sessions=res.sessions||[];const totalH=res.totalHours||0;function fmtTS(ts){if(!ts||ts==='—')return'—';try{const parts=ts.toString().split(' ');if(parts.length>=2)return parts[1].substring(0,5);const d=new Date(ts);if(!isNaN(d))return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return ts;}catch(e){return ts;}}
+el.innerHTML=`<div class="gc" style="margin-top:14px;"><div class="gc-head"><h3>${nm} · ${from} to ${to}</h3><span style="font-weight:700;color:var(--green);">${totalH.toFixed(2)} hrs · $${(totalH*rate).toFixed(2)}</span></div>${sessions.length?`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>${sessions.map(s=>`<tr><td style="font-weight:600;">${s.date}</td><td>${fmtTS(s.clockIn)}</td><td>${fmtTS(s.clockOut)}</td><td><strong>${s.hours} hrs</strong></td><td style="color:var(--g2);font-weight:700;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty"><p>No records for this period.</p></div>'}</div>`;}catch(e){el.innerHTML='<div class="empty"><p>Error loading.</p></div>';}}
 
 async function pgInvoices(){
   const el=document.getElementById('pg-invoices');
@@ -1151,13 +1260,22 @@ function ePg(id){document.querySelectorAll('.sbi').forEach(e=>e.classList.remove
 
 async function pgClock(){
   const el=document.getElementById('pg-clock');
-  el.innerHTML=`<div class="pg-title">Time Clock</div><div class="pg-sub">Clock in when you arrive. Clock out when you leave.</div>
-    <div class="clock-hero"><div class="clock-hero-dots"></div><div class="clock-time" id="ct"></div><div class="clock-date" id="cd"></div>
-    <button class="clk-btn clk-in" id="cb" onclick="toggleClock()">Checking...</button>
-    <div class="clock-status" id="cs"></div><div id="clk-block" style="display:none;" class="clock-blocked"></div></div>
-    <div class="gc"><div class="gc-head"><h3>Today's Sessions</h3></div><div id="today-r"></div></div>`;
+  el.innerHTML=`<div class="pg-title">Time Clock</div>
+    <div class="pg-sub">Clock in when your shift starts. Clock out when you finish.</div>
+    <div class="clock-hero">
+      <div class="clock-hero-dots"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:8px;">${ME.name} · ${ME.position||'Staff'}</div>
+        <div class="clock-time" id="ct"></div>
+        <div class="clock-date" id="cd"></div>
+        <button class="clk-btn clk-in" id="cb" onclick="toggleClock()">Checking...</button>
+        <div class="clock-status" id="cs"></div>
+        <div id="clk-block" style="display:none;" class="clock-blocked"></div>
+      </div>
+    </div>
+    <div class="gc"><div class="gc-head"><h3>📅 Today's Sessions</h3><div id="today-summary" style="font-size:12.5px;font-weight:700;color:var(--teal);"></div></div><div id="today-r"></div></div>`;
   if(_ci)clearInterval(_ci);
-  const tick=()=>{const n=new Date();const ct=document.getElementById('ct');const cd=document.getElementById('cd');if(ct)ct.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});if(cd)cd.textContent=n.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});};
+  const tick=()=>{const n=new Date();const ct=document.getElementById('ct');const cd=document.getElementById('cd');if(ct){const h=String(n.getHours()).padStart(2,'0');const m=String(n.getMinutes()).padStart(2,'0');const s=String(n.getSeconds()).padStart(2,'0');ct.textContent=h+':'+m+':'+s;}if(cd)cd.textContent=n.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});};
   tick();_ci=setInterval(tick,1000);await refreshClock();await loadToday();
 }
 
@@ -1165,8 +1283,15 @@ async function refreshClock(){
   try{
     const res=await apiGet('getClockStatus',{employeeId:ME.id});_clocked=res.isClockedIn||false;
     const btn=document.getElementById('cb');const st=document.getElementById('cs');const blk=document.getElementById('clk-block');if(!btn)return;
-    if(_clocked){btn.textContent='Clock Out';btn.className='clk-btn clk-out';btn.style='';btn.disabled=false;if(st)st.textContent='Clocked in since '+new Date(res.clockIn).toLocaleTimeString();if(blk)blk.style.display='none';}
+    if(_clocked){btn.textContent='Clock Out';btn.className='clk-btn clk-out';btn.style='';btn.disabled=false;if(st){const ci=new Date(res.clockIn);const h=String(ci.getHours()).padStart(2,'0');const m=String(ci.getMinutes()).padStart(2,'0');st.textContent='Clocked in since '+h+':'+m;}if(blk)blk.style.display='none';}
     else{
+      // Check pending application status
+      if(ME.status&&ME.status.toLowerCase()==='pending'){
+        btn.textContent='Awaiting Approval';btn.className='clk-btn';btn.style.background='rgba(201,168,76,.15)';btn.style.color='#92650a';btn.style.boxShadow='none';btn.disabled=true;
+        if(st)st.textContent='';
+        if(blk){blk.style.display='block';blk.innerHTML=`<div class="clock-blocked-title" style="color:#c9a84c;">⏳ Application Pending Review</div><div class="clock-blocked-item" style="color:rgba(201,168,76,.8);">— Your application is awaiting admin approval</div><div style="font-size:11.5px;color:rgba(201,168,76,.7);margin-top:7px;">You will be able to clock in once your application is approved.</div>`;}
+        return;
+      }
       try{
         const check=await apiGet('checkClockCompliance',{employeeId:ME.id});
         if(!check.allowed){
@@ -1181,12 +1306,47 @@ async function refreshClock(){
 
 async function toggleClock(){
   const btn=document.getElementById('cb');btn.disabled=true;
-  if(!_clocked){btn.innerHTML='<span class="spin"></span>';try{const check=await apiGet('checkClockCompliance',{employeeId:ME.id});if(!check.allowed){btn.disabled=false;await refreshClock();return;}}catch(e){}}
+  if(!_clocked){
+    btn.innerHTML='<span class="spin"></span>';
+    // Check if application is approved first
+    if(ME.status&&ME.status.toLowerCase()==='pending'){
+      toast('Your application is pending admin approval. You cannot clock in yet.','err');
+      btn.disabled=false;await refreshClock();return;
+    }
+    try{const check=await apiGet('checkClockCompliance',{employeeId:ME.id});if(!check.allowed){btn.disabled=false;await refreshClock();return;}}catch(e){}
+  }
   try{let res;if(!_clocked){res=await apiPost('clockIn',{employeeId:ME.id,name:ME.name,position:ME.position||''});if(res.success){_clocked=true;toast('Clocked in. Have a great shift.','ok');}else toast(res.error||'Clock in failed','err');}else{res=await apiPost('clockOut',{employeeId:ME.id});if(res.success){_clocked=false;toast('Clocked out. '+res.hoursWorked+' hrs recorded.','ok');}else toast(res.error||'Clock out failed','err');}}catch(e){toast('Connection error','err');}
   btn.disabled=false;await refreshClock();await loadToday();
 }
 
-async function loadToday(){const el=document.getElementById('today-r');if(!el)return;try{const res=await apiGet('getHours',{employeeId:ME.id,from:today(),to:today()});const sessions=res.sessions||[];if(!sessions.length){el.innerHTML='<div class="empty" style="padding:22px;"><p>No sessions today yet.</p></div>';return;}let tot=0;sessions.forEach(s=>tot+=s.hours||0);el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Clock In</th><th>Clock Out</th><th>Hours</th></tr></thead><tbody>${sessions.map(s=>`<tr><td>${s.clockIn}</td><td>${s.clockOut||'—'}</td><td>${s.hours?s.hours+' hrs':'<span class="badge b-pending">Active</span>'}</td></tr>`).join('')}</tbody></table></div><div style="padding:9px 13px;border-top:1px solid var(--border);font-size:13.5px;font-weight:700;">Today: <span style="color:var(--teal);">${tot.toFixed(2)} hrs</span></div>`;}catch(e){el.innerHTML='<div class="empty" style="padding:22px;"><p>Could not load.</p></div>';}}
+async function loadToday(){
+  const el=document.getElementById('today-r');if(!el)return;
+  try{
+    const res=await apiGet('getHours',{employeeId:ME.id,from:today(),to:today()});
+    const sessions=res.sessions||[];
+    const sumEl=document.getElementById('today-summary');
+    if(!sessions.length){
+      el.innerHTML='<div class="empty" style="padding:22px;"><div style="font-size:28px;margin-bottom:8px;">☀️</div><p>No sessions recorded today yet.</p></div>';
+      if(sumEl)sumEl.textContent='';return;
+    }
+    let tot=0;sessions.forEach(s=>tot+=s.hours||0);
+    if(sumEl)sumEl.textContent=tot.toFixed(2)+' hrs today';
+    // Format times cleanly — strip timezone/date, show HH:MM only
+    function fmtTime(ts){if(!ts||ts==='—')return'—';try{const d=new Date(ts);if(isNaN(d))return ts.split(' ')[1]?.substring(0,5)||ts;return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}catch(e){return ts;}}
+    el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Clock In</th><th>Clock Out</th><th>Duration</th><th>Status</th></tr></thead><tbody>
+    ${sessions.map(s=>`<tr>
+      <td style="font-weight:600;">${fmtTime(s.clockIn)}</td>
+      <td>${s.clockOut?fmtTime(s.clockOut):'—'}</td>
+      <td>${s.hours?'<strong>'+s.hours+' hrs</strong>':'<span style="color:var(--muted);">In progress</span>'}</td>
+      <td>${s.clockOut?'<span class="badge b-active">Complete</span>':'<span class="badge b-pending">Active</span>'}</td>
+    </tr>`).join('')}
+    </tbody></table></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:13.5px;font-weight:700;color:var(--navy);">Total Today</span>
+      <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--teal);">${tot.toFixed(2)} hrs</span>
+    </div>`;
+  }catch(e){el.innerHTML='<div class="empty" style="padding:22px;"><p>Could not load records.</p></div>';}
+}
 
 async function pgMyHours(){
   const el=document.getElementById('pg-myhours');
@@ -1194,7 +1354,28 @@ async function pgMyHours(){
     <div class="gap" style="margin-bottom:14px;"><input type="date" id="mf" value="${weekStart()}" style="padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;outline:none;transition:border-color .14s;"/><input type="date" id="mt" value="${today()}" style="padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;outline:none;transition:border-color .14s;"/><button class="btn btn-navy" onclick="loadMyHours()">Load</button></div>
     <div class="krow" id="hk"></div><div class="gc"><div id="hr-tbl"><div class="empty" style="padding:28px;"><p>Select dates and click Load.</p></div></div></div>`;
 }
-async function loadMyHours(){const from=document.getElementById('mf').value;const to=document.getElementById('mt').value;let rate=parseFloat(ME.rate)||25;try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me?.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}try{const res=await apiGet('getHours',{employeeId:ME.id,from,to});const totalH=res.totalHours||0;const sessions=res.sessions||[];document.getElementById('hk').innerHTML=`<div class="kpi"><div class="kpi-label">Total Hours</div><div class="kpi-val">${totalH.toFixed(2)}</div><div class="kpi-bar" style="background:var(--teal)"></div></div><div class="kpi"><div class="kpi-label">Gross Earnings</div><div class="kpi-val">$${(totalH*rate).toFixed(2)}</div><div class="kpi-bar" style="background:var(--green)"></div></div><div class="kpi"><div class="kpi-label">Sessions</div><div class="kpi-val">${sessions.length}</div><div class="kpi-bar" style="background:var(--gold)"></div></div><div class="kpi"><div class="kpi-label">Rate/hr</div><div class="kpi-val">$${rate}</div><div class="kpi-bar" style="background:var(--navy)"></div></div>`;const el=document.getElementById('hr-tbl');if(!sessions.length){el.innerHTML='<div class="empty" style="padding:28px;"><p>No sessions for this period.</p></div>';return;}el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>${sessions.map(s=>`<tr><td>${s.date}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td>${s.hours} hrs</td><td style="color:var(--g2);font-weight:700;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}</tbody></table></div>`;}catch(e){toast('Error loading hours','err');}}
+async function loadMyHours(){const from=document.getElementById('mf').value;const to=document.getElementById('mt').value;let rate=parseFloat(ME.rate)||25;try{const sr=await apiGet('getStaff');const me=(sr.staff||[]).find(s=>s.id===ME.id);if(me?.rate){rate=parseFloat(me.rate);ME.rate=rate;localStorage.setItem('cn_user',JSON.stringify(ME));}}catch(e){}try{const res=await apiGet('getHours',{employeeId:ME.id,from,to});const totalH=res.totalHours||0;const sessions=res.sessions||[];document.getElementById('hk').innerHTML=`
+<div class="kpi" style="border-top:3px solid var(--teal);">
+  <div class="kpi-label">⏱ Total Hours</div>
+  <div class="kpi-val">${totalH.toFixed(2)}</div>
+  <div style="font-size:11px;color:var(--muted);">${sessions.length} session${sessions.length!==1?'s':''}</div>
+</div>
+<div class="kpi" style="border-top:3px solid var(--green);">
+  <div class="kpi-label">💵 Gross Earnings</div>
+  <div class="kpi-val">$${(totalH*rate).toFixed(2)}</div>
+  <div style="font-size:11px;color:var(--muted);">Before deductions</div>
+</div>
+<div class="kpi" style="border-top:3px solid var(--gold);">
+  <div class="kpi-label">📅 Sessions</div>
+  <div class="kpi-val">${sessions.length}</div>
+  <div style="font-size:11px;color:var(--muted);">Days worked</div>
+</div>
+<div class="kpi" style="border-top:3px solid var(--navy);">
+  <div class="kpi-label">💰 Rate/hr</div>
+  <div class="kpi-val">$${rate}</div>
+  <div style="font-size:11px;color:var(--muted);">Current rate</div>
+</div>`;const el=document.getElementById('hr-tbl');if(!sessions.length){el.innerHTML='<div class="empty" style="padding:28px;"><p>No sessions for this period.</p></div>';return;}function fmtTS2(ts){if(!ts||ts==='—')return'—';try{const parts=ts.toString().split(' ');if(parts.length>=2)return parts[1].substring(0,5);const d=new Date(ts);if(!isNaN(d))return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return ts;}catch(e){return ts;}}
+el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Earnings</th></tr></thead><tbody>${sessions.map(s=>`<tr><td style="font-weight:600;">${s.date}</td><td>${fmtTS2(s.clockIn)}</td><td>${fmtTS2(s.clockOut)}</td><td><strong>${s.hours} hrs</strong></td><td style="color:var(--g2);font-weight:700;">$${(s.hours*rate).toFixed(2)}</td></tr>`).join('')}</tbody></table></div>`;}catch(e){toast('Error loading hours','err');}}
 
 async function pgMyInv(){
   const el=document.getElementById('pg-myinv');
@@ -1208,83 +1389,152 @@ async function genMyInv(){const from=document.getElementById('ei-f').value;const
 
 async function pgMyDocs(){
   const el=document.getElementById('pg-mydocs');
-  el.innerHTML=`<div class="pg-title">My Documents</div><div class="pg-sub">Upload required documents. Admin will review and approve them.</div>
-    <div class="fcard"><h3>Submit a Document</h3>
-      <div class="fgrid" style="margin-bottom:12px;"><div class="fi"><label>Document Type</label><select id="doc-type"><option value="">Select type...</option><option>License / Certification</option><option>BLS/CPR Card</option><option>ACLS Certificate</option><option>TB Test / CXR Results</option><option>Drug Screen Results</option><option>Background Check</option><option>MMR / Vaccination Record</option><option>Covid Vaccination Card</option><option>Flu Shot Record</option><option>Physical Exam</option><option>Resume / Application</option><option>OIG / NSOPW / SAM Check</option><option>Handbook Acknowledgement</option><option>Other</option></select></div><div class="fi"><label>File Name / Description</label><input type="text" id="doc-name" placeholder="e.g. BLS_Card_2025"/></div></div>
-      <div style="margin-bottom:13px;"><div class="gap" style="margin-bottom:11px;"><button class="btn btn-navy btn-sm" id="tab-file" onclick="switchDocTab('file')">Upload File (PDF/Image)</button><button class="btn btn-light btn-sm" id="tab-link" onclick="switchDocTab('link')">Paste Drive Link</button></div>
-        <div id="panel-file"><div class="doc-drop" onclick="document.getElementById('doc-file-input').click()" id="drop-zone" ondragover="event.preventDefault();this.style.borderColor='var(--navy)'" ondragleave="this.style.borderColor=''" ondrop="handleFileDrop(event)"><div style="font-size:32px;margin-bottom:7px;">📄</div><p><strong>Click to upload</strong> or drag and drop</p><p style="font-size:11.5px;margin-top:4px;">PDF, JPG, PNG, DOCX — up to 10MB</p></div><input type="file" id="doc-file-input" accept=".pdf,.jpg,.jpeg,.png,.docx" style="display:none" onchange="handleFileSelect(this)"/><div id="file-preview" style="display:none;margin-top:10px;padding:9px 13px;background:var(--gbg);border:1px solid #bbf7d0;border-radius:8px;display:flex;align-items:center;justify-content:space-between;"><span id="file-preview-name" style="font-size:13px;font-weight:700;color:var(--g2);">No file selected</span><button onclick="clearFile()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;">×</button></div></div>
-        <div id="panel-link" style="display:none;"><div class="fi"><label>Google Drive Share Link</label><input type="url" id="doc-url" placeholder="https://drive.google.com/file/d/..."/></div><p style="font-size:11.5px;color:var(--muted);">Go to Drive → right-click file → Share → Anyone with link → Copy link</p></div>
-      </div>
-      <button class="btn btn-navy btn-full" onclick="submitMyDoc()">Submit Document</button>
+  el.innerHTML=`<div class="pg-title">My Documents</div>
+  <div class="pg-sub">Upload your required documents below. Admin will review and approve each one.</div>
+
+  <!-- UPLOAD CARD -->
+  <div class="fcard" style="border:2px solid var(--border);border-radius:16px;overflow:hidden;padding:0;margin-bottom:20px;">
+    <div style="background:linear-gradient(135deg,var(--navy),var(--navy3));padding:18px 22px;display:flex;align-items:center;gap:12px;">
+      <div style="width:38px;height:38px;border-radius:10px;background:rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:18px;">📤</div>
+      <div><div style="color:#fff;font-size:14px;font-weight:700;">Submit a Document</div><div style="color:rgba(255,255,255,.45);font-size:12px;">PDF, JPG, PNG, DOCX — max 10MB per file</div></div>
     </div>
-    <div class="gc" style="margin-top:16px;"><div class="gc-head"><h3>My Submissions</h3></div><div id="my-doc-list"><div class="empty" style="padding:26px;"><span class="spin spin-d"></span></div></div></div>`;
+    <div style="padding:20px;">
+      <div class="fgrid" style="margin-bottom:14px;">
+        <div class="fi">
+          <label>Document Type</label>
+          <select id="doc-type" style="border-radius:9px;">
+            <option value="">Select type...</option>
+            <option>License / Certification</option>
+            <option>BLS/CPR Card</option>
+            <option>ACLS Certificate</option>
+            <option>PALS Certificate</option>
+            <option>TB Test / CXR Results</option>
+            <option>Drug Screen Results</option>
+            <option>Background Check</option>
+            <option>MMR / Vaccination Record</option>
+            <option>Covid Vaccination Card</option>
+            <option>Flu Shot Record</option>
+            <option>Physical Exam</option>
+            <option>Resume / Application</option>
+            <option>OIG / NSOPW / SAM Check</option>
+            <option>Handbook Acknowledgement</option>
+            <option>Annual Core Mandatory Exam</option>
+            <option>Skills Checklist</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="fi">
+          <label>Description (optional)</label>
+          <input type="text" id="doc-name" placeholder="e.g. BLS Card expires 2026"/>
+        </div>
+      </div>
+
+      <!-- TAB SWITCHER -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button id="tab-file" onclick="switchDocTab('file')" class="btn btn-navy btn-sm" style="flex:1;">📁 Upload File</button>
+        <button id="tab-link" onclick="switchDocTab('link')" class="btn btn-light btn-sm" style="flex:1;">🔗 Paste Drive Link</button>
+      </div>
+
+      <!-- FILE UPLOAD PANEL -->
+      <div id="panel-file">
+        <div id="drop-zone" class="doc-drop"
+          onclick="document.getElementById('doc-file-input').click()"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="handleFileDrop(event)">
+          <div style="font-size:40px;margin-bottom:10px;">📄</div>
+          <p style="font-weight:700;color:var(--navy);font-size:14px;">Click to browse or drag & drop</p>
+          <p style="font-size:12px;color:var(--muted);margin-top:5px;">PDF · JPG · PNG · DOCX — up to 10MB</p>
+        </div>
+        <input type="file" id="doc-file-input" accept=".pdf,.jpg,.jpeg,.png,.docx" style="display:none" onchange="handleFileSelect(this)"/>
+
+        <!-- FILE PREVIEW -->
+        <div id="file-preview" style="display:none;margin-top:12px;padding:12px 16px;background:var(--gbg);border:1.5px solid #bbf7d0;border-radius:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div id="file-icon" style="font-size:24px;">📄</div>
+              <div>
+                <div id="file-preview-name" style="font-size:13px;font-weight:700;color:var(--g2);">File name</div>
+                <div id="file-preview-size" style="font-size:11px;color:var(--muted);">0 KB</div>
+              </div>
+            </div>
+            <button onclick="clearFile()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;">×</button>
+          </div>
+          <!-- PROGRESS BAR -->
+          <div id="upload-progress" style="display:none;margin-top:10px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px;">
+              <span>Uploading...</span><span id="upload-pct">0%</span>
+            </div>
+            <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+              <div id="upload-bar" style="height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));width:0%;transition:width .3s;border-radius:3px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRIVE LINK PANEL -->
+      <div id="panel-link" style="display:none;">
+        <div style="background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+          <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+            <strong style="color:var(--navy);">How to get a Drive link:</strong><br/>
+            1. Open Google Drive → find your file<br/>
+            2. Right-click → <strong>Share</strong> → <strong>Anyone with the link</strong><br/>
+            3. Click <strong>Copy link</strong> → paste below
+          </div>
+        </div>
+        <div class="fi">
+          <label>Google Drive Share Link</label>
+          <input type="url" id="doc-url" placeholder="https://drive.google.com/file/d/..."/>
+        </div>
+      </div>
+
+      <button class="btn btn-navy btn-full" id="doc-submit-btn" onclick="submitMyDoc()" style="margin-top:4px;height:46px;font-size:14px;">
+        Submit Document
+      </button>
+    </div>
+  </div>
+
+  <!-- MY SUBMISSIONS -->
+  <div class="gc">
+    <div class="gc-head">
+      <h3>📋 My Submissions</h3>
+      <div style="font-size:12px;color:var(--muted);">Click View to open any file</div>
+    </div>
+    <div id="my-doc-list"><div class="empty" style="padding:26px;"><span class="spin spin-d"></span></div></div>
+  </div>`;
+
+  // Add drag-over CSS if not present
+  if(!document.getElementById('doc-upload-style')){
+    const s=document.createElement('style');s.id='doc-upload-style';
+    s.textContent='.doc-drop.drag-over{border-color:var(--navy);background:var(--light);transform:scale(1.01);}';
+    document.head.appendChild(s);
+  }
   await loadMyDocs();
 }
 
-function switchDocTab(tab){document.getElementById('panel-file').style.display=tab==='file'?'':'none';document.getElementById('panel-link').style.display=tab==='link'?'':'none';document.getElementById('tab-file').className='btn btn-sm '+(tab==='file'?'btn-navy':'btn-light');document.getElementById('tab-link').className='btn btn-sm '+(tab==='link'?'btn-navy':'btn-light');}
-function handleFileSelect(input){const file=input.files[0];if(!file)return;if(file.size>10*1024*1024){toast('File too large. Max 10MB.','err');input.value='';return;}_selFile=file;const preview=document.getElementById('file-preview');const name=document.getElementById('file-preview-name');preview.style.display='flex';name.textContent=file.name+' ('+(file.size/1024).toFixed(0)+' KB)';if(!document.getElementById('doc-name').value)document.getElementById('doc-name').value=file.name.replace(/\.[^.]+$/,'');}
-function handleFileDrop(e){e.preventDefault();document.getElementById('drop-zone').style.borderColor='';const file=e.dataTransfer.files[0];if(!file)return;const input=document.getElementById('doc-file-input');const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;handleFileSelect(input);}
-function clearFile(){_selFile=null;document.getElementById('doc-file-input').value='';document.getElementById('file-preview').style.display='none';}
-
-async function submitMyDoc(){
-  const type=document.getElementById('doc-type')?.value;
-  const url=document.getElementById('doc-url')?.value.trim()||'';
-  const name=document.getElementById('doc-name')?.value.trim()||'';
-  if(!type){toast('Select a document type','err');return;}
-  const isFileTab=document.getElementById('panel-file')?.style.display!=='none';
-  const btn=document.querySelector('#pg-mydocs .btn-navy.btn-full');
-
-  if(isFileTab&&_selFile){
-    if(btn){btn.innerHTML='<span class="spin"></span> Uploading...';btn.disabled=true;}
-    try{
-      // Read full file as base64
-      const b64=await new Promise((res,rej)=>{
-        const r=new FileReader();
-        r.onload=()=>res(r.result);
-        r.onerror=()=>rej(new Error('File read failed'));
-        r.readAsDataURL(_selFile);
-      });
-      // Send as JSON POST body so full file is included — no size truncation
-      const payload={
-        employeeId:ME.id,
-        employeeName:ME.name,
-        docType:type,
-        fileName:name||_selFile.name,
-        fileData:b64
-      };
-      const response=await fetch(API+'?action=submitDoc',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload),
-        redirect:'follow'
-      });
-      const res=await response.json();
-      if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}
-      if(!res.success){toast(res.error||'Upload failed','err');return;}
-      toast('Document uploaded successfully. Awaiting admin review.','ok');
-      clearFile();
-      document.getElementById('doc-type').value='';
-      document.getElementById('doc-name').value='';
-      await loadMyDocs();
-    }catch(e){
-      if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}
-      toast('Upload failed — try using a Drive link instead.','err');
-    }
-  }else if(!isFileTab&&url){
-    try{
-      const res=await fetch(API+'?action=submitDoc&employeeId='+encodeURIComponent(ME.id)+'&employeeName='+encodeURIComponent(ME.name)+'&docType='+encodeURIComponent(type)+'&driveUrl='+encodeURIComponent(url)+'&fileName='+encodeURIComponent(name),{redirect:'follow'});
-      const data=await res.json();
-      if(!data.success){toast(data.error||'Failed','err');return;}
-      toast('Document submitted. Awaiting admin review.','ok');
-      document.getElementById('doc-type').value='';
-      document.getElementById('doc-url').value='';
-      document.getElementById('doc-name').value='';
-      await loadMyDocs();
-    }catch(e){toast('Error submitting','err');}
-  }else{toast('Upload a file or paste a Drive link','err');}
+async function loadMyDocs(){
+  const el=document.getElementById('my-doc-list');if(!el)return;
+  try{
+    const res=await apiGet('getDocs',{employeeId:ME.id});
+    const docs=res.docs||[];
+    if(!docs.length){el.innerHTML='<div class="empty" style="padding:32px;"><div style="font-size:32px;margin-bottom:8px;">📭</div><p>No documents submitted yet.</p><p style="font-size:12px;margin-top:4px;">Upload your first document above to get started.</p></div>';return;}
+    const statusIcon={Approved:'✅',Rejected:'❌',Pending:'⏳',Waived:'🔓'};
+    const statusBg={Approved:'var(--gbg)',Rejected:'var(--rbg)',Pending:'var(--obg)',Waived:'#faf5ff'};
+    el.innerHTML=`<div style="padding:14px 16px;display:grid;gap:10px;">
+    ${docs.map(d=>`<div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;transition:all .15s;" onmouseover="this.style.borderColor='var(--navy)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="width:42px;height:42px;border-radius:10px;background:${statusBg[d.status||'Pending']||'var(--cream)'};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${statusIcon[d.status||'Pending']||'⏳'}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:2px;">${d.docType}</div>
+        <div style="font-size:11.5px;color:var(--muted);">Submitted ${d.uploadedAt?d.uploadedAt.split(' ')[0]:''} ${d.notes&&d.notes!=='—'?'· '+d.notes:''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span class="badge ${d.status==='Approved'?'b-approved':d.status==='Rejected'?'b-rejected':d.status==='Waived'?'b-waived':'b-pending'}">${d.status||'Pending'}</span>
+        ${d.driveUrl?`<a href="${d.driveUrl}" target="_blank" class="btn btn-teal btn-sm" style="text-decoration:none;font-size:11px;padding:4px 10px;">View</a>`:''}
+      </div>
+    </div>`).join('')}
+    </div>`;
+  }catch(e){el.innerHTML='<div class="empty" style="padding:26px;"><p>Could not load documents.</p></div>';}
 }
-
-async function loadMyDocs(){const el=document.getElementById('my-doc-list');if(!el)return;try{const res=await apiGet('getDocs',{employeeId:ME.id});const docs=res.docs||[];if(!docs.length){el.innerHTML='<div class="empty" style="padding:26px;"><p>No documents submitted yet.</p></div>';return;}el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Document Type</th><th>File</th><th>Submitted</th><th>Status</th><th>Notes</th></tr></thead><tbody>${docs.map(d=>`<tr><td><strong>${d.docType}</strong></td><td>${d.driveUrl?`<a href="${d.driveUrl}" target="_blank" style="color:var(--teal);font-size:12px;">View</a>`:(d.fileName||'—')}</td><td style="font-size:11.5px;">${d.uploadedAt||'—'}</td><td><span class="badge ${d.status==='Approved'?'b-approved':d.status==='Rejected'?'b-rejected':d.status==='Waived'?'b-waived':'b-pending'}">${d.status||'Pending'}</span></td><td style="font-size:12px;color:var(--muted);">${d.notes||'—'}</td></tr>`).join('')}</tbody></table></div>`;}catch(e){el.innerHTML='<div class="empty" style="padding:26px;"><p>Could not load.</p></div>';}}
 
 async function pgMyProfile(){
   const el=document.getElementById('pg-myprofile');
@@ -1334,7 +1584,16 @@ async function loadSaved(empFilter=null){const el=document.getElementById('saved
 
 // HELPERS
 function ccls(v){if(!v||v===''||['n/a','na','none','undefined'].includes((v||'').toLowerCase()))return'cna';let d;if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v)){const[m,dy,y]=v.split('/');d=new Date(+y,+m-1,+dy);}else d=new Date(v);if(isNaN(d.getTime()))return'cna';const days=Math.round((d-new Date())/86400000);if(days<0)return'cbad';if(days<=30)return'cwarn';return'cok';}
-function fmtD(v){if(!v||v===''||['n/a','na','none','undefined'].includes((v||'').toLowerCase()))return v;if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v))return v;if(/^\d{4}-\d{2}-\d{2}/.test(v)){const p=v.split('T')[0].split('-');return p[1]+'/'+p[2]+'/'+p[0];}return v;}
+function fmtD(v){
+  if(!v||v===''||['n/a','na','none','undefined'].includes((v||'').toLowerCase()))return v;
+  // Strip time portion — only show date
+  if(typeof v==='string'&&v.includes(' ')){v=v.split(' ')[0];}
+  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v))return v;
+  if(/^\d{4}-\d{2}-\d{2}/.test(v)){const p=v.split('T')[0].split('-');return p[1]+'/'+p[2]+'/'+p[0];}
+  // Try to parse and reformat
+  const d=new Date(v);if(!isNaN(d.getTime())&&v.length>5){return (d.getMonth()+1)+'/'+(d.getDate())+'/'+d.getFullYear();}
+  return v;
+}
 function today(){return new Date().toISOString().split('T')[0];}
 function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));return m.toISOString().split('T')[0];}
 function sendContact(){const n=document.getElementById('cn').value.trim();const e=document.getElementById('ce').value.trim();const m=document.getElementById('cm').value.trim();if(!n||!e||!m){toast('Please fill all fields','err');return;}window.location.href='mailto:Info@Centralnurses.com?subject='+encodeURIComponent(document.getElementById('cs').value+' from '+n)+'&body='+encodeURIComponent('From: '+n+'\nEmail: '+e+'\n\n'+m);}
