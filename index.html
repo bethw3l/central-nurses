@@ -1663,4 +1663,113 @@ if(_sv){
 }
 </script>
 </body>
-</html>
+</html>async function submitMyDoc(){
+  const type=document.getElementById('doc-type')?.value;
+  const url=document.getElementById('doc-url')?.value.trim()||'';
+  const name=document.getElementById('doc-name')?.value.trim()||'';
+  if(!type){toast('Select a document type first','err');return;}
+  const isFileTab=document.getElementById('panel-file')?.style.display!=='none';
+  const btn=document.getElementById('doc-submit-btn');
+  const progressWrap=document.getElementById('upload-progress');
+  const progressBar=document.getElementById('upload-bar');
+  const progressPct=document.getElementById('upload-pct');
+
+  function setProgress(pct,label){
+    if(progressWrap)progressWrap.style.display='block';
+    if(progressBar)progressBar.style.width=pct+'%';
+    if(progressPct)progressPct.textContent=(label||pct+'%');
+  }
+  function resetBtn(){if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}}
+
+  if(isFileTab&&_selFile){
+    if(btn){btn.innerHTML='<span class="spin"></span> Reading file...';btn.disabled=true;}
+    setProgress(5,'Reading file...');
+    try{
+      // Read full base64 data URL
+      const dataUrl=await new Promise((res,rej)=>{
+        const r=new FileReader();
+        r.onload=()=>res(r.result);
+        r.onerror=()=>rej(new Error('Cannot read file'));
+        r.readAsDataURL(_selFile);
+      });
+
+      // Extract mimeType and pure base64 (no header)
+      const commaIdx=dataUrl.indexOf(',');
+      const header=dataUrl.substring(0,commaIdx);
+      const mimeMatch=header.match(/data:([^;]+);/);
+      const mimeType=mimeMatch?mimeMatch[1]:'application/octet-stream';
+      const pureB64=dataUrl.substring(commaIdx+1);
+
+      // Split into 150KB chunks (ScriptProperties safe size)
+      const CHUNK=150000;
+      const totalChunks=Math.ceil(pureB64.length/CHUNK);
+      const fileName=name||_selFile.name;
+
+      setProgress(15,'Sending chunk 1 of '+totalChunks+'...');
+
+      // Send first chunk — creates the sheet record
+      const first=await fetch(API+'?action=submitDoc',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          employeeId:ME.id,
+          employeeName:ME.name,
+          docType:type,
+          fileName:fileName,
+          mimeType:mimeType,
+          fileData:pureB64.substring(0,CHUNK),
+          totalChunks:totalChunks
+        }),
+        redirect:'follow'
+      });
+      const firstRes=await first.json();
+      if(!firstRes.success)throw new Error(firstRes.error||'Failed on first chunk');
+      const docId=firstRes.docId;
+
+      // Send remaining chunks
+      for(let i=1;i<totalChunks;i++){
+        const chunk=pureB64.substring(i*CHUNK,(i+1)*CHUNK);
+        const pct=Math.round(15+(80*(i/totalChunks)));
+        setProgress(pct,'Sending chunk '+(i+1)+' of '+totalChunks+'...');
+        const cr=await fetch(API+'?action=appendDocChunk',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({docId,chunkIndex:i,totalChunks,fileData:chunk}),
+          redirect:'follow'
+        });
+        const cd=await cr.json();
+        if(!cd.success)throw new Error(cd.error||'Failed on chunk '+(i+1));
+      }
+
+      setProgress(100,'✅ Done!');
+      setTimeout(()=>{if(progressWrap)progressWrap.style.display='none';},1200);
+      resetBtn();
+      toast('✅ Document uploaded! Awaiting admin review.','ok');
+      clearFile();
+      document.getElementById('doc-type').value='';
+      document.getElementById('doc-name').value='';
+      await loadMyDocs();
+    }catch(e){
+      resetBtn();
+      if(progressWrap)progressWrap.style.display='none';
+      toast('Upload failed: '+e.message,'err');
+    }
+
+  }else if(!isFileTab&&url){
+    if(btn){btn.innerHTML='<span class="spin"></span> Submitting...';btn.disabled=true;}
+    try{
+      const r=await fetch(API+'?action=submitDoc&employeeId='+encodeURIComponent(ME.id)+'&employeeName='+encodeURIComponent(ME.name)+'&docType='+encodeURIComponent(type)+'&driveUrl='+encodeURIComponent(url)+'&fileName='+encodeURIComponent(name),{redirect:'follow'});
+      const data=await r.json();
+      resetBtn();
+      if(!data.success){toast(data.error||'Failed','err');return;}
+      toast('✅ Document submitted! Awaiting admin review.','ok');
+      document.getElementById('doc-type').value='';
+      document.getElementById('doc-url').value='';
+      document.getElementById('doc-name').value='';
+      await loadMyDocs();
+    }catch(e){resetBtn();toast('Connection error','err');}
+
+  }else{
+    toast(isFileTab?'Select a file to upload':'Paste a Google Drive link','err');
+  }
+}
