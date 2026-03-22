@@ -1227,16 +1227,60 @@ function handleFileDrop(e){e.preventDefault();document.getElementById('drop-zone
 function clearFile(){_selFile=null;document.getElementById('doc-file-input').value='';document.getElementById('file-preview').style.display='none';}
 
 async function submitMyDoc(){
-  const type=document.getElementById('doc-type')?.value;const url=document.getElementById('doc-url')?.value.trim()||'';const name=document.getElementById('doc-name')?.value.trim()||'';
+  const type=document.getElementById('doc-type')?.value;
+  const url=document.getElementById('doc-url')?.value.trim()||'';
+  const name=document.getElementById('doc-name')?.value.trim()||'';
   if(!type){toast('Select a document type','err');return;}
   const isFileTab=document.getElementById('panel-file')?.style.display!=='none';
   const btn=document.querySelector('#pg-mydocs .btn-navy.btn-full');
+
   if(isFileTab&&_selFile){
     if(btn){btn.innerHTML='<span class="spin"></span> Uploading...';btn.disabled=true;}
-    try{const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej();r.readAsDataURL(_selFile);});const response=await apiPost('submitDoc',{employeeId:ME.id,employeeName:ME.name,docType:type,fileName:name||_selFile.name,fileType:_selFile.type,fileSize:(_selFile.size/1024).toFixed(0)+' KB',driveUrl:'',fileData:b64.substring(0,50000)});if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}if(!response.success){toast(response.error||'Failed','err');return;}toast('Document submitted. Awaiting admin review.','ok');clearFile();document.getElementById('doc-type').value='';document.getElementById('doc-name').value='';await loadMyDocs();}
-    catch(e){if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}toast('Upload failed. Try a Drive link.','err');}
+    try{
+      // Read full file as base64
+      const b64=await new Promise((res,rej)=>{
+        const r=new FileReader();
+        r.onload=()=>res(r.result);
+        r.onerror=()=>rej(new Error('File read failed'));
+        r.readAsDataURL(_selFile);
+      });
+      // Send as JSON POST body so full file is included — no size truncation
+      const payload={
+        employeeId:ME.id,
+        employeeName:ME.name,
+        docType:type,
+        fileName:name||_selFile.name,
+        fileData:b64
+      };
+      const response=await fetch(API+'?action=submitDoc',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload),
+        redirect:'follow'
+      });
+      const res=await response.json();
+      if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}
+      if(!res.success){toast(res.error||'Upload failed','err');return;}
+      toast('Document uploaded successfully. Awaiting admin review.','ok');
+      clearFile();
+      document.getElementById('doc-type').value='';
+      document.getElementById('doc-name').value='';
+      await loadMyDocs();
+    }catch(e){
+      if(btn){btn.innerHTML='Submit Document';btn.disabled=false;}
+      toast('Upload failed — try using a Drive link instead.','err');
+    }
   }else if(!isFileTab&&url){
-    try{const res=await apiPost('submitDoc',{employeeId:ME.id,employeeName:ME.name,docType:type,driveUrl:url,fileName:name});if(!res.success){toast(res.error||'Failed','err');return;}toast('Document submitted. Awaiting admin review.','ok');document.getElementById('doc-type').value='';document.getElementById('doc-url').value='';document.getElementById('doc-name').value='';await loadMyDocs();}catch(e){toast('Error submitting','err');}
+    try{
+      const res=await fetch(API+'?action=submitDoc&employeeId='+encodeURIComponent(ME.id)+'&employeeName='+encodeURIComponent(ME.name)+'&docType='+encodeURIComponent(type)+'&driveUrl='+encodeURIComponent(url)+'&fileName='+encodeURIComponent(name),{redirect:'follow'});
+      const data=await res.json();
+      if(!data.success){toast(data.error||'Failed','err');return;}
+      toast('Document submitted. Awaiting admin review.','ok');
+      document.getElementById('doc-type').value='';
+      document.getElementById('doc-url').value='';
+      document.getElementById('doc-name').value='';
+      await loadMyDocs();
+    }catch(e){toast('Error submitting','err');}
   }else{toast('Upload a file or paste a Drive link','err');}
 }
 
