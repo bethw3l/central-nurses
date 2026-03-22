@@ -1095,7 +1095,7 @@ function renderDiscTbl(staff,elId,disc){
   const el=document.getElementById(elId);if(!el)return;
   if(!staff.length){el.innerHTML='<div class="empty"><p>No staff found.</p></div>';return;}
   const id=disc.toLowerCase();
-  el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Employee ID</th><th>Name</th><th>Status</th><th>Hire Date</th><th>License Expiry</th><th>BLS/CPR</th><th>TB Test</th><th>Drug Screen</th><th>OIG</th><th>Notes</th><th>Actions</th></tr></thead><tbody>${staff.map(s=>{const nm=s['Full Name']||s.name||'';const sid=s['Employee ID']||s.id||'';const st=(s['Status']||s.status||'').toLowerCase();const lic=s['License Expiry']||s['License']||'';const bls=s['BLS/CPR']||'';const tb=s['TB Test/CXR']||'';const drug=s['Drug Screen']||s['Drug  Screen']||'';const oig=s['OIG']||'';const notes=(s['Notes Section']||'').substring(0,32);return`<tr><td><span class="badge b-${id}">${sid}</span></td><td><strong>${nm}</strong></td><td><span class="badge ${st==='active'?'b-active':'b-inactive'}">${st}</span></td><td style="font-size:11.5px;">${s['Hire Date']||s.hireDate||'—'}</td><td class="${ccls(lic)}">${fmtD(lic)||'—'}</td><td class="${ccls(bls)}">${fmtD(bls)||'—'}</td><td class="${ccls(tb)}">${fmtD(tb)||'—'}</td><td class="${ccls(drug)}">${fmtD(drug)||'—'}</td><td class="${ccls(oig)}">${fmtD(oig)||'—'}</td><td style="font-size:11.5px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);" title="${s['Notes Section']||''}">${notes||'—'}</td><td><div class="gap"><button class="btn btn-teal btn-sm" onclick="viewEmp('${sid}','${disc}')">View</button><button class="btn btn-gold btn-sm" onclick="quickInv('${sid}','${nm}','${disc}')">Invoice</button></div></td></tr>`;}).join('')}</tbody></table></div>`;
+  el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Employee ID</th><th>Name</th><th>Status</th><th>Hire Date</th><th>License Expiry</th><th>BLS/CPR</th><th>TB Test</th><th>Drug Screen</th><th>OIG</th><th>Notes</th><th>Actions</th></tr></thead><tbody>${staff.map(s=>{const nm=s['Full Name']||s.name||'';const sid=s['Employee ID']||s.id||'';const st=(s['Status']||s.status||'').toLowerCase();const lic=s['License Expiry']||s['License']||'';const bls=s['BLS/CPR']||'';const tb=s['TB Test/CXR']||'';const drug=s['Drug Screen']||s['Drug  Screen']||'';const oig=s['OIG']||'';const notes=(s['Notes Section']||'').substring(0,32);return`<tr><td><span class="badge b-${id}">${sid}</span></td><td><strong>${nm}</strong></td><td><span class="badge ${st==='active'?'b-active':'b-inactive'}">${st}</span></td><td style="font-size:11.5px;font-weight:600;">${fmtD(s['Hire Date']||s.hireDate||'')||'—'}</td><td class="${ccls(lic)}">${fmtD(lic)||'—'}</td><td class="${ccls(bls)}">${fmtD(bls)||'—'}</td><td class="${ccls(tb)}">${fmtD(tb)||'—'}</td><td class="${ccls(drug)}">${fmtD(drug)||'—'}</td><td class="${ccls(oig)}">${fmtD(oig)||'—'}</td><td style="font-size:11.5px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);" title="${s['Notes Section']||''}">${notes||'—'}</td><td><div class="gap"><button class="btn btn-teal btn-sm" onclick="viewEmp('${sid}','${disc}')">View</button><button class="btn btn-gold btn-sm" onclick="quickInv('${sid}','${nm}','${disc}')">Invoice</button></div></td></tr>`;}).join('')}</tbody></table></div>`;
 }
 
 async function viewEmp(empId,disc){
@@ -1587,22 +1587,36 @@ function ccls(v){if(!v||v===''||['n/a','na','none','undefined'].includes((v||'')
 function fmtD(v){
   if(!v||v===''||['n/a','na','none','undefined'].includes((v||'').toLowerCase()))return v;
   var s=v.toString().trim();
-  // Reject bare day-name abbreviations that come from corrupted sheet data
-  var dayNames=['sun','mon','tue','wed','thu','fri','sat','sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  if(!s)return '—';
+
+  // Handle full JS Date strings from Google Sheets:
+  // "Tue Nov 19 2024 00:00:00 GMT-0800 (Pacific Standard Time)"
+  // "Mon Oct 31 2022 00:00:00 GMT-0700 (Pacific Daylight Time)"
+  var fullDateMatch=s.match(/^\w{3}\s+(\w{3})\s+(\d{1,2})\s+(\d{4})/);
+  if(fullDateMatch){
+    var months={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+    var mm=months[fullDateMatch[1]]||'01';
+    var dd=String(fullDateMatch[2]).padStart(2,'0');
+    var yyyy=fullDateMatch[3];
+    return mm+'/'+dd+'/'+yyyy;
+  }
+
+  // Reject bare 3-letter day abbreviations
+  var dayNames=['sun','mon','tue','wed','thu','fri','sat'];
   if(dayNames.includes(s.toLowerCase()))return '—';
-  // Strip time/timezone portion
+
+  // Strip time/timezone
   if(s.includes(' '))s=s.split(' ')[0];
   if(s.includes('T'))s=s.split('T')[0];
+
   // Already MM/DD/YYYY
   if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s))return s;
-  // YYYY-MM-DD → MM/DD/YYYY (pure string, no Date object)
+  // YYYY-MM-DD → MM/DD/YYYY
   if(/^\d{4}-\d{2}-\d{2}$/.test(s)){var p=s.split('-');return p[1]+'/'+p[2]+'/'+p[0];}
   // MM/DD/YY → MM/DD/20YY
   if(/^\d{1,2}\/\d{1,2}\/\d{2}$/.test(s)){var q=s.split('/');return q[0]+'/'+q[1]+'/'+(parseInt(q[2])<50?'20':'19')+q[2];}
-  // Has digits — probably a real date value, return as-is
-  if(/\d/.test(s))return s;
-  // No digits and not a known value — suppress it
-  return '—';
+  // Return raw if it has digits, suppress if not
+  return /\d/.test(s)?s:'—';
 }
 function today(){return new Date().toISOString().split('T')[0];}
 function weekStart(){const n=new Date(),d=n.getDay(),m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));return m.toISOString().split('T')[0];}
